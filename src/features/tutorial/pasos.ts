@@ -15,7 +15,7 @@ export type Paso = PasoBase;
 export const PASOS: Record<Vista, Paso[]> = {
 	deck: [
 		{
-			titulo: paraTraducir("Te damos la bienvenida a Proxy Builder"),
+			titulo: paraTraducir("Te damos la bienvenida a Tapete"),
 			texto: paraTraducir(
 				"Monta un deck de Magic con imágenes de Scryfall o tuyas, diseña tus propias proxies y sácalas en un PDF listo para imprimir. Este recorrido enseña qué hay en cada zona; puedes repetirlo cuando quieras con el botón de ayuda de arriba.",
 			),

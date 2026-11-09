@@ -93,7 +93,7 @@ export function MenuExportar({ deshabilitado }: { deshabilitado: boolean }) {
 			const destino = await guardarParaExportar(
 				{
 					title: t("Exportar deck con sus imágenes"),
-					filters: [{ name: "Proxy Builder", extensions: ["pbdeck"] }],
+					filters: [{ name: "Tapete", extensions: ["pbdeck"] }],
 				},
 				nombreSeguro(deck.name, "pbdeck"),
 			);

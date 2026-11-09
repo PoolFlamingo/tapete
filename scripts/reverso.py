@@ -1,4 +1,4 @@
-"""Genera el reverso genérico de Proxy Builder (745×1040, como el PNG de Scryfall).
+"""Genera el reverso genérico de Tapete (745×1040, como el PNG de Scryfall).
 
 Diseño propio y original: borde negro como el de una carta, marco dorado doble
 y un emblema geométrico en el centro. Sin textos ni marcas de terceros (nunca el

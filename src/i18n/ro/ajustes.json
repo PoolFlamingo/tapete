@@ -81,7 +81,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "{version} este gata. Se instalează la repornire.",
 	"Instalando la {version}…": "Se instalează {version}…",
 	"Reiniciar y actualizar a la {version}": "Repornește și actualizează la {version}",
-	"Descargando Proxy Builder {version}…": "Se descarcă Proxy Builder {version}…",
+	"Descargando Tapete {version}…": "Se descarcă Tapete {version}…",
 	"No se ha podido descargar la actualización.": "Actualizarea nu a putut fi descărcată.",
 	"La {version} está lista: reinicia desde Ajustes.": "{version} este gata: repornește din Setări.",
 	"Almacenamiento": "Stocare",
@@ -96,6 +96,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "Caută versiuni noi la deschiderea aplicației și descarcă-le discret. Android îți va cere să confirmi fiecare instalare.",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "{version} este gata. Android îți va cere să confirmi instalarea.",
 	"Instalar la {version}": "Instalează {version}",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "Android are nevoie de permisiunea ta ca să instaleze actualizarea: setarea a fost deschisă. Permite instalarea de aplicații din Proxy Builder, revino și apasă din nou «Instalează».",
-	"Descargado": "Descărcat"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android are nevoie de permisiunea ta ca să instaleze actualizarea: setarea a fost deschisă. Permite instalarea de aplicații din Tapete, revino și apasă din nou «Instalează».",
+	"Descargado": "Descărcat",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo și pictograme de joc: game-icons.net (CC BY 3.0)"
 }

@@ -188,9 +188,7 @@ describe("diálogos de ficheros", () => {
 
 describe("filtros de Android", () => {
 	it("para abrir: con un formato sin tipo conocido no se filtra nada", () => {
-		expect(filtrosParaAbrirEnMovil([{ name: "Proxy Builder", extensions: ["pbdeck"] }])).toEqual(
-			[],
-		);
+		expect(filtrosParaAbrirEnMovil([{ name: "Tapete", extensions: ["pbdeck"] }])).toEqual([]);
 		expect(filtrosParaAbrirEnMovil([{ name: "Letras", extensions: ["ttf", "otf"] }])).toEqual([]);
 		expect(filtrosParaAbrirEnMovil(undefined)).toEqual([]);
 	});
@@ -208,8 +206,8 @@ describe("filtros de Android", () => {
 		expect(filtrosParaGuardarEnMovil([{ name: "ZIP", extensions: ["zip"] }])).toEqual([
 			{ name: "ZIP", extensions: ["application/zip"] },
 		]);
-		expect(filtrosParaGuardarEnMovil([{ name: "Proxy Builder", extensions: ["pbdeck"] }])).toEqual([
-			{ name: "Proxy Builder", extensions: ["application/octet-stream"] },
+		expect(filtrosParaGuardarEnMovil([{ name: "Tapete", extensions: ["pbdeck"] }])).toEqual([
+			{ name: "Tapete", extensions: ["application/octet-stream"] },
 		]);
 		expect(filtrosParaGuardarEnMovil(undefined)).toEqual([
 			{ name: "", extensions: ["application/octet-stream"] },

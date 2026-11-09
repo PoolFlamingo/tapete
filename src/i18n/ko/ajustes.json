@@ -77,7 +77,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "{version}이(가) 준비됐어요. 다시 시작하면 설치돼요.",
 	"Instalando la {version}…": "{version} 설치 중…",
 	"Reiniciar y actualizar a la {version}": "다시 시작하고 {version}(으)로 업데이트",
-	"Descargando Proxy Builder {version}…": "Proxy Builder {version} 다운로드 중…",
+	"Descargando Tapete {version}…": "Tapete {version} 다운로드 중…",
 	"No se ha podido descargar la actualización.": "업데이트를 다운로드할 수 없어요.",
 	"La {version} está lista: reinicia desde Ajustes.": "{version}이(가) 준비됐어요. 설정에서 다시 시작하세요.",
 	"Almacenamiento": "저장 공간",
@@ -92,6 +92,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "앱을 열 때 새 버전을 확인하고 조용히 다운로드해요. 설치할 때마다 Android에서 확인을 요청해요.",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "{version}이(가) 준비됐어요. 설치를 확인하라는 메시지가 Android에서 표시돼요.",
 	"Instalar la {version}": "{version} 설치",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "업데이트를 설치하려면 Android의 허용이 필요해요. 설정을 열어 두었어요. Proxy Builder의 앱 설치를 허용하고 돌아와서 '설치'를 다시 누르세요.",
-	"Descargado": "다운로드됨"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "업데이트를 설치하려면 Android의 허용이 필요해요. 설정을 열어 두었어요. Tapete의 앱 설치를 허용하고 돌아와서 '설치'를 다시 누르세요.",
+	"Descargado": "다운로드됨",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "로고와 게임 아이콘: game-icons.net (CC BY 3.0)"
 }

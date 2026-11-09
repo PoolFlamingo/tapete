@@ -668,7 +668,7 @@
 	"Este equipo pasará a ser el de la identidad del fichero. La de ahora se queda como copia en la carpeta de datos de la app.": "此電腦將改用檔案中的身分。目前的身分會作為備份保留在應用程式的資料資料夾中。",
 	"Identidad cambiada.": "身分已更換。",
 	"Sal de la partida o de la sala antes de cambiar la identidad.": "更換身分前,請先離開對局或房間。",
-	"Ese fichero no es una identidad de Proxy Builder.": "該檔案不是 Proxy Builder 的身分檔案。",
+	"Ese fichero no es una identidad de Tapete.": "該檔案不是 Tapete 的身分檔案。",
 	"Copiar enlace": "複製連結",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "對局進行中：請先退出對局再使用該連結。",
 	"En partida local, pasar a mirar al jugador del turno": "本機對局中自動切換到目前回合的玩家",

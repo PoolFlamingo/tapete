@@ -47,7 +47,7 @@ const IDENTICAS_PERMITIDAS = new Set([
 	"Card Conjurer",
 	"tweakcn",
 	"Commander",
-	"Proxy Builder",
+	"Tapete",
 ]);
 
 const CATEGORIAS = new Set(["zero", "one", "two", "few", "many", "other"]);

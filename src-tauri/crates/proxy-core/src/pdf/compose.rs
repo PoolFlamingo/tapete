@@ -87,8 +87,8 @@ pub(crate) fn documento(meta: &PdfMeta) -> Document {
     doc.set_metadata(
         Metadata::new()
             .title(meta.title.clone())
-            .producer("Proxy Builder".to_string())
-            .creator("Proxy Builder".to_string())
+            .producer("Tapete".to_string())
+            .creator("Tapete".to_string())
             .document_id(meta.document_id.clone()),
     );
     doc

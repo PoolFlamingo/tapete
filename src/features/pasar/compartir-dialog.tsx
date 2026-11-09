@@ -69,7 +69,7 @@ function Contenido({ ids, onCerrar }: { ids: string[]; onCerrar: () => void }) {
 			const destino = await guardarParaExportar(
 				{
 					title: t("Guardar el deck"),
-					filters: [{ name: "Proxy Builder", extensions: ["pbdeck"] }],
+					filters: [{ name: "Tapete", extensions: ["pbdeck"] }],
 				},
 				nombreSeguro(uno.name, "pbdeck"),
 			);

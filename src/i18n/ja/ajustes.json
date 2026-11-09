@@ -77,7 +77,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "{version} の準備ができました。再起動時にインストールされます。",
 	"Instalando la {version}…": "{version} をインストール中…",
 	"Reiniciar y actualizar a la {version}": "再起動して {version} に更新",
-	"Descargando Proxy Builder {version}…": "Proxy Builder {version} をダウンロード中…",
+	"Descargando Tapete {version}…": "Tapete {version} をダウンロード中…",
 	"No se ha podido descargar la actualización.": "アップデートをダウンロードできませんでした。",
 	"La {version} está lista: reinicia desde Ajustes.": "{version} の準備ができました。設定から再起動してください。",
 	"Almacenamiento": "ストレージ",
@@ -92,6 +92,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "アプリの起動時に新しいバージョンを確認し、バックグラウンドでダウンロードします。インストールのたびに Android が確認を求めます。",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "{version} の準備ができました。インストールの確認が Android から求められます。",
 	"Instalar la {version}": "{version} をインストール",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "アップデートをインストールするには Android の許可が必要です。設定画面を開きました。Proxy Builder からのアプリのインストールを許可して戻り、もう一度「インストール」をタップしてください。",
-	"Descargado": "ダウンロード済み"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "アップデートをインストールするには Android の許可が必要です。設定画面を開きました。Tapete からのアプリのインストールを許可して戻り、もう一度「インストール」をタップしてください。",
+	"Descargado": "ダウンロード済み",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "ロゴとゲームアイコン：game-icons.net（CC BY 3.0）"
 }

@@ -81,7 +81,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "La {version} è pronta. Viene installata al riavvio.",
 	"Instalando la {version}…": "Installazione della {version}…",
 	"Reiniciar y actualizar a la {version}": "Riavvia e aggiorna alla {version}",
-	"Descargando Proxy Builder {version}…": "Download di Proxy Builder {version}…",
+	"Descargando Tapete {version}…": "Download di Tapete {version}…",
 	"No se ha podido descargar la actualización.": "Impossibile scaricare l'aggiornamento.",
 	"La {version} está lista: reinicia desde Ajustes.": "La {version} è pronta: riavvia dalle Impostazioni.",
 	"Almacenamiento": "Archiviazione",
@@ -96,6 +96,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "Cerca nuove versioni all'apertura dell'app e scaricale senza disturbare. Android ti chiederà di confermare ogni installazione.",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "La {version} è pronta. Android ti chiederà di confermare l'installazione.",
 	"Instalar la {version}": "Installa la {version}",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "Android ha bisogno del tuo permesso per installare l'aggiornamento: la sua impostazione è stata aperta. Consenti l'installazione di app da Proxy Builder, torna indietro e tocca di nuovo «Installa».",
-	"Descargado": "Scaricato"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android ha bisogno del tuo permesso per installare l'aggiornamento: la sua impostazione è stata aperta. Consenti l'installazione di app da Tapete, torna indietro e tocca di nuovo «Installa».",
+	"Descargado": "Scaricato",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo e icone di gioco: game-icons.net (CC BY 3.0)"
 }

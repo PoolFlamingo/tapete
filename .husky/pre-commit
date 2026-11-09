@@ -1,4 +1,4 @@
-# Gate previo al commit de Proxy Builder (el de judlex, adaptado a pnpm).
+# Gate previo al commit de Tapete (el de judlex, adaptado a pnpm).
 #
 # Es la red barata: si un commit tarda más de ~20 s aquí, algo se ha metido en
 # el sitio equivocado.

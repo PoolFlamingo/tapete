@@ -19,10 +19,7 @@ export function IdentidadRed() {
 	const filtros = () => [{ name: t("Identidad en red"), extensions: ["json"] }];
 
 	const exportar = async () => {
-		const destino = await guardarParaExportar(
-			{ filters: filtros() },
-			"identidad-proxy-builder.json",
-		);
+		const destino = await guardarParaExportar({ filters: filtros() }, "identidad-tapete.json");
 		if (!destino) return;
 		try {
 			await call("red_identidad_exportar", { ruta: destino });

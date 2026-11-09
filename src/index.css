@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   Sistema de temas de Proxy Builder (portado de judlex)
+   Sistema de temas de Tapete (portado de judlex)
    - Base (default) theme below in :root / .dark
    - Additional selectable themes live in src/themes.css and are
      applied via [data-theme="<name>"] on <html>.

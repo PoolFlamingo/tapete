@@ -1,4 +1,4 @@
-//! **Proxy Builder** — arranque de la aplicación.
+//! **Tapete** — arranque de la aplicación.
 //!
 //! Este fichero solo monta Tauri y registra los comandos de cada área
 //! (`commands/`). La lógica vive en su módulo o, si es determinista, en el
@@ -415,7 +415,7 @@ pub fn run() {
 
     if let Err(e) = resultado {
         // Sin ventana no hay dónde enseñarlo: a la salida de error y fuera.
-        eprintln!("Proxy Builder no ha podido arrancar: {e}");
+        eprintln!("Tapete no ha podido arrancar: {e}");
         std::process::exit(1);
     }
 }

@@ -81,7 +81,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "La {version} est prête. Elle s'installe au redémarrage.",
 	"Instalando la {version}…": "Installation de la {version}…",
 	"Reiniciar y actualizar a la {version}": "Redémarrer et passer à la {version}",
-	"Descargando Proxy Builder {version}…": "Téléchargement de Proxy Builder {version}…",
+	"Descargando Tapete {version}…": "Téléchargement de Tapete {version}…",
 	"No se ha podido descargar la actualización.": "Impossible de télécharger la mise à jour.",
 	"La {version} está lista: reinicia desde Ajustes.": "La {version} est prête : redémarrez depuis les Paramètres.",
 	"Almacenamiento": "Stockage",
@@ -96,6 +96,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "Rechercher les nouvelles versions à l'ouverture et les télécharger en arrière-plan. Android vous demandera de confirmer chaque installation.",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "La {version} est prête. Android vous demandera de confirmer l'installation.",
 	"Instalar la {version}": "Installer la {version}",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "Android a besoin de votre autorisation pour installer la mise à jour : son réglage vient de s'ouvrir. Autorisez l'installation d'applications depuis Proxy Builder, revenez et appuyez de nouveau sur « Installer ».",
-	"Descargado": "Téléchargé"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android a besoin de votre autorisation pour installer la mise à jour : son réglage vient de s'ouvrir. Autorisez l'installation d'applications depuis Tapete, revenez et appuyez de nouveau sur « Installer ».",
+	"Descargado": "Téléchargé",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo et icônes de jeu : game-icons.net (CC BY 3.0)"
 }

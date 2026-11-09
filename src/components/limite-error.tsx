@@ -16,7 +16,7 @@ export class LimiteError extends Component<{ children: ReactNode }, { error: Err
 	}
 
 	componentDidCatch(error: Error, info: unknown) {
-		console.error("Proxy Builder — error de interfaz:", error, info);
+		console.error("Tapete — error de interfaz:", error, info);
 	}
 
 	render() {

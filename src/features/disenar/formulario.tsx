@@ -873,7 +873,7 @@ export function EditorMarco({
 	const hayOriginal = packs.some((p) => p.id === ID_ORIGINAL);
 	const opciones = packs.map((p) => ({
 		valor: p.id,
-		etiqueta: p.importado ? p.nombre : t("Proxy Builder (de la casa)"),
+		etiqueta: p.importado ? p.nombre : t("Tapete (de la casa)"),
 	}));
 	// Los originales se ofrecen siempre; si no están, elegirlos los descarga.
 	if (!hayOriginal) opciones.push({ valor: ID_ORIGINAL, etiqueta: t("Original (descargar)") });

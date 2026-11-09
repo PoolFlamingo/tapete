@@ -11,7 +11,7 @@ en español**, mirando la inglesa para el contexto.
   comunidad (a menudo el término inglés: «deck», «token») y lo demás lo
   escribió el desarrollo. **Sin fuente oficial**: se aceptan correcciones.
 - No se traducen: Scryfall, Moxfield, Archidekt, MTGO, Arena, MTGJSON,
-  Cockatrice, Card Conjurer, tweakcn, Google Fonts, Proxy Builder, PDF, PNG,
+  Cockatrice, Card Conjurer, tweakcn, Google Fonts, Tapete, PDF, PNG,
   JPEG, WebP, TIFF, BMP, `.pbdeck`, los atajos de teclado ni los `{x}`.
 
 ## Tratamiento

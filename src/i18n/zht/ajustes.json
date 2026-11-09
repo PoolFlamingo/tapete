@@ -77,7 +77,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "{version} 已就緒，重新啟動時安裝。",
 	"Instalando la {version}…": "正在安裝 {version}…",
 	"Reiniciar y actualizar a la {version}": "重新啟動並更新至 {version}",
-	"Descargando Proxy Builder {version}…": "正在下載 Proxy Builder {version}…",
+	"Descargando Tapete {version}…": "正在下載 Tapete {version}…",
 	"No se ha podido descargar la actualización.": "無法下載更新。",
 	"La {version} está lista: reinicia desde Ajustes.": "{version} 已就緒：請從「設定」重新啟動。",
 	"Almacenamiento": "儲存空間",
@@ -92,6 +92,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "開啟應用程式時檢查新版本，並在背景悄悄下載。每次安裝前，Android 都會請你確認。",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "{version} 已就緒。Android 會請你確認安裝。",
 	"Instalar la {version}": "安裝 {version}",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "Android 需要你的許可才能安裝更新：已開啟相應設定。請允許 Proxy Builder 安裝應用程式，然後返回並再次點一下「安裝」。",
-	"Descargado": "已下載"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android 需要你的許可才能安裝更新：已開啟相應設定。請允許 Tapete 安裝應用程式，然後返回並再次點一下「安裝」。",
+	"Descargado": "已下載",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "標誌和遊戲圖示：game-icons.net（CC BY 3.0）"
 }

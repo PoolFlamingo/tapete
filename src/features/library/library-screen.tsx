@@ -109,7 +109,7 @@ export function LibraryScreen() {
 		const destino = await guardarParaExportar(
 			{
 				title: t("Exportar deck con sus imágenes"),
-				filters: [{ name: "Proxy Builder", extensions: ["pbdeck"] }],
+				filters: [{ name: "Tapete", extensions: ["pbdeck"] }],
 			},
 			nombreSeguro(d.name, "pbdeck"),
 		);
@@ -135,7 +135,7 @@ export function LibraryScreen() {
 				title: t("Importar deck"),
 				multiple: false,
 				directory: false,
-				filters: [{ name: "Proxy Builder", extensions: ["pbdeck"] }],
+				filters: [{ name: "Tapete", extensions: ["pbdeck"] }],
 			})
 		)?.[0];
 		if (!ruta) return;

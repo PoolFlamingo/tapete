@@ -46,7 +46,7 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 			"Ese es el código de «Recibir un deck» (empieza por PBD1-), no el de una partida.",
 		),
 		deck: paraTraducir("Elige un deck para jugar."),
-		identidad: paraTraducir("Ese fichero no es una identidad de Proxy Builder."),
+		identidad: paraTraducir("Ese fichero no es una identidad de Tapete."),
 	},
 	// Los de `crate::error::{red, estado_http}`: el porqué de un fallo de red.
 	Network: {
@@ -112,7 +112,7 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 		// Android: se ha abierto su ajuste de «instalar apps desconocidas»
 		// (`android::instalar_apk`).
 		instalar_permiso: paraTraducir(
-			"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.",
+			"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.",
 		),
 	},
 	// Los códigos del servidor de salas (`params.code`; `server/docs/protocolo.md`).

@@ -80,7 +80,7 @@
 	"La {version} está lista. Se instala al reiniciar.": "{version} is klaar. Wordt geïnstalleerd bij herstarten.",
 	"Instalando la {version}…": "{version} wordt geïnstalleerd…",
 	"Reiniciar y actualizar a la {version}": "Herstarten en bijwerken naar {version}",
-	"Descargando Proxy Builder {version}…": "Proxy Builder {version} wordt gedownload…",
+	"Descargando Tapete {version}…": "Tapete {version} wordt gedownload…",
 	"No se ha podido descargar la actualización.": "Kan de update niet downloaden.",
 	"La {version} está lista: reinicia desde Ajustes.": "{version} is klaar: herstart via Instellingen.",
 	"Almacenamiento": "Opslag",
@@ -95,6 +95,7 @@
 	"Buscar versiones nuevas al abrir la app y bajarlas sin molestar. Android te pedirá confirmar cada instalación.": "Bij het openen van de app naar nieuwe versies zoeken en ze ongemerkt downloaden. Android vraagt je elke installatie te bevestigen.",
 	"La {version} está lista. Android te pedirá confirmar la instalación.": "{version} is klaar. Android vraagt je de installatie te bevestigen.",
 	"Instalar la {version}": "{version} installeren",
-	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Proxy Builder, vuelve y pulsa «Instalar» otra vez.": "Android heeft je toestemming nodig om de update te installeren: de instelling is geopend. Sta toe dat Proxy Builder apps installeert, kom terug en tik opnieuw op «Installeren».",
-	"Descargado": "Gedownload"
+	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android heeft je toestemming nodig om de update te installeren: de instelling is geopend. Sta toe dat Tapete apps installeert, kom terug en tik opnieuw op «Installeren».",
+	"Descargado": "Gedownload",
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo en spelpictogrammen: game-icons.net (CC BY 3.0)"
 }

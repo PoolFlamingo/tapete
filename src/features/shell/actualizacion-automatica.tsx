@@ -63,7 +63,7 @@ export function useAvisosActualizacion() {
 			const info = s.info;
 			if (!info) return;
 			if (s.paso === "bajando" && (antes.paso !== "bajando" || s.progreso !== antes.progreso)) {
-				toast.loading(t("Descargando Proxy Builder {version}…", { version: info.version }), {
+				toast.loading(t("Descargando Tapete {version}…", { version: info.version }), {
 					id: ID_AVISO,
 					description: s.progreso !== null ? `${s.progreso} %` : undefined,
 				});
@@ -105,7 +105,7 @@ function avisar(
 	instalaElSistema: boolean,
 	{ t, mensaje }: ReturnType<typeof useLang>,
 ) {
-	toast.success(t("Proxy Builder {version} está lista", { version: info.version }), {
+	toast.success(t("Tapete {version} está lista", { version: info.version }), {
 		id: ID_AVISO,
 		duration: Number.POSITIVE_INFINITY,
 		description: instalaElSistema

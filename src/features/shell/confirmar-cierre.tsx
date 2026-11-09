@@ -111,7 +111,7 @@ export function ConfirmarCierre() {
 		<Confirmar
 			abierto={pend !== null}
 			onCerrar={cerrarDialogo}
-			titulo={t("¿Cerrar Proxy Builder?")}
+			titulo={t("¿Cerrar Tapete?")}
 			descripcion={t("Si cierras ahora, esto se pierde o se interrumpe:")}
 			accion={t("Cerrar igualmente")}
 			destructiva

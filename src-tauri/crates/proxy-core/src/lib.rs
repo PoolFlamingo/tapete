@@ -1,4 +1,4 @@
-//! **Núcleo puro de Proxy Builder.**
+//! **Núcleo puro de Tapete.**
 //!
 //! Todo lo determinista del producto vive aquí: el modelo de datos, las
 //! unidades, los formatos de papel, la geometría de página (`PagePlan`), el

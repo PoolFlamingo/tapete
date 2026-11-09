@@ -3,7 +3,7 @@
 //! - **Equipos cerca** (misma red local): quien abre «Recibir» se anuncia por
 //!   mDNS con su apodo (`Anuncio`) y quien abre «Enviar» ve la lista
 //!   (`Busqueda`). El servicio mDNS es propio (`pbdeck`), no el de iroh: solo
-//!   se ven entre sí las Proxy Builder que están esperando un deck, no cada
+//!   se ven entre sí las Tapete que están esperando un deck, no cada
 //!   app hecha con iroh ni los nodos de una partida. Los dos ven el mismo
 //!   código de 8 cifras (`cifras`), como al emparejar por Bluetooth, y quien
 //!   recibe lo acepta.
