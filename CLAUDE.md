@@ -700,6 +700,15 @@ le falta una cadena le sale la inglesa.
 - Releases: los hace Pablo (o Claude Code en su VS Code), no esta sesión.
   El texto de la release: `--notas "…"`, `--notas-fichero <ruta>` o
   `--sin-notas`; sin ninguno, abre `$EDITOR` (`scripts/release-notas.mjs`).
+- **Nombre: Tapete** (4.0.0, sin publicar; plan `plans/20261109 - tapete/`). Lo visible dice
+  «Tapete»; la identidad técnica se queda (tabla de invariantes del plan maestro: `identifier`,
+  ALPN, `PB1-`, `.pbdeck`, `proxybuilder://`, claves `proxybuilder.*`, crates…). El logo es el de
+  la web (`src-tauri/icons/icono.svg`, `game-icons:card-play`, CC BY 3.0, pide atribución): se
+  rehace con `cargo run -p proxy-core --example icono`, `pnpm tauri icon
+  src-tauri/icons/icono-1024.png` y `python3 scripts/icono.py`; en la pantalla, `<Logo>`
+  (`components/logo.tsx`). El `User-Agent` de toda petición es `tls::AGENTE`. Al cambiar de
+  nombre, el `.deb`/`.rpm` declaran que sustituyen a `proxy-builder` y el instalador de Windows
+  desinstala en silencio el viejo (`src-tauri/windows/hooks.nsh`).
 - Valores de fábrica (Pablo, 13/10/2026): 2 mm de separación en blanco,
   sangrado 0, guías de corte apagadas y «Rellenar las esquinas» apagado (lo
   transparente sale del color del papel; `corners::fill` solo si se activa).
