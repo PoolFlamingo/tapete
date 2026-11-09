@@ -179,7 +179,7 @@ le falta una cadena le sale la inglesa.
 
 | Para qué | Comando |
 |---|---|
-| Arrancar | `pnpm tauri dev` |
+| Arrancar | `pnpm tauri dev` (Vite en el **1520**, HMR en el 1521: el 1420 lo usa otro proyecto de Pablo; Pablo, 09/11/2026. `PB_PUERTO` lo cambia, con `--config '{"build":{"devUrl":"http://localhost:<puerto>"}}'`) |
 | Todo lo barato del frontend (tsc + vitest + biome + title + táctil + idiomas + iconos + knip) | `pnpm check` |
 | Rust: avisos (bloqueantes) | `pnpm check:clippy` |
 | Rust: formato | `pnpm check:rust-fmt` |
@@ -200,11 +200,15 @@ le falta una cadena le sale la inglesa.
   `rustfmt --edition 2021` a pelo, nunca `cargo fmt`.
 - Clippy con `-D warnings`; nada de `unwrap()`/`expect()` fuera de tests
   (`#![cfg_attr(not(test), deny(...))]`).
-- Usar siempre `codebase-memory-mcp` y reindexar el proyecto al cerrar cada
-  fase. 🛑 Para explorar código (buscar símbolos, llamadas, texto) van
-  `search_graph`, `search_code`, `trace_path` y `get_code_snippet`, **no**
-  `grep`/`rg`/`find` por Bash (Pablo, 20/10/2026); `grep` solo para lo que no
-  es código (configs, JSON, markdown) o si el grafo no devuelve nada.
+- 🛑 **Regla fundamental: `codebase-memory-mcp` para buscar código, en todas las
+  carpetas** (Pablo, 20/10 y 09/11/2026). Toda búsqueda de código (símbolos, llamadas,
+  texto) va primero por `search_graph`, `search_code`, `trace_path` y
+  `get_code_snippet`, **no** por `grep`/`rg`/`find` en Bash, y vale igual para las
+  cuatro carpetas del trabajo: la app (`tapete-app`), el wiki (`tapete.wiki`), los
+  packs (`tapete-app-packs`) y el servidor (`/home/estigio/Projects/Nextjs/tapete`).
+  Cada una tiene su índice; si una no está indexada (o el índice apunta a una ruta
+  vieja), se indexa antes de buscar. `grep` solo para lo que no es código (configs,
+  JSON, markdown) o si el grafo no devuelve nada. Se reindexa al cerrar cada fase.
 
 ## Mapa rápido
 
@@ -357,7 +361,9 @@ le falta una cadena le sale la inglesa.
   es solo de pantalla (`mesa/originales.rs`, `mesa_originales`). Con
   `RELE_PROPIO` puesto se usan el propio **y** los de n0 (`Relay::PropioYN0`).
   Identidad exportable/importable (`red_identidad_exportar/importar`, `Busy`
-  con partida o sala). Enlaces `proxybuilder://unirse/<código>` en
+  con partida o sala). Enlaces `proxybuilder://unirse/<código>` y, desde la
+  3.6.0, `tapete://unirse/<código>` (`enlace::ESQUEMAS`, los dos registrados; la app
+  sigue **generando** `proxybuilder://` hasta la 4.0.0) en
   `enlace.rs` (`tauri-plugin-deep-link` + single-instance, este solo sin
   `PB_PERFIL`; `rust-ini` fijado a 0.21.1 en `Cargo.lock`); el enlace solo
   rellena «Unirse con un código», unirse lo pulsa la persona.
@@ -425,7 +431,10 @@ le falta una cadena le sale la inglesa.
   `repeticion_*`, `features/mesa/repeticion.tsx`): la misma sesión en «solo
   mirar» con la partida de `Registro::en`, desde el final o desde la pestaña
   «Partidas» del deck (`library/partidas-deck.tsx`). Panel lateral con
-  Registro y Chat (`registro-panel.tsx`, `chat.tsx`); `Accion::Chat/Aviso/Senal`
+  Registro y Chat (`registro-panel.tsx`, `chat.tsx`; botón de emojis de EmojiMart,
+  `components/emoji/`: `Popover` en escritorio y `HojaMenu` en el móvil, en un trozo que
+  se carga al abrirlo; 🛑 sin internet: datos y traducción siempre del paquete, juego
+  `native`; el rumano va en inglés y los dos chinos con el `zh`); `Accion::Chat/Aviso/Senal`
   ya se usan (sin variantes nuevas: el catálogo no cambió). Sonidos
   sintetizados (`sonidos.ts`, `audio.ts`, por grupos en Ajustes). **Manos**
   (Pablo, 27/10/2026): la mano ajena se ve siempre como reversos del deck de
@@ -627,7 +636,7 @@ le falta una cadena le sale la inglesa.
     (estilos propios, condiciones por tipo/colores, escalado pixel,
     símbolos y etiquetas propios…) está en `docs/packs-de-marcos.md`. El
     trabajo del pack (PSD → capas, `source/convert.py` y `source/build.py`) es
-    ese repo, clonado al lado de este (`../proxy-builder-packs/`, Pablo,
+    ese repo, clonado al lado de este (`../tapete-app-packs/`, Pablo,
     19/10/2026; tiene sus propias sesiones), con carpetas y ficheros en
     inglés (`layers/`, `fonts/`, `symbols/`, `labels/`, `extras/{cards,tokens,backs,lands}`);
     los ids de estilo (`tierra`, `planeta`, `espectral`, `vale`) y las claves de
@@ -747,7 +756,7 @@ le falta una cadena le sale la inglesa.
 
 Se programa y se pasan los tests en la máquina de la nube (con WebKitGTK
 instalado para compilar el crate de la app), se sincroniza a
-`/home/estigio/Projects/Tauri/proxy-builder` y Pablo arranca la app en su
+`/home/estigio/Projects/Tauri/tapete-app` y Pablo arranca la app en su
 equipo. Los planes (`plans/`) no se versionan.
 
 - 🛑 **Los cambios llegan como ediciones sin commit** (Pablo, 14/10/2026): él
@@ -775,8 +784,9 @@ La documentación completa del proyecto vive en el wiki de GitHub
 (`https://github.com/PoolFlamingo/proxy-builder/wiki`), **en inglés (idioma de
 referencia) y en español**. Es un
 repo aparte (`PoolFlamingo/proxy-builder.wiki`) con su clon local en
-`/home/estigio/Projects/Tauri/proxy-builder.wiki/`, al lado de este y del de
-packs. No es lo mismo que `README.md`/`README.es.md` (la presentación) ni que
+`/home/estigio/Projects/Tauri/tapete.wiki/`, al lado de este y del de
+packs (`tapete-app-packs`). Las carpetas locales se renombraron; los repos de GitHub
+siguen con su nombre (`proxy-builder`, `proxy-builder.wiki`, `proxy-builder-packs`). No es lo mismo que `README.md`/`README.es.md` (la presentación) ni que
 `docs/packs-de-marcos.md`: el wiki es la referencia para entender, ampliar y
 rehacer la app.
 
