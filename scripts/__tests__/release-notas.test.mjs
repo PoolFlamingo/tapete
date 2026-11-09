@@ -89,7 +89,7 @@ describe("entrada de Android en latest.json", () => {
 		const r = JSON.parse(conAndroid(json, "2.4.0", "PoolFlamingo/proxy-builder", firma));
 		expect(r.platforms["android-aarch64"]).toEqual({
 			signature: "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZQ==",
-			url: "https://github.com/PoolFlamingo/proxy-builder/releases/download/v2.4.0/Proxy-Builder_2.4.0_android-arm64.apk",
+			url: "https://github.com/PoolFlamingo/proxy-builder/releases/download/v2.4.0/Tapete_2.4.0_android-arm64.apk",
 		});
 		expect(r.platforms["linux-x86_64-deb"]).toEqual({ signature: "x", url: "u" });
 		expect(r.notes).toBe("x");
@@ -108,7 +108,7 @@ describe("entrada de Android en latest.json", () => {
 	});
 
 	it("el nombre del APK lleva la versión y arm64", () => {
-		expect(nombreApk("3.2.4")).toBe("Proxy-Builder_3.2.4_android-arm64.apk");
+		expect(nombreApk("3.2.4")).toBe("Tapete_3.2.4_android-arm64.apk");
 	});
 });
 

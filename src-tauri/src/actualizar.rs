@@ -158,7 +158,7 @@ fn carpeta_apk(cache: &Path) -> PathBuf {
 }
 
 fn ruta_apk(cache: &Path, version: &str) -> PathBuf {
-    carpeta_apk(cache).join(format!("Proxy-Builder_{version}.apk"))
+    carpeta_apk(cache).join(format!("Tapete_{version}.apk"))
 }
 
 /// Con la feature `actualizar-local` (solo pruebas), el `latest.json` sale de
@@ -406,7 +406,7 @@ mod tests {
         assert_eq!(carpeta_apk(cache), Path::new("/cache/actualizacion"));
         assert_eq!(
             ruta_apk(cache, "3.2.4"),
-            Path::new("/cache/actualizacion/Proxy-Builder_3.2.4.apk")
+            Path::new("/cache/actualizacion/Tapete_3.2.4.apk")
         );
     }
 

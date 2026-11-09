@@ -88,8 +88,8 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: v__VERSION__
-          releaseName: "Proxy Builder v__VERSION__"
-          releaseBody: "Instaladores de Proxy Builder. Sin firma de código: ver el README."
+          releaseName: "Tapete v__VERSION__"
+          releaseBody: "Instaladores de Tapete (https://tapete.zodhub.app). Sin firma de código: ver el README."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -189,7 +189,7 @@ jobs:
             exit 1
           fi
           case "${APKS[0]}" in *unsigned*) echo "::error::El APK ha salido sin firmar: ${APKS[0]}"; exit 1;; esac
-          APK="Proxy-Builder_${VERSION}_android-arm64.apk"
+          APK="Tapete_${VERSION}_android-arm64.apk"
           cp "${APKS[0]}" "$APK"
           BT="${ANDROID_HOME}/build-tools/36.0.0"
           "$BT/apksigner" verify --print-certs "$APK"

@@ -2,7 +2,8 @@
 // preparar el texto del release. Aparte para poder probarlo (vitest).
 
 /** El texto que el workflow `release.yml` pone siempre; va al final de las notas. */
-export const TEXTO_FIJO = "Instaladores de Proxy Builder. Sin firma de código: ver el README.";
+export const TEXTO_FIJO =
+	"Instaladores de Tapete (https://tapete.zodhub.app). Sin firma de código: ver el README.";
 
 export const USO =
 	"Uso: pnpm release <patch|minor|major|X.Y.Z> [--dry] [--publicar]\n" +
@@ -91,7 +92,7 @@ export function notasDelActualizador(json, version, notas) {
 
 /** El APK de Android que sube el trabajo `android` de `release.yml` (solo arm64). */
 export function nombreApk(version) {
-	return `Proxy-Builder_${version}_android-arm64.apk`;
+	return `Tapete_${version}_android-arm64.apk`;
 }
 
 /** La clave de `latest.json` para el APK: `android-<arquitectura>` (`.target(…)` de `actualizar.rs`). */
