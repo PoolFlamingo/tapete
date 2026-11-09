@@ -123,7 +123,9 @@ impl Actualizador {
     }
 }
 
-/// Dónde están los instaladores de todas las versiones.
+/// Dónde están los instaladores de todas las versiones. Se queda con el nombre
+/// viejo del repo: al renombrarlo, GitHub redirige esta URL (se comprueba con
+/// `curl -I` en el paso del renombrado), y vale para cualquier versión.
 pub const PAGINA_DE_RELEASES: &str =
     "https://github.com/PoolFlamingo/proxy-builder/releases/latest";
 
@@ -436,9 +438,23 @@ mod tests {
         assert_eq!(conf["bundle"]["createUpdaterArtifacts"], true);
         let u = &conf["plugins"]["updater"];
         assert_eq!(u["requireSignedVersion"], true);
-        let fin = u["endpoints"][0].as_str().unwrap();
-        assert!(fin.starts_with("https://github.com/"));
-        assert!(fin.ends_with("/releases/latest/download/latest.json"));
+        // Primero el repo con el nombre nuevo y después el viejo: hasta que se
+        // renombre, el nuevo da 404 y el plugin pasa al siguiente; después, el
+        // viejo redirige. Así las copias de la 3.6.0 llegan a la 4.x pase lo
+        // que pase con el repo.
+        let fines: Vec<&str> = u["endpoints"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_str().unwrap())
+            .collect();
+        assert_eq!(
+            fines,
+            [
+                "https://github.com/PoolFlamingo/tapete/releases/latest/download/latest.json",
+                "https://github.com/PoolFlamingo/proxy-builder/releases/latest/download/latest.json",
+            ]
+        );
         let clave = base64::engine::general_purpose::STANDARD
             .decode(u["pubkey"].as_str().unwrap())
             .unwrap();
