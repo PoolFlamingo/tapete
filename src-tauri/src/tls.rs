@@ -16,8 +16,16 @@
 
 use crate::error::{AppError, AppResult, ErrorCode};
 
+/// El `User-Agent` de todas las peticiones de la app: Scryfall pide nombre y una forma de
+/// contacto, y lo ven también GitHub, Google Fonts y los demás sitios de `fuentes`.
+pub const AGENTE: &str = concat!(
+    "Tapete/",
+    env!("CARGO_PKG_VERSION"),
+    " (+https://tapete.zodhub.app)"
+);
+
 /// Un `reqwest::ClientBuilder` con el TLS de esta plataforma. Se usa así:
-/// `tls::reqwest(reqwest::Client::builder()).user_agent(…).build()`.
+/// `tls::reqwest(reqwest::Client::builder()).user_agent(tls::AGENTE).build()`.
 pub fn reqwest(b: reqwest::ClientBuilder) -> reqwest::ClientBuilder {
     #[cfg(mobile)]
     {

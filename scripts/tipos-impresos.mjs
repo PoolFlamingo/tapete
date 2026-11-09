@@ -36,7 +36,7 @@ const CATALOGOS = [
 const SEPARADOR = /\s*[—―～]\s*/u;
 
 const cabeceras = {
-	"User-Agent": "proxy-builder-tipos/1.0 (https://github.com/PoolFlamingo/proxy-builder)",
+	"User-Agent": "tapete-tipos/1.0 (+https://tapete.zodhub.app)",
 	Accept: "application/json",
 };
 

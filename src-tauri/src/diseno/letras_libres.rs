@@ -112,7 +112,7 @@ pub async fn descargar(state: &AppState, id: &str) -> AppResult<LetraLibre> {
         .ok_or_else(|| AppError::new(ErrorCode::NotFound).with("letra", id))?;
     let tengo: HashSet<String> = state.diseno.letras()?.into_iter().map(|l| l.id).collect();
     let http = crate::tls::reqwest(reqwest::Client::builder())
-        .user_agent(concat!("ProxyBuilder/", env!("CARGO_PKG_VERSION")))
+        .user_agent(crate::tls::AGENTE)
         .build()
         .map_err(crate::error::red)?;
     let bajar = |ruta: String, sha: String| {

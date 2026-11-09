@@ -497,7 +497,7 @@ pub async fn import_archidekt(url: String, include_sideboard: bool) -> AppResult
         .ok_or_else(|| AppError::new(ErrorCode::InvalidInput).with("motivo", "bad_url"))?;
     let api = format!("https://archidekt.com/api/decks/{id}/");
     let r = crate::tls::reqwest(reqwest::Client::builder())
-        .user_agent(concat!("ProxyBuilder/", env!("CARGO_PKG_VERSION")))
+        .user_agent(crate::tls::AGENTE)
         .build()
         .map_err(crate::error::red)?
         .get(&api)

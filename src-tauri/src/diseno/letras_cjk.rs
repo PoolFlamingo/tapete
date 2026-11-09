@@ -95,7 +95,7 @@ pub async fn descargar(state: &AppState, lang: DesignLang) -> AppResult<()> {
         return Ok(());
     }
     let http = crate::tls::reqwest(reqwest::Client::builder())
-        .user_agent(concat!("ProxyBuilder/", env!("CARGO_PKG_VERSION")))
+        .user_agent(crate::tls::AGENTE)
         .build()
         .map_err(crate::error::red)?;
     let url = |ruta: &str| {
@@ -149,7 +149,7 @@ mod tests {
         let c = catalogo().unwrap();
         let l = &c.letras[0];
         let http = crate::tls::reqwest(reqwest::Client::builder())
-            .user_agent("ProxyBuilder-test")
+            .user_agent("Tapete-test")
             .build()
             .unwrap();
         let url = format!(

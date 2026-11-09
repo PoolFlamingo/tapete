@@ -67,7 +67,7 @@ pub struct Scryfall {
 impl Scryfall {
     pub fn new() -> AppResult<Scryfall> {
         let http = crate::tls::reqwest(Client::builder())
-            .user_agent(concat!("ProxyBuilder/", env!("CARGO_PKG_VERSION")))
+            .user_agent(crate::tls::AGENTE)
             .timeout(Duration::from_secs(30))
             // Holgado: en Windows el TLS también pide la revocación del
             // certificado (hasta 10 s si la red la frena) dentro de este plazo.
