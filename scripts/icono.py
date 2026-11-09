@@ -1,40 +1,45 @@
-"""Genera el icono de la app (1024×1024) a partir de formas simples.
+"""Termina el icono de la app después de `tauri icon`.
 
-Diseño propio: dos cartas superpuestas en dorado sobre fondo oscuro, sin
-ninguna marca de terceros. Se ejecuta a mano cuando cambie el diseño:
+El logo es el de la web (`src-tauri/icons/icono.svg`: la mano que juega una carta,
+`game-icons:card-play`, CC BY 3.0, sobre el paño verde). Se rehace a mano cuando cambie:
 
-    python3 scripts/icono.py && pnpm tauri icon src-tauri/icons/icono-1024.png
+    (cd src-tauri && cargo run -p proxy-core --example icono)
+    pnpm tauri icon src-tauri/icons/icono-1024.png
+    python3 scripts/icono.py
+
+`tauri icon` pone en el primer plano del icono adaptable de Android el icono entero
+(con su cuadrado redondeado) sobre fondo blanco. Aquí el primer plano pasa a ser solo
+el dibujo (`icono-frente.svg`, dentro de la zona segura de 66 dp) y el fondo, el verde
+del paño. También quita `icons/ios/`, que la app no usa.
 """
+import re
+import shutil
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
-S = 1024
-img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-d = ImageDraw.Draw(img)
-# Fondo redondeado.
-d.rounded_rectangle((32, 32, S - 32, S - 32), radius=200, fill=(22, 20, 18, 255))
-oro = (214, 170, 72, 255)
-oro_osc = (150, 112, 40, 255)
+RAIZ = Path(__file__).resolve().parent.parent
+RES = RAIZ / "src-tauri/gen/android/app/src/main/res"
+VERDE = "#14532D"
+# Lado del primer plano adaptable (108 dp) en cada densidad.
+LADOS = {"mdpi": 108, "hdpi": 162, "xhdpi": 216, "xxhdpi": 324, "xxxhdpi": 432}
 
+frente = Image.open(RAIZ / "src-tauri/icons/icono-frente-1024.png").convert("RGBA")
+for densidad, lado in LADOS.items():
+    frente.resize((lado, lado), Image.LANCZOS).save(
+        RES / f"mipmap-{densidad}/ic_launcher_foreground.png"
+    )
 
-def carta(cx, cy, ang, relleno, borde):
-    w, h = 400, 560
-    c = Image.new("RGBA", (w + 40, h + 40), (0, 0, 0, 0))
-    cd = ImageDraw.Draw(c)
-    cd.rounded_rectangle((20, 20, w + 20, h + 20), radius=36, fill=relleno, outline=borde, width=14)
-    cd.rounded_rectangle((70, 80, w - 30, h - 220), radius=18, outline=borde, width=10)
-    for i in range(3):
-        y = h - 170 + i * 50
-        cd.rounded_rectangle((70, y, w - 30 - i * 60, y + 22), radius=11, fill=borde)
-    c = c.rotate(ang, resample=Image.BICUBIC, expand=True)
-    img.alpha_composite(c, (cx - c.width // 2, cy - c.height // 2))
+fondo = RES / "values/ic_launcher_background.xml"
+texto = fondo.read_text(encoding="utf-8")
+fondo.write_text(
+    re.sub(
+        r'(<color name="ic_launcher_background">)#[0-9A-Fa-f]+(</color>)',
+        rf"\g<1>{VERDE}\2",
+        texto,
+    ),
+    encoding="utf-8",
+)
 
-
-carta(450, 540, 12, (40, 34, 26, 255), oro_osc)
-carta(580, 500, -8, (30, 26, 22, 255), oro)
-
-out = Path(__file__).resolve().parent.parent / "src-tauri" / "icons" / "icono-1024.png"
-out.parent.mkdir(parents=True, exist_ok=True)
-img.save(out)
-print(out)
+shutil.rmtree(RAIZ / "src-tauri/icons/ios", ignore_errors=True)
+print("Icono adaptable de Android: primer plano y fondo puestos.")

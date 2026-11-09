@@ -102,12 +102,18 @@ export function SettingsDialog({
 				<DialogHeader>
 					<DialogTitle>{t("Ajustes")}</DialogTitle>
 					<DialogDescription className="flex flex-wrap items-center justify-between gap-2.5">
-						<span>{t("Idioma, aspecto, mesa de juego, actualizaciones y almacenamiento.")}</span>
+						<span className="flex flex-col gap-0.5">
+							<span>{t("Idioma, aspecto, mesa de juego, actualizaciones y almacenamiento.")}</span>
+							{/* La licencia del logo (CC BY 3.0) pide atribución visible. */}
+							<span className="text-[11px]">
+								{t("Logo e iconos de juego: game-icons.net (CC BY 3.0)")}
+							</span>
+						</span>
 						<span className="flex items-center gap-2">
 							<ReiniciarParaActualizar />
 							{version && (
 								<span className="rounded-md border px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
-									Proxy Builder {version}
+									Tapete {version}
 								</span>
 							)}
 						</span>

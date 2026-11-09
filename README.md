@@ -580,5 +580,7 @@ Apache 2.0; flags in the public domain) and the Japanese, Korean and Chinese
 fonts from Noto Sans CJK on [Google Fonts](https://fonts.google.com) (OFL 1.1), and the card and
 dice sounds of the game table from [Casino Audio](https://kenney.nl/assets/casino-audio) by
 [Kenney](https://kenney.nl) (CC0).
+The logo and app icon (the «card-play» icon) and the game icons of the interface come from
+[game-icons.net](https://game-icons.net) (CC BY 3.0).
 Magic: The Gathering is a trademark of Wizards of the Coast. This application is
 not affiliated with or endorsed by either.

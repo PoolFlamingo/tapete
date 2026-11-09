@@ -4,6 +4,7 @@ import { Confirmar } from "@/components/confirmar";
 import { Hoja } from "@/components/hoja";
 import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
+import { Logo } from "@/components/logo";
 import { ManijaRedimensionar } from "@/components/manija-redimensionar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
@@ -253,9 +254,9 @@ export function AppShell({
 				)}
 			>
 				<div className="flex items-center gap-2">
-					<Icono icon="lucide:layers" className="size-5 text-primary" />
+					<Logo />
 					<div className={cn("leading-tight", tableta && "hidden")}>
-						<div className="text-sm font-semibold">Proxy Builder</div>
+						<div className="text-sm font-semibold">Tapete</div>
 						<div className="hidden text-[10px] text-muted-foreground lg:block">
 							{t("Scryfall · listo para imprimir")}
 						</div>
