@@ -60,11 +60,11 @@
 	"plugins": {
 		"deep-link": {
 			"desktop": {
-				"schemes": ["proxybuilder"]
+				"schemes": ["proxybuilder", "tapete"]
 			},
 			"mobile": [
 				{
-					"scheme": ["proxybuilder"],
+					"scheme": ["proxybuilder", "tapete"],
 					"appLink": false
 				}
 			]

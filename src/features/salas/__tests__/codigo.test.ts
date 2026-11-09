@@ -13,6 +13,11 @@ describe("el código de una sala pegado", () => {
 		expect(codigoDeSala("  PROXYBUILDER://unirse/ABCDE12345?x=1#y  ")).toBe("ABCDE12345");
 		expect(codigoDeSala("proxybuilder://unirse/ABCDE-12345")).toBe("ABCDE-12345");
 	});
+	it("el enlace con el nombre nuevo también", () => {
+		expect(codigoDeSala("tapete://unirse/ABCDE12345")).toBe("ABCDE12345");
+		expect(codigoDeSala(" Tapete://unirse/ABCDE-12345?x=1 ")).toBe("ABCDE-12345");
+		expect(codigoDeSala("tapetes://unirse/ABCDE12345")).toBe("tapetes://unirse/ABCDE12345");
+	});
 	it("un código suelto se queda como está", () => {
 		expect(codigoDeSala("  ABCDE-12345 ")).toBe("ABCDE-12345");
 		expect(codigoDeSala("https://otra.cosa/ABCDE12345")).toBe("https://otra.cosa/ABCDE12345");
@@ -34,6 +39,7 @@ describe("el código de una sala pegado", () => {
 describe("el código de partida directa pegado", () => {
 	it("quita el principio del enlace y los espacios, y pone el prefijo en mayúsculas", () => {
 		expect(limpiarCodigoDirecto(" proxybuilder://unirse/pb1-AbC dEf\n")).toBe("PB1-AbCdEf");
+		expect(limpiarCodigoDirecto("tapete://unirse/pb1-AbCdEf")).toBe("PB1-AbCdEf");
 		expect(limpiarCodigoDirecto("pb1-xYz")).toBe("PB1-xYz");
 		expect(limpiarCodigoDirecto("PB1-xYz")).toBe("PB1-xYz");
 	});
