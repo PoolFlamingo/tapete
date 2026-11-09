@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schema.tauri.app/config/2",
-	"productName": "Proxy Builder",
+	"productName": "Tapete",
 	"version": "3.6.1",
 	"identifier": "com.estigio.proxybuilder",
 	"build": {
@@ -14,7 +14,7 @@
 			{
 				"label": "main",
 				"create": false,
-				"title": "Proxy Builder",
+				"title": "Tapete",
 				"width": 1440,
 				"height": 900,
 				"minWidth": 960,
@@ -43,7 +43,7 @@
 		"targets": "all",
 		"createUpdaterArtifacts": true,
 		"category": "Utility",
-		"shortDescription": "Decks proxy de Magic: The Gathering listos para imprimir",
+		"shortDescription": "Prepara, prueba y juega tus decks de Magic",
 		"icon": [
 			"icons/32x32.png",
 			"icons/128x128.png",
@@ -53,7 +53,19 @@
 		],
 		"linux": {
 			"deb": {
-				"depends": []
+				"depends": [],
+				"conflicts": ["proxy-builder"],
+				"replaces": ["proxy-builder"],
+				"provides": ["proxy-builder"]
+			},
+			"rpm": {
+				"conflicts": ["proxy-builder"],
+				"obsoletes": ["proxy-builder"]
+			}
+		},
+		"windows": {
+			"nsis": {
+				"installerHooks": "./windows/hooks.nsh"
 			}
 		}
 	},

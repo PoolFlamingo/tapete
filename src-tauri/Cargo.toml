@@ -1,7 +1,7 @@
 [package]
 name = "proxy-builder"
 version = "3.6.1"
-description = "Proxy Builder — decks proxy de Magic: The Gathering listos para imprimir"
+description = "Tapete — prepara, prueba y juega tus decks de Magic"
 authors = ["Pablo"]
 edition = "2021"
 rust-version = "1.92"

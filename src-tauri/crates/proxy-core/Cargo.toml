@@ -3,7 +3,7 @@ name = "proxy-core"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.92"
-description = "Núcleo puro de Proxy Builder: modelo, geometría de página, parser de listas, imagen y PDF"
+description = "Núcleo puro de Tapete: modelo, geometría de página, parser de listas, imagen y PDF"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
