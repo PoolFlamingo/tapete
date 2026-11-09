@@ -3,6 +3,8 @@ import { useShallow } from "zustand/react/shallow";
 import type { IdJugador } from "@/bindings/IdJugador";
 import type { Senal } from "@/bindings/Senal";
 import { AyudaAlTocar } from "@/components/ayuda-al-tocar";
+import { BotonEmoji } from "@/components/emoji/boton-emoji";
+import { insertarEnCursor } from "@/components/emoji/insertar";
 import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { WithTooltip } from "@/components/ui/with-tooltip";
+import { formatoActual } from "@/lib/formato";
 import { localeDe } from "@/lib/idiomas";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/stores/chat-store";
@@ -47,6 +50,9 @@ export function ChatPanel() {
 	const [texto, setTexto] = useState("");
 	const final = useRef<HTMLDivElement>(null);
 	const campo = useRef<HTMLInputElement>(null);
+	/** Dónde estaba el cursor al dejar el campo: sin el foco, el WebView de
+	 *  Android lo lleva al final al cambiar el texto. */
+	const cursor = useRef<{ inicio: number | null; fin: number | null } | null>(null);
 	const mensajes = useMemo(() => mensajesDeChat(registro, silenciados), [registro, silenciados]);
 	const hora = useMemo(
 		() => new Intl.DateTimeFormat(localeDe(lang), { hour: "2-digit", minute: "2-digit" }),
@@ -69,6 +75,25 @@ export function ChatPanel() {
 		const limpio = texto.trim();
 		if (!limpio || !puedeEscribir) return;
 		void hacer({ que: "chat", texto: limpio }).then((ok) => ok && setTexto(""));
+	};
+	/** El emoji va donde estaba el cursor (o sustituye lo seleccionado). */
+	const ponerEmoji = (emoji: string) => {
+		const el = campo.current;
+		const conFoco = el !== null && document.activeElement === el;
+		const sel = conFoco
+			? { inicio: el.selectionStart, fin: el.selectionEnd }
+			: (cursor.current ?? { inicio: null, fin: null });
+		const r = insertarEnCursor(texto, sel.inicio, sel.fin, emoji, MAX_CHAT);
+		if (!r) return;
+		setTexto(r.texto);
+		cursor.current = { inicio: r.cursor, fin: r.cursor };
+		requestAnimationFrame(() => {
+			const c = campo.current;
+			if (!c) return;
+			// En el móvil no se devuelve el foco: abriría el teclado encima.
+			if (!formatoActual().tactil) c.focus();
+			c.setSelectionRange(r.cursor, r.cursor);
+		});
 	};
 
 	return (
@@ -180,6 +205,12 @@ export function ChatPanel() {
 							placeholder={t("Escribe un mensaje…")}
 							aria-label={t("Escribe un mensaje…")}
 							onChange={(e) => setTexto(e.target.value)}
+							onBlur={(e) => {
+								cursor.current = {
+									inicio: e.currentTarget.selectionStart,
+									fin: e.currentTarget.selectionEnd,
+								};
+							}}
 							onKeyDown={(e) => {
 								if (e.key === "Enter") {
 									e.preventDefault();
@@ -189,6 +220,7 @@ export function ChatPanel() {
 								}
 							}}
 						/>
+						<BotonEmoji alElegir={ponerEmoji} />
 						<Button size="icon" onClick={enviar} disabled={!texto.trim()} aria-label={t("Enviar")}>
 							<Icono icon="lucide:send" className="size-4" />
 						</Button>
