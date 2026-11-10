@@ -754,6 +754,13 @@ le falta una cadena le sale la inglesa.
   `ANDROID_KEY_ALIAS`/`ANDROID_KEY_PASSWORD`/`ANDROID_KEY_BASE64`; los comandos, en
   `plans/20261025 - version-movil/lista-de-pablo.md`) es tan insustituible como la del actualizador:
   un APK firmado con otra no se instala encima y desinstalar borra la biblioteca.
+  🛑 **Una dependencia de Android nueva se prueba con el APK de release, no con el de `android dev`**
+  (Pablo, 10/11/2026): la release pasa por R8 en modo completo (AGP 9), donde un `-keep class X` ya no
+  conserva el constructor, y lo que una librería crea por reflexión desaparece. La 4.0.0 se cerraba al
+  abrirse por el `WorkDatabase_Impl()` de WorkManager. Reglas en `plugins/android-extra/android/consumer-rules.pro`
+  (lo del plugin) y `gen/android/app/proguard-rules.pro` (ML Kit). Probar: `pnpm tauri android build --apk
+  --target x86_64`, `zipalign` + `apksigner` con `~/.android/debug.keystore`, instalar en el emulador y mirar
+  `adb logcat` (`FATAL`, `NoSuchMethodException`, `ComponentDiscovery`).
 - **Amigos y mensajes** (Pablo, 09/11/2026; plan `plans/20261109 - tapete/`, Fase D): el servidor de Tapete
   (`/home/estigio/Projects/Nextjs/tapete`, Next.js + SurrealDB; su contrato en `docs/api.md`) solo guarda
   claves públicas, amistades y mensajes **cifrados**: nunca ve el texto. Nada se llama sin aceptar antes

@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# ML Kit (el lector de QR de `tauri-plugin-barcode-scanner`) crea sus piezas por reflexión con el
+# constructor vacío (`ComponentDiscovery`). En el modo completo de R8 su `-keep` sin constructor no
+# basta: en la release el escáner se quedaba sin ellas.
+-keep class * implements com.google.firebase.components.ComponentRegistrar { <init>(); }

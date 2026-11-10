@@ -22,3 +22,9 @@
 # del método no pueden cambiar.
 -keep class com.estigio.proxybuilder.extra.Nativo { *; }
 -keep class com.estigio.proxybuilder.extra.AvisosAmigos { *; }
+
+# WorkManager guarda su cola en una base de datos de Room y la crea por reflexión
+# (`WorkDatabase_Impl()`) al arrancar el proceso (`androidx.startup.InitializationProvider`).
+# Room solo pide `-keep class * extends RoomDatabase`, que en el modo completo de R8 (el de AGP 9)
+# ya no conserva el constructor: la release 4.0.0 se cerraba nada más abrirse. Hay que conservarlo.
+-keep class * extends androidx.room.RoomDatabase { <init>(); }
