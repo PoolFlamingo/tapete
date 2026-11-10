@@ -1,6 +1,6 @@
 [package]
 name = "proxy-builder"
-version = "4.0.2"
+version = "4.0.3"
 description = "Tapete — prepara, prueba y juega tus decks de Magic"
 authors = ["Pablo"]
 edition = "2021"
