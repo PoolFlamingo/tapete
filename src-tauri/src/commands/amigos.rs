@@ -43,6 +43,9 @@ pub fn amigos_estado(state: State<'_, AppState>) -> EstadoAmigos {
 pub async fn amigos_activar(app: AppHandle) -> AppResult<EstadoAmigos> {
     let st = app.state::<AppState>();
     settings::set(&st.db, ACTIVO, "1")?;
+    // Con la app cerrada, los avisos los da el sistema (D4b): el permiso se pide ahora, al
+    // aceptar usar el servidor, y no antes.
+    crate::android::pedir_permiso_avisos(&app);
     sincronizar::arrancar(app.clone());
     if let Err(e) = sincronizar::sincronizar(&app).await {
         let mut actual = estado_inicial(&st);
@@ -75,6 +78,9 @@ pub async fn amigos_desactivar(
         }
     }
     settings::set(&st.db, ACTIVO, "0")?;
+    if let Err(e) = crate::android::avisos_amigos(&app, None) {
+        tracing::info!(codigo = ?e.code, "amigos: no se pudieron cancelar los avisos");
+    }
     if borrar_local {
         almacen::borrar_todo(&st.db)?;
     }
@@ -336,7 +342,13 @@ pub fn amigos_ritmo(state: State<'_, AppState>, chat_abierto: bool) {
 
 /// Los textos de los avisos del sistema, ya traducidos (Rust no escribe prosa).
 #[tauri::command]
-pub fn amigos_textos(textos: TextosAvisos) {
+pub fn amigos_textos(st: State<'_, AppState>, textos: TextosAvisos) {
+    // También para los avisos con la app cerrada (`amigos::fondo`), que no tienen la pantalla.
+    if cfg!(target_os = "android") {
+        if let Err(e) = crate::amigos::fondo::guardar_textos(&st.paths.data, &textos) {
+            tracing::info!(codigo = ?e.code, "amigos: no se guardaron los textos de los avisos");
+        }
+    }
     avisar::poner_textos(textos);
 }
 

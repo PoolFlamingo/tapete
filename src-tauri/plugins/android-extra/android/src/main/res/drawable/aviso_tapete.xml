@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- El icono pequeño de los avisos (barra de estado): una carta con un bocadillo, en un solo
+     color, como pide Android. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M6,2h9a2,2 0,0 1,2 2v4h-2V4H6v16h5v2H6a2,2 0,0 1,-2 -2V4a2,2 0,0 1,2 -2zM13,10h8a1,1 0,0 1,1 1v6a1,1 0,0 1,-1 1h-4l-3,3v-3h-1a1,1 0,0 1,-1 -1v-6a1,1 0,0 1,1 -1z" />
+</vector>

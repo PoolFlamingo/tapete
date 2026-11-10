@@ -193,6 +193,37 @@ fn sin_dominio(nombre: &str) -> Option<String> {
     (!corto.is_empty() && !corto.eq_ignore_ascii_case("localhost")).then(|| corto.to_string())
 }
 
+/// Avisos de mensajes con la app cerrada (WorkManager): con `datos` (la carpeta de datos, donde
+/// están la identidad y `amigos/`) los programa; con `None` los cancela. En escritorio, nada: con
+/// la app cerrada no hay nada que avisar.
+#[cfg(target_os = "android")]
+pub fn avisos_amigos(app: &AppHandle, datos: Option<&Path>) -> AppResult<()> {
+    plugin(app).avisos_amigos(datos).map_err(de_plugin)
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn avisos_amigos(_app: &AppHandle, _datos: Option<&Path>) -> AppResult<()> {
+    Ok(())
+}
+
+/// Pide permiso para enseñar avisos (Android 13+), si aún no se ha decidido.
+#[cfg(target_os = "android")]
+pub fn pedir_permiso_avisos(app: &AppHandle) {
+    use tauri_plugin_notification::{NotificationExt, PermissionState};
+    let n = app.notification();
+    if matches!(
+        n.permission_state(),
+        Ok(PermissionState::Prompt | PermissionState::PromptWithRationale)
+    ) {
+        if let Err(e) = n.request_permission() {
+            tracing::info!("avisos: no se pudo pedir el permiso: {e}");
+        }
+    }
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn pedir_permiso_avisos(_app: &AppHandle) {}
+
 /// El Android Keystore, para que la clave de la identidad no se pueda usar fuera de
 /// este móvil.
 #[cfg(target_os = "android")]

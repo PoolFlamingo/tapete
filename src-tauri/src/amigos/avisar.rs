@@ -4,11 +4,11 @@
 //! Rust no escribe prosa: la pantalla le pasa los textos ya traducidos con `t()`
 //! (`amigos_textos`, al arrancar y al cambiar de idioma) y aquí solo se pone el apodo.
 //! En el escritorio, la notificación del sistema; en Android, la del plugin (con la app abierta;
-//! con la app cerrada, el `sync` periódico de WorkManager, aparte).
+//! con la app cerrada, el `sync` periódico de WorkManager, aparte: `fondo.rs`).
 
 use std::sync::Mutex;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tauri_plugin_notification::NotificationExt;
 use ts_rs::TS;
@@ -17,7 +17,7 @@ use crate::state::AppState;
 use crate::store::amigos as almacen;
 
 /// Los textos de los avisos, ya traducidos. `{apodo}` se cambia por el del amigo.
-#[derive(Debug, Clone, Default, Deserialize, TS)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export)]
 pub struct TextosAvisos {

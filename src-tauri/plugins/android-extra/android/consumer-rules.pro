@@ -18,4 +18,7 @@
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+#-renamesourcefileattribute SourceFile# `Nativo.comprobar` lo implementa Rust por JNI (`amigos/fondo.rs`): el nombre de la clase y
+# del método no pueden cambiar.
+-keep class com.estigio.proxybuilder.extra.Nativo { *; }
+-keep class com.estigio.proxybuilder.extra.AvisosAmigos { *; }

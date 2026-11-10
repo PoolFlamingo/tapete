@@ -342,6 +342,10 @@ pub fn arrancar(app: AppHandle) {
     if !activo(&st) || st.amigos.en_marcha.swap(true, Ordering::SeqCst) {
         return;
     }
+    // Con la app cerrada, WorkManager (D4b). Programarlo otra vez no lo duplica.
+    if let Err(e) = crate::android::avisos_amigos(&app, Some(&st.paths.data)) {
+        tracing::info!(codigo = ?e.code, "amigos: no se programaron los avisos en segundo plano");
+    }
     tauri::async_runtime::spawn(async move {
         let mut fallos: u32 = 0;
         let mut espera = Duration::ZERO;

@@ -12,6 +12,8 @@
 //! - `compartir_texto`: `ACTION_SEND` de un texto.
 //! - `cofre_sellar`, `cofre_abrir`: AES-GCM con una clave del Android Keystore.
 //! - Abrir un fichero desde otra app (`ACTION_VIEW`): la URI llega aquí.
+//! - `avisos_amigos`: programa o cancela el `Worker` de WorkManager (`AvisosAmigos.kt`) que
+//!   avisa de mensajes con la app cerrada; llama por JNI a `amigos::fondo` de la app.
 //!
 //! En escritorio y en iOS el plugin se registra sin hacer nada.
 

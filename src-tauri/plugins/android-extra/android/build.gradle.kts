@@ -29,5 +29,7 @@ kotlin {
 dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.0")
+    // Los avisos de mensajes con la app cerrada (`AvisosAmigos.kt`).
+    implementation("androidx.work:work-runtime:2.10.1")
     implementation(project(":tauri-android"))
 }

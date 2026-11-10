@@ -63,8 +63,57 @@ class UriArgs {
 }
 
 @InvokeArg
+class AvisosArgs {
+    /** La carpeta de datos de la app; sin ella, se cancelan. */
+    var datos: String? = null
+}
+
+@InvokeArg
 class EscuchaArgs {
     lateinit var handler: Channel
+}
+
+/**
+ * El cofre de la identidad: AES-GCM con una clave del Android Keystore que nunca sale de él. Lo
+ * usan el plugin (`cofreSellar`, `cofreAbrir`) y los avisos con la app cerrada (`AvisosAmigos`).
+ * 🛑 `ALIAS_COFRE` no se cambia nunca: con otro alias la identidad sellada no se abriría.
+ */
+internal object Cofre {
+    private const val ALMACEN = "AndroidKeyStore"
+    const val ALIAS_COFRE = "proxy-builder-identidad"
+    private const val CIFRADO = "AES/GCM/NoPadding"
+    private const val LARGO_IV = 12
+
+    /** La clave AES del Android Keystore: se crea la primera vez y nunca sale de él. */
+    private fun clave(): SecretKey {
+        val almacen = KeyStore.getInstance(ALMACEN).apply { load(null) }
+        (almacen.getKey(ALIAS_COFRE, null) as? SecretKey)?.let { return it }
+        val generador = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ALMACEN)
+        generador.init(
+            KeyGenParameterSpec.Builder(
+                ALIAS_COFRE,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+            )
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setKeySize(256)
+                .build(),
+        )
+        return generador.generateKey()
+    }
+
+    /** Devuelve el IV (12 bytes) seguido del cifrado. */
+    fun sellar(claro: ByteArray): ByteArray {
+        val cifrador = Cipher.getInstance(CIFRADO)
+        cifrador.init(Cipher.ENCRYPT_MODE, clave())
+        return cifrador.iv + cifrador.doFinal(claro)
+    }
+
+    fun abrir(sellado: ByteArray): ByteArray {
+        val cifrador = Cipher.getInstance(CIFRADO)
+        cifrador.init(Cipher.DECRYPT_MODE, clave(), GCMParameterSpec(128, sellado, 0, LARGO_IV))
+        return cifrador.doFinal(sellado, LARGO_IV, sellado.size - LARGO_IV)
+    }
 }
 
 /**
@@ -75,13 +124,6 @@ class EscuchaArgs {
  */
 @TauriPlugin
 class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
-    private companion object {
-        const val ALMACEN = "AndroidKeyStore"
-        const val ALIAS_COFRE = "proxy-builder-identidad"
-        const val CIFRADO = "AES/GCM/NoPadding"
-        const val LARGO_IV = 12
-    }
-
     private var multicastLock: WifiManager.MulticastLock? = null
     private var canal: Channel? = null
 
@@ -136,24 +178,6 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
 
     // ── El cofre ────────────────────────────────────────────────────────
 
-    /** La clave AES del Android Keystore: se crea la primera vez y nunca sale de él. */
-    private fun claveDelCofre(): SecretKey {
-        val almacen = KeyStore.getInstance(ALMACEN).apply { load(null) }
-        (almacen.getKey(ALIAS_COFRE, null) as? SecretKey)?.let { return it }
-        val generador = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ALMACEN)
-        generador.init(
-            KeyGenParameterSpec.Builder(
-                ALIAS_COFRE,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
-            )
-                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                .setKeySize(256)
-                .build(),
-        )
-        return generador.generateKey()
-    }
-
     private fun resolverDatos(invoke: Invoke, bytes: ByteArray) {
         invoke.resolve(JSObject().apply { put("datos", Base64.encodeToString(bytes, Base64.NO_WRAP)) })
     }
@@ -163,10 +187,7 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
     fun cofreSellar(invoke: Invoke) {
         try {
             val args = invoke.parseArgs(DatosArgs::class.java)
-            val cifrador = Cipher.getInstance(CIFRADO)
-            cifrador.init(Cipher.ENCRYPT_MODE, claveDelCofre())
-            val cifrado = cifrador.doFinal(Base64.decode(args.datos, Base64.NO_WRAP))
-            resolverDatos(invoke, cifrador.iv + cifrado)
+            resolverDatos(invoke, Cofre.sellar(Base64.decode(args.datos, Base64.NO_WRAP)))
         } catch (ex: Exception) {
             invoke.reject(ex.message ?: "no se pudo sellar")
         }
@@ -176,14 +197,7 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
     fun cofreAbrir(invoke: Invoke) {
         try {
             val args = invoke.parseArgs(DatosArgs::class.java)
-            val sellado = Base64.decode(args.datos, Base64.NO_WRAP)
-            val cifrador = Cipher.getInstance(CIFRADO)
-            cifrador.init(
-                Cipher.DECRYPT_MODE,
-                claveDelCofre(),
-                GCMParameterSpec(128, sellado, 0, LARGO_IV),
-            )
-            resolverDatos(invoke, cifrador.doFinal(sellado, LARGO_IV, sellado.size - LARGO_IV))
+            resolverDatos(invoke, Cofre.abrir(Base64.decode(args.datos, Base64.NO_WRAP)))
         } catch (ex: Exception) {
             invoke.reject(ex.message ?: "no se pudo abrir")
         }
@@ -333,6 +347,19 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
         }
         salida.put("nombre", propio?.takeIf { it.isNotBlank() } ?: modelo)
         invoke.resolve(salida)
+    }
+
+    // ── Avisos de mensajes con la app cerrada ───────────────────────────
+
+    @Command
+    fun avisosAmigos(invoke: Invoke) {
+        try {
+            val args = invoke.parseArgs(AvisosArgs::class.java)
+            AvisosAmigos.programar(activity.applicationContext, args.datos)
+            invoke.resolve()
+        } catch (ex: Exception) {
+            invoke.reject(ex.message ?: "no se pudieron programar los avisos")
+        }
     }
 
     // ── Abrir un fichero desde otra app ─────────────────────────────────

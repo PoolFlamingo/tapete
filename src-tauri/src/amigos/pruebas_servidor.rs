@@ -152,3 +152,66 @@ async fn dos_equipos_se_hacen_amigos_y_se_escriben_cifrado() {
     c.borrarme(&ana).await.unwrap();
     c.borrarme(&bea).await.unwrap();
 }
+
+/// Los avisos con la app cerrada (D4b): avisan una vez, sin el texto, y no se llevan nada (los
+/// mensajes siguen ahí para cuando se abra la app).
+#[tokio::test]
+#[ignore]
+async fn la_comprobacion_en_segundo_plano_avisa_una_vez_y_no_recoge_nada() {
+    let c = Cliente::nuevo(base()).unwrap();
+    let ana = identidad();
+    let bea = identidad();
+    alta(&c, &ana, "Ana fondo").await;
+    let codigo_bea = alta(&c, &bea, "Bea fondo").await;
+    c.pedir_amistad(&ana, &codigo_bea).await.unwrap();
+    let s = c.sync(&bea, None).await.unwrap();
+    c.responder(&bea, &s.requests.incoming[0].id, true)
+        .await
+        .unwrap();
+    let s = c.sync(&ana, None).await.unwrap();
+    let amiga = s.friends[0].clone();
+    let para = cifrado::clave_de_amigo(
+        &amiga.key,
+        &amiga.encryption_key,
+        &amiga.encryption_key_signature,
+    )
+    .unwrap();
+    let datos = cifrado::cerrar(
+        &ana,
+        &para,
+        &Carta {
+            contenido: Contenido::Texto {
+                texto: "no debe salir en el aviso".into(),
+            },
+            enviado: 1,
+        },
+    )
+    .unwrap();
+    c.mandar(&ana, &amiga.key, &datos, &format!("{:032x}", 7))
+        .await
+        .unwrap();
+
+    let dir = tempfile::tempdir().unwrap();
+    super::fondo::guardar_textos(
+        dir.path(),
+        &super::avisar::TextosAvisos {
+            titulo: "Tapete".into(),
+            mensaje_de: "Mensaje de {apodo}".into(),
+            invitacion_de: "{apodo} te invita".into(),
+        },
+    )
+    .unwrap();
+    let avisos = super::fondo::comprobar(dir.path(), &bea).await.unwrap();
+    assert_eq!(avisos.len(), 1);
+    assert_eq!(avisos[0].cuerpo, "Mensaje de Ana fondo");
+    // La siguiente vuelta no repite.
+    assert!(super::fondo::comprobar(dir.path(), &bea)
+        .await
+        .unwrap()
+        .is_empty());
+    // Y el mensaje sigue en el servidor para la app.
+    assert_eq!(c.sync(&bea, None).await.unwrap().messages.len(), 1);
+
+    c.borrarme(&ana).await.unwrap();
+    c.borrarme(&bea).await.unwrap();
+}

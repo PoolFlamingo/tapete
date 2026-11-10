@@ -52,6 +52,12 @@ struct Datos {
     datos: String,
 }
 
+/// La carpeta de datos de la app, o `None` para cancelar.
+#[derive(Serialize)]
+struct Avisos<'a> {
+    datos: Option<&'a str>,
+}
+
 #[derive(Deserialize)]
 struct Nombre {
     nombre: Option<String>,
@@ -140,6 +146,18 @@ impl<R: Runtime> AndroidExtra<R> {
     pub fn nombre_equipo(&self) -> Resultado<Option<String>> {
         let r: Nombre = self.0.run_mobile_plugin("nombreEquipo", ())?;
         Ok(r.nombre.filter(|n| !n.is_empty()))
+    }
+
+    /// Programa (con la carpeta de datos de la app) o cancela (`None`) la comprobación de
+    /// mensajes con la app cerrada (`AvisosAmigos.kt`, WorkManager cada ~15 min).
+    pub fn avisos_amigos(&self, datos: Option<&Path>) -> Resultado<()> {
+        let datos = datos.map(|d| d.to_string_lossy());
+        self.0.run_mobile_plugin(
+            "avisosAmigos",
+            Avisos {
+                datos: datos.as_deref(),
+            },
+        )
     }
 
     /// Avisa de cada fichero que otra app abre con esta (`ACTION_VIEW`),

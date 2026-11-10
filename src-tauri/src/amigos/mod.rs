@@ -7,6 +7,8 @@
 //!   seguridad.
 //! - `cliente.rs`: las rutas del API.
 //! - `sincronizar.rs`: el bucle de `sync` y lo que hace con cada respuesta.
+//! - `avisar.rs`: el aviso del sistema con la app abierta; `fondo.rs`, con la app cerrada
+//!   (Android, WorkManager).
 //!
 //! 🛑 **Nada sale hacia el servidor sin consentimiento** (D0): hasta que la persona entra en
 //! «Amigos» y acepta (`amigos_activar`), la app no lo llama; al salir (`amigos_desactivar`) deja
@@ -17,6 +19,7 @@ pub mod avisar;
 pub mod cifrado;
 pub mod cliente;
 pub mod firma;
+pub mod fondo;
 pub mod sincronizar;
 
 #[cfg(test)]
