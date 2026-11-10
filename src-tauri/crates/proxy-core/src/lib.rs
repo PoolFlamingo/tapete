@@ -19,6 +19,7 @@ pub mod layout;
 pub mod model;
 pub mod paper;
 pub mod pdf;
+pub mod sello;
 pub mod stats;
 pub mod units;
 

@@ -2,6 +2,7 @@
 import type { BleedMode } from "./BleedMode";
 import type { CardEdits } from "./CardEdits";
 import type { CardSize } from "./CardSize";
+import type { DesignLang } from "./DesignLang";
 import type { EdgeDarkening } from "./EdgeDarkening";
 
 /**
@@ -12,4 +13,9 @@ export type PreviewParams = { edits: CardEdits,
  * Los ajustes de oscurecido del deck; Rust decide si aplican a esta
  * imagen (por su origen y por ser dorso), igual que al exportar.
  */
-edge: EdgeDarkening, back: boolean, bleedMm: number, bleedMode: BleedMode, fillCorners: boolean, card: CardSize, };
+edge: EdgeDarkening, back: boolean, bleedMm: number, bleedMode: BleedMode, fillCorners: boolean, card: CardSize, 
+/**
+ * Pintar el sello de Tapete en este idioma: solo lo pide la vista previa de las hojas
+ * (con el idioma de la casilla, `Slot.sello`); el editor, las listas y la mesa no.
+ */
+sello?: DesignLang, };

@@ -36,6 +36,11 @@ pub struct RenderSpec {
     /// la 2.0). `blob` lleva entonces la miniatura, que no se usa.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub diseno: Option<DisenoRef>,
+    /// Pintar el sello de Tapete en este idioma (miniaturas de las hojas e imágenes
+    /// exportadas). En el PDF va `None`: allí el sello es texto encima (`pdf::sello`) y el
+    /// JPEG puede seguir pasando tal cual. Sin sello no entra en la clave: las de antes valen.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sello: Option<crate::diseno::modelo::DesignLang>,
 }
 
 /// Qué diseño pintar en una casilla: su huella (diseño efectivo + recursos),
@@ -108,7 +113,7 @@ impl Rendered {
 
 /// ¿Se puede incrustar el original sin tocarlo?
 fn passthrough(bytes: &[u8], s: &RenderSpec) -> bool {
-    if s.bleed_mm > 0.0 || !s.edits.is_identity() || s.edge.is_some() {
+    if s.bleed_mm > 0.0 || !s.edits.is_identity() || s.edge.is_some() || s.sello.is_some() {
         return false;
     }
     if !matches!(s.target, SpecTarget::Dpi(_)) {
@@ -131,7 +136,14 @@ pub fn render_desde_imagen(img: &RgbaImage, s: &RenderSpec) -> Result<Rendered, 
     let (tw, _) = img.dimensions();
     let px_mm = px_por_mm(s.card, tw);
     let b = (s.bleed_mm * px_mm).round().max(0.0) as u32;
-    let img = bleed::extend(img, b, s.bleed_mode);
+    let img = match s.sello {
+        Some(lang) => {
+            let mut con = img.clone();
+            crate::sello::pintar(&mut con, lang);
+            bleed::extend(&con, b, s.bleed_mode)
+        }
+        None => bleed::extend(img, b, s.bleed_mode),
+    };
     let (width, height) = img.dimensions();
     let bytes = match s.format {
         ImageFormat::Jpeg => encode::jpeg(&img, s.jpeg_quality)?,
@@ -182,6 +194,10 @@ pub fn render_rgba(bytes: &[u8], s: &RenderSpec) -> Result<RgbaImage, ImagingErr
     if let Some(e) = &s.edge {
         edges::apply(&mut img, e);
     }
+    // El sello, en la carta ya a su medida y antes del sangrado: nunca cae en lo que se corta.
+    if let Some(lang) = s.sello {
+        crate::sello::pintar(&mut img, lang);
+    }
     let b = (s.bleed_mm * px_mm).round().max(0.0) as u32;
     Ok(bleed::extend(&img, b, s.bleed_mode))
 }
@@ -221,6 +237,7 @@ mod tests {
             format: ImageFormat::Jpeg,
             jpeg_quality: 95,
             diseno: None,
+            sello: None,
         }
     }
 
@@ -251,6 +268,30 @@ mod tests {
             render(&jpg, &spec(1.0)).unwrap(),
             Rendered::Encoded { .. }
         ));
+    }
+
+    #[test]
+    fn con_sello_ya_no_va_tal_cual_y_solo_cambia_la_franja_de_abajo() {
+        let img = carta(630, 880, [20, 20, 20, 255], [20, 20, 20, 255]);
+        let jpg = encode::jpeg(&img, 95).unwrap();
+        let mut s = spec(0.0);
+        let sin = render_rgba(&jpg, &s).unwrap();
+        s.sello = Some(crate::diseno::modelo::DesignLang::Es);
+        assert_ne!(s.key(), spec(0.0).key());
+        assert!(matches!(
+            render(&jpg, &s).unwrap(),
+            Rendered::Encoded { .. }
+        ));
+        let con = render_rgba(&jpg, &s).unwrap();
+        let (_, alto) = con.dimensions();
+        let mut abajo = 0;
+        for (x, y, p) in con.enumerate_pixels() {
+            if p != sin.get_pixel(x, y) {
+                assert!(f64::from(y) > f64::from(alto) * 0.96, "cambia y={y}");
+                abajo += 1;
+            }
+        }
+        assert!(abajo > 100);
     }
 
     #[test]

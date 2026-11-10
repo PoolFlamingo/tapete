@@ -82,6 +82,9 @@ pub struct Slot {
     pub bleed: RectMm,
     /// Sangrado completo que trae el render por cada lado (mm).
     pub bleed_full_mm: f64,
+    /// El idioma del sello de Tapete de esta casilla (`sello::idioma_de_carta`): lo usan la
+    /// miniatura y el PDF, así la pantalla no decide nada.
+    pub sello: crate::diseno::modelo::DesignLang,
 }
 
 /// Un segmento de guía de corte, en milímetros.
@@ -158,6 +161,7 @@ struct Item {
     has_back: bool,
     /// Carta grande (va en sus propias hojas).
     grande: bool,
+    sello: crate::diseno::modelo::DesignLang,
 }
 
 /// ¿Es una carta grande? Solo las diseñadas lo saben (un plano de Scryfall
@@ -211,6 +215,7 @@ fn items(deck: &Deck, warnings: &mut Vec<PlanWarning>) -> Vec<Item> {
                     back: dorso_normal.clone(),
                     has_back: true,
                     grande: es_grande(c),
+                    sello: crate::sello::idioma_de_carta(c, s.design_lang),
                 });
             }
             continue;
@@ -241,6 +246,7 @@ fn items(deck: &Deck, warnings: &mut Vec<PlanWarning>) -> Vec<Item> {
             back,
             has_back,
             grande,
+            sello: crate::sello::idioma_de_carta(c, s.design_lang),
         });
     }
     if dfc_sin_dorso > 0 {
@@ -403,6 +409,7 @@ fn paginar(
                 trim,
                 bleed: ampliar(trim, lados, ancho, alto),
                 bleed_full_mm: s.bleed_mm,
+                sello: it.sello,
             });
 
             // Dorso.
@@ -433,6 +440,7 @@ fn paginar(
                     trim: trim_b,
                     bleed: ampliar(trim_b, lados_b, ancho, alto),
                     bleed_full_mm: bleed_full,
+                    sello: it.sello,
                 });
             }
         }

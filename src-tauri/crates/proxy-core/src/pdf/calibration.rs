@@ -70,6 +70,7 @@ pub fn calibration(
     let mut doc = documento(&PdfMeta {
         title: textos.title.clone(),
         document_id: "proxy-builder-calibracion".into(),
+        hoja: None,
     });
 
     for pagina in p.pages.iter().take(2) {

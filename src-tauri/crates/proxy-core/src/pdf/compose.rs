@@ -9,6 +9,7 @@ use krilla::paint::{FillRule, LineCap, Stroke};
 use krilla::surface::Surface;
 use krilla::{Document, SerializeSettings};
 
+use super::sello::{dibujar_linea_hoja, dibujar_sello, Letras, SelloCasilla};
 use super::{color_hex, PdfError};
 use crate::layout::{LineMm, Page, PagePlan, RectMm, Slot};
 use crate::model::CutGuides;
@@ -20,6 +21,16 @@ pub struct PdfMeta {
     pub title: String,
     /// Identificador estable (p. ej. la huella del plan y de las imágenes).
     pub document_id: String,
+    /// El idioma de la línea del margen de cada hoja («Hecho con Tapete · No a la venta»): el
+    /// de la app. `None` solo en la hoja de calibración, que no lleva cartas.
+    pub hoja: Option<crate::diseno::modelo::DesignLang>,
+}
+
+/// Lo que va en una casilla: la imagen ya preparada y su sello (texto encima).
+#[derive(Clone)]
+pub struct Casilla {
+    pub imagen: Image,
+    pub sello: Option<SelloCasilla>,
 }
 
 fn pt(mm: f64) -> f32 {
@@ -98,28 +109,35 @@ pub(crate) fn tam_pagina(p: &Page) -> Result<Size, PdfError> {
     Size::from_wh(pt(p.width_mm), pt(p.height_mm)).ok_or(PdfError::Geometry)
 }
 
-/// Escribe el PDF. `imagen(page, slot)` da la imagen ya preparada de cada
-/// casilla (o `None` si va en blanco); `pagina_hecha(i)` se llama al terminar
-/// cada página y puede pedir que se pare devolviendo `false`.
+/// Escribe el PDF. `casilla(page, slot)` da la imagen ya preparada de cada
+/// casilla y su sello (o `None` si va en blanco); `pagina_hecha(i)` se llama al
+/// terminar cada página y puede pedir que se pare devolviendo `false`.
 pub fn compose(
     plan: &PagePlan,
     guides: &CutGuides,
     meta: &PdfMeta,
-    mut imagen: impl FnMut(&Page, &Slot) -> Result<Option<Image>, PdfError>,
+    mut casilla: impl FnMut(&Page, &Slot) -> Result<Option<Casilla>, PdfError>,
     mut pagina_hecha: impl FnMut(usize) -> bool,
 ) -> Result<Vec<u8>, PdfError> {
     let mut doc = documento(meta);
     let color = color_hex(&guides.color);
     let grosor = css_px_to_pt(guides.width_px) as f32;
+    let mut letras = Letras::default();
     for (i, p) in plan.pages.iter().enumerate() {
         let mut hoja = doc.start_page_with(PageSettings::new(tam_pagina(p)?));
         let mut s = hoja.surface();
         for slot in &p.slots {
-            if let Some(img) = imagen(p, slot)? {
-                dibujar_casilla(&mut s, slot, img)?;
+            if let Some(c) = casilla(p, slot)? {
+                dibujar_casilla(&mut s, slot, c.imagen)?;
+                if let Some(sello) = &c.sello {
+                    dibujar_sello(&mut s, &mut letras, &slot.trim, sello);
+                }
             }
         }
         dibujar_lineas(&mut s, &p.guides, color, grosor)?;
+        if let Some(lang) = meta.hoja {
+            dibujar_linea_hoja(&mut s, &mut letras, p, lang);
+        }
         s.finish();
         hoja.finish();
         if !pagina_hecha(i) {
@@ -187,8 +205,14 @@ pub(crate) mod tests {
             &PdfMeta {
                 title: "t".into(),
                 document_id: "id".into(),
+                hoja: None,
             },
-            |_, _| Ok(Some(img.clone())),
+            |_, _| {
+                Ok(Some(Casilla {
+                    imagen: img.clone(),
+                    sello: None,
+                }))
+            },
             |_| true,
         )
         .unwrap()
@@ -301,6 +325,106 @@ pub(crate) mod tests {
         };
         assert!(es_dct);
         assert_eq!(imagenes[0].content.len(), jpeg_de_prueba().len());
+    }
+
+    fn con_sello(d: &Deck, fondo: crate::sello::Fondo) -> Vec<u8> {
+        let p = plan(d).unwrap();
+        let img = Image::from_jpeg(Data::from(jpeg_de_prueba()), true).unwrap();
+        let colocacion = crate::sello::Colocacion {
+            sitio: crate::sello::SITIOS[0],
+            fondo,
+        };
+        compose(
+            &p,
+            &d.settings.cut_guides,
+            &PdfMeta {
+                title: "t".into(),
+                document_id: "id".into(),
+                hoja: Some(crate::diseno::modelo::DesignLang::Ja),
+            },
+            |_, slot| {
+                Ok(Some(Casilla {
+                    imagen: img.clone(),
+                    sello: Some(SelloCasilla {
+                        lang: slot.sello,
+                        colocacion,
+                    }),
+                }))
+            },
+            |_| true,
+        )
+        .unwrap()
+    }
+
+    fn operadores(pdf: &[u8], op: &str) -> Vec<usize> {
+        let doc = Lop::load_mem(pdf).unwrap();
+        doc.get_pages()
+            .into_values()
+            .map(|id| {
+                Content::decode(&doc.get_page_content(id))
+                    .unwrap()
+                    .operations
+                    .iter()
+                    .filter(|o| o.operator == op)
+                    .count()
+            })
+            .collect()
+    }
+
+    /// El sello va encima como texto: una por carta y la línea de cada hoja, sin tocar la
+    /// imagen de la carta (el JPEG entra igual que sin sello).
+    #[test]
+    fn cada_carta_lleva_su_sello_y_cada_hoja_su_linea_sin_tocar_la_imagen() {
+        use crate::sello::Fondo;
+        let d = deck(12, PrintSettings::default());
+        let p = plan(&d).unwrap();
+        let pdf = con_sello(&d, Fondo::Banda { claro: true });
+        let textos = operadores(&pdf, "BT");
+        for (pagina, n) in p.pages.iter().zip(&textos) {
+            assert_eq!(*n, pagina.slots.len() + 1, "{textos:?}");
+        }
+        let doc = Lop::load_mem(&pdf).unwrap();
+        let imagenes: Vec<_> = doc
+            .objects
+            .values()
+            .filter_map(|o| o.as_stream().ok())
+            .filter(|s| {
+                s.dict.get(b"Subtype").ok().and_then(|n| n.as_name().ok())
+                    == Some(b"Image".as_slice())
+            })
+            .collect();
+        assert_eq!(imagenes.len(), 1);
+        assert_eq!(imagenes[0].content.len(), jpeg_de_prueba().len());
+        // Se puede buscar: el texto lleva su correspondencia a Unicode.
+        let texto = doc.extract_text(&[1]).unwrap();
+        assert!(texto.contains("Tapete"), "{texto}");
+        // Con pastilla, además, un relleno por carta.
+        let con = operadores(&con_sello(&d, Fondo::Pastilla), "f");
+        let sin = operadores(&pdf, "f");
+        for ((c, s), pagina) in con.iter().zip(&sin).zip(&p.pages) {
+            assert_eq!(*c, *s + pagina.slots.len());
+        }
+        // Y sigue saliendo igual dos veces.
+        assert_eq!(pdf, con_sello(&d, Fondo::Banda { claro: true }));
+    }
+
+    #[test]
+    fn la_linea_de_la_hoja_va_en_el_margen_fuera_de_las_cartas_y_las_guias() {
+        let mut s = PrintSettings::default();
+        s.cut_guides.enabled = true;
+        let p = plan(&deck(9, s)).unwrap();
+        for pagina in &p.pages {
+            let base = super::super::sello::base_hoja(pagina).expect("cabe en el margen");
+            let fondo_cartas = pagina
+                .slots
+                .iter()
+                .map(|x| x.bleed.y + x.bleed.h)
+                .chain(pagina.guides.iter().map(|g| g.y1.max(g.y2)))
+                .fold(0.0, f64::max);
+            // 6 pt: lo más alto de la letra (≈ 1,6 mm sobre la base) queda por debajo.
+            assert!(base - 1.7 > fondo_cartas, "{base} vs {fondo_cartas}");
+            assert!(base < pagina.height_mm - 0.5);
+        }
     }
 
     #[test]

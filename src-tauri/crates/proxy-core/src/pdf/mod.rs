@@ -12,8 +12,10 @@
 pub mod calibration;
 pub mod compose;
 pub mod estimate;
+pub mod sello;
 
-pub use compose::{compose, PdfMeta};
+pub use compose::{compose, Casilla, PdfMeta};
+pub use sello::SelloCasilla;
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum PdfError {

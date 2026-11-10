@@ -85,6 +85,8 @@ export const SlotView = memo(function SlotView({
 				{
 					...parametros(ajustes, ediciones, esDorso, full),
 					card: { widthMm: trim.w, heightMm: trim.h },
+					// El sello de Tapete, como saldrá impreso (el idioma lo decide Rust: `Slot.sello`).
+					sello: slot.sello,
 				},
 				ancho,
 			)

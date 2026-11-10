@@ -1,0 +1,37 @@
+{
+	"nota": "El sello de Tapete (plan Fase B). «carta»: lo que va en cada carta, en el idioma de la carta. «hoja»: la línea del margen de cada hoja del PDF, en el idioma de la app. Lo leen proxy-core (sello.rs) y scripts/sello-letras.py, que saca de aquí los caracteres de las letras CJK recortadas: si se cambia un texto en ja, ko, zhs o zht, hay que volver a pasar el script.",
+	"carta": {
+		"es": "Tapete · No a la venta",
+		"en": "Tapete · Not for sale",
+		"fr": "Tapete · Ne peut être vendue",
+		"de": "Tapete · Nicht zum Verkauf",
+		"it": "Tapete · Non in vendita",
+		"pt": "Tapete · Proibida a venda",
+		"ro": "Tapete · Nu este de vânzare",
+		"pl": "Tapete · Nie na sprzedaż",
+		"nl": "Tapete · Niet te koop",
+		"ru": "Tapete · Не для продажи",
+		"uk": "Tapete · Не для продажу",
+		"ja": "Tapete · 非売品",
+		"ko": "Tapete · 비매품",
+		"zhs": "Tapete · 非卖品",
+		"zht": "Tapete · 非賣品"
+	},
+	"hoja": {
+		"es": "Hecho con Tapete · No a la venta",
+		"en": "Made with Tapete · Not for sale",
+		"fr": "Créé avec Tapete · Ne peut être vendu",
+		"de": "Erstellt mit Tapete · Nicht zum Verkauf",
+		"it": "Creato con Tapete · Non in vendita",
+		"pt": "Feito com o Tapete · Proibida a venda",
+		"ro": "Creat cu Tapete · Nu este de vânzare",
+		"pl": "Utworzono w Tapete · Nie na sprzedaż",
+		"nl": "Gemaakt met Tapete · Niet te koop",
+		"ru": "Сделано в Tapete · Не для продажи",
+		"uk": "Створено в Tapete · Не для продажу",
+		"ja": "Tapeteで作成 · 非売品",
+		"ko": "Tapete로 제작 · 비매품",
+		"zhs": "由 Tapete 制作 · 非卖品",
+		"zht": "由 Tapete 製作 · 非賣品"
+	}
+}

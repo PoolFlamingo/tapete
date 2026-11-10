@@ -262,6 +262,7 @@ mod tests {
             trim: r,
             bleed: r,
             bleed_full_mm: 0.0,
+            sello: DesignLang::Es,
         }
     }
 

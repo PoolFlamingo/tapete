@@ -150,7 +150,7 @@ describe("exportarA", () => {
 		rust({ result: hecho(["/tmp/a.pdf"]), error: null });
 		const deck = useDeck.getState().deck;
 		await exportarA("/tmp/a.pdf", t);
-		expect(call).toHaveBeenCalledWith("export_pdf", { deck, path: "/tmp/a.pdf" });
+		expect(call).toHaveBeenCalledWith("export_pdf", { deck, path: "/tmp/a.pdf", lang: "en" });
 	});
 
 	it("al terminar lo anuncia y ofrece abrirlo o verlo en la carpeta", async () => {

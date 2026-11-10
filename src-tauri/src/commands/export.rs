@@ -1,18 +1,20 @@
 //! **Exportar el PDF**: un trabajo largo, en paralelo, con progreso,
 //! cancelable y que nunca deja un fichero a medias con el nombre bueno.
 
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 
 use krilla::image::Image;
 use krilla::Data;
+use proxy_core::diseno::modelo::DesignLang;
 use proxy_core::imaging::pipeline::{RenderSpec, Rendered};
 use proxy_core::layout::{plan, Page, PagePlan};
 use proxy_core::model::{CardEdits, Deck, PrintSettings};
 use proxy_core::pdf::calibration::{calibration, CalibrationTexts};
 use proxy_core::pdf::estimate::bytes_por_imagen;
-use proxy_core::pdf::{compose, PdfError, PdfMeta};
+use proxy_core::pdf::{compose, Casilla, PdfError, PdfMeta, SelloCasilla};
+use proxy_core::sello::Colocacion;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -84,6 +86,9 @@ struct Encargo {
     por_casilla: HashMap<(usize, usize), String>,
     /// Huella → diseño efectivo, para las casillas de cartas diseñadas.
     disenos: HashMap<String, DisenoEfectivo>,
+    /// En qué idiomas va el sello de cada imagen (la misma imagen puede ir en cartas de
+    /// idiomas distintos, y el ancho del texto cambia dónde cabe).
+    idiomas: HashMap<String, BTreeSet<DesignLang>>,
 }
 
 fn encargo(
@@ -95,6 +100,7 @@ fn encargo(
     let mut especificaciones = HashMap::new();
     let mut por_casilla = HashMap::new();
     let mut efectivos = HashMap::new();
+    let mut idiomas: HashMap<String, BTreeSet<DesignLang>> = HashMap::new();
     let ninguna = CardEdits::default();
     for (i, pagina) in p.pages.iter().enumerate() {
         for (j, slot) in pagina.slots.iter().enumerate() {
@@ -115,6 +121,7 @@ fn encargo(
             }
             let k = spec.key();
             especificaciones.entry(k.clone()).or_insert(spec);
+            idiomas.entry(k.clone()).or_default().insert(slot.sello);
             por_casilla.insert((i, j), k);
         }
     }
@@ -122,6 +129,7 @@ fn encargo(
         especificaciones,
         por_casilla,
         disenos: efectivos,
+        idiomas,
     })
 }
 
@@ -180,11 +188,13 @@ fn render_diseno_para_pdf(
     Ok(render_desde_imagen(&r.imagen, spec)?)
 }
 
-/// El trabajo entero (síncrono: se lanza en un hilo aparte).
+/// El trabajo entero (síncrono: se lanza en un hilo aparte). `lang_app` es el idioma de la
+/// línea del margen de cada hoja («Hecho con Tapete · No a la venta»).
 pub fn exportar(
     state: &AppState,
     deck: &Deck,
     destino: &Path,
+    lang_app: DesignLang,
     cancelado: &AtomicBool,
     progreso: &(dyn Fn(ExportPhase, u32, u32) + Sync),
 ) -> AppResult<ExportResult> {
@@ -205,7 +215,8 @@ pub fn exportar(
         .build()
         .map_err(|e| AppError::new(ErrorCode::Internal).with("detalle", e))?;
     let lista: Vec<(&String, &RenderSpec)> = enc.especificaciones.iter().collect();
-    let preparadas: Vec<AppResult<(String, Rendered)>> = pool.install(|| {
+    type Preparada = (String, Rendered, Vec<(DesignLang, Colocacion)>);
+    let preparadas: Vec<AppResult<Preparada>> = pool.install(|| {
         lista
             .par_iter()
             .map(|(k, spec)| {
@@ -221,15 +232,31 @@ pub fn exportar(
                     }
                     None => render_para_pdf(state, spec)?,
                 };
+                // Dónde va el sello: mirando la carta ya preparada (sin su sangrado).
+                let langs: Vec<DesignLang> = enc
+                    .idiomas
+                    .get(*k)
+                    .map(|l| l.iter().copied().collect())
+                    .unwrap_or_default();
+                let colocaciones = proxy_core::sello::colocaciones(
+                    r.bytes(),
+                    spec.card.width_mm,
+                    spec.bleed_mm,
+                    &langs,
+                )?;
                 let n = hechas.fetch_add(1, Ordering::SeqCst) + 1;
                 progreso(ExportPhase::Prepare, n, total);
-                Ok(((*k).clone(), r))
+                Ok(((*k).clone(), r, colocaciones))
             })
             .collect()
     });
     let mut imagenes: HashMap<String, Image> = HashMap::new();
+    let mut sellos: HashMap<(String, DesignLang), Colocacion> = HashMap::new();
     for r in preparadas {
-        let (k, rendered) = r?;
+        let (k, rendered, colocaciones) = r?;
+        for (lang, c) in colocaciones {
+            sellos.insert((k.clone(), lang), c);
+        }
         let datos = Data::from(rendered.bytes().to_vec());
         let img = if rendered.is_jpeg() {
             Image::from_jpeg(datos, true)
@@ -258,6 +285,7 @@ pub fn exportar(
             &PdfMeta {
                 title: deck.name.clone(),
                 document_id: format!("{id}-{t}"),
+                hoja: Some(lang_app),
             },
             |pagina, slot| {
                 let i = indices[sub
@@ -270,11 +298,22 @@ pub fn exportar(
                     .iter()
                     .position(|s| s == slot)
                     .unwrap_or(usize::MAX);
-                Ok(enc
-                    .por_casilla
-                    .get(&(i, j))
-                    .and_then(|k| imagenes.get(k))
-                    .cloned())
+                let Some(k) = enc.por_casilla.get(&(i, j)) else {
+                    return Ok(None);
+                };
+                Ok(imagenes.get(k).map(|img| Casilla {
+                    imagen: img.clone(),
+                    // 🛑 El sello no se puede apagar: toda carta impresa lo lleva.
+                    sello: Some(SelloCasilla {
+                        lang: slot.sello,
+                        colocacion: sellos.get(&(k.clone(), slot.sello)).copied().unwrap_or(
+                            Colocacion {
+                                sitio: proxy_core::sello::SITIOS[0],
+                                fondo: proxy_core::sello::Fondo::Pastilla,
+                            },
+                        ),
+                    }),
+                }))
             },
             |_| {
                 paginas_hechas += 1;
@@ -305,20 +344,29 @@ pub fn exportar(
 /// una URI y los trozos van dentro de un ZIP (la pantalla pide un `.zip`);
 /// `en_zip` fuerza el ZIP aunque sea uno solo o el destino sea una ruta (el
 /// camino de la caché al compartir).
+#[allow(clippy::too_many_arguments)]
 fn exportar_en(
     app: &AppHandle,
     state: &AppState,
     deck: &Deck,
     destino: &str,
     en_zip: bool,
+    lang_app: DesignLang,
     cancelado: &AtomicBool,
     progreso: &(dyn Fn(ExportPhase, u32, u32) + Sync),
 ) -> AppResult<ExportResult> {
     if !en_zip && !crate::fichero::es_uri(destino) {
-        return exportar(state, deck, Path::new(destino), cancelado, progreso);
+        return exportar(
+            state,
+            deck,
+            Path::new(destino),
+            lang_app,
+            cancelado,
+            progreso,
+        );
     }
     let trabajo = crate::fichero::temporal(app, &format!("{}.pdf", nombre_de_pdf(&deck.name)))?;
-    let r = exportar(state, deck, trabajo.ruta(), cancelado, progreso)?;
+    let r = exportar(state, deck, trabajo.ruta(), lang_app, cancelado, progreso)?;
     let a_copiar = if en_zip || r.paths.len() > 1 {
         let zip = trabajo.ruta().with_file_name("pdf.zip");
         zip_de_trozos(&r.paths, &zip)?;
@@ -367,8 +415,12 @@ pub fn export_pdf(
     deck: Deck,
     path: String,
     zip: Option<bool>,
+    lang: Option<String>,
 ) -> u32 {
     let en_zip = zip.unwrap_or(false);
+    // El idioma de la app, para la línea del margen de cada hoja (lo que no sea uno de los 15,
+    // en inglés).
+    let lang_app = proxy_core::sello::idioma(lang.as_deref());
     let (job_id, cancelado) = state.jobs.alta();
     tauri::async_runtime::spawn_blocking(move || {
         let estado = app.state::<AppState>();
@@ -387,7 +439,9 @@ pub fn export_pdf(
         };
         // Un pánico no puede dejar la pantalla esperando un final que no llega.
         let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-            exportar_en(&app, &estado, &deck, &path, en_zip, &cancelado, &progreso)
+            exportar_en(
+                &app, &estado, &deck, &path, en_zip, lang_app, &cancelado, &progreso,
+            )
         }))
         .unwrap_or_else(|_| Err(AppError::new(ErrorCode::Internal).with("detalle", "pánico")));
         estado.jobs.baja(job_id);
@@ -687,15 +741,33 @@ mod tests {
         );
         let destino = dir.path().join("salida.pdf");
         let pasos = std::sync::Mutex::new(Vec::new());
-        let r = exportar(&s, &d, &destino, &AtomicBool::new(false), &|f, a, b| {
-            pasos.lock().unwrap().push((f, a, b))
-        })
+        let r = exportar(
+            &s,
+            &d,
+            &destino,
+            DesignLang::Es,
+            &AtomicBool::new(false),
+            &|f, a, b| pasos.lock().unwrap().push((f, a, b)),
+        )
         .unwrap();
         assert_eq!(r.pages, 6);
         assert_eq!(r.sheets, 3);
         assert!(destino.exists());
         let doc = lopdf::Document::load(&destino).unwrap();
         assert_eq!(doc.get_pages().len(), 6);
+        // 🛑 El sello no se puede apagar: cada carta, frente y dorso, lleva el suyo (texto
+        // encima) y cada hoja su línea del margen.
+        let p = plan(&d).unwrap();
+        for ((_, id), pagina) in doc.get_pages().into_iter().zip(&p.pages) {
+            let textos = lopdf::content::Content::decode(&doc.get_page_content(id))
+                .unwrap()
+                .operations
+                .iter()
+                .filter(|o| o.operator == "BT")
+                .count();
+            assert_eq!(textos, pagina.slots.len() + 1);
+        }
+        assert!(doc.extract_text(&[1]).unwrap().contains("Tapete"));
         let pasos = pasos.into_inner().unwrap();
         let prep: Vec<_> = pasos
             .iter()
@@ -708,7 +780,15 @@ mod tests {
         );
         // Lo mismo dos veces, mismos bytes.
         let otro = dir.path().join("otra.pdf");
-        exportar(&s, &d, &otro, &AtomicBool::new(false), &|_, _, _| {}).unwrap();
+        exportar(
+            &s,
+            &d,
+            &otro,
+            DesignLang::Es,
+            &AtomicBool::new(false),
+            &|_, _, _| {},
+        )
+        .unwrap();
         assert_eq!(
             std::fs::read(&destino).unwrap(),
             std::fs::read(&otro).unwrap()
@@ -761,11 +841,18 @@ mod tests {
             }
             let destino = dir.path().join(format!("disenadas-{ppp}.pdf"));
             let n = std::sync::Mutex::new(0);
-            exportar(&s, &d, &destino, &AtomicBool::new(false), &|f, _, b| {
-                if f == ExportPhase::Prepare {
-                    *n.lock().unwrap() = b;
-                }
-            })
+            exportar(
+                &s,
+                &d,
+                &destino,
+                DesignLang::Es,
+                &AtomicBool::new(false),
+                &|f, _, b| {
+                    if f == ExportPhase::Prepare {
+                        *n.lock().unwrap() = b;
+                    }
+                },
+            )
             .unwrap();
             assert_eq!(*n.lock().unwrap(), 3, "una imagen por diseño");
             let doc = lopdf::Document::load(&destino).unwrap();
@@ -780,7 +867,15 @@ mod tests {
                 .collect();
             assert!(anchos.contains(&ancho), "{ppp} PPP: {anchos:?}");
             let otro = dir.path().join(format!("otra-{ppp}.pdf"));
-            exportar(&s, &d, &otro, &AtomicBool::new(false), &|_, _, _| {}).unwrap();
+            exportar(
+                &s,
+                &d,
+                &otro,
+                DesignLang::Es,
+                &AtomicBool::new(false),
+                &|_, _, _| {},
+            )
+            .unwrap();
             assert_eq!(
                 std::fs::read(&destino).unwrap(),
                 std::fs::read(&otro).unwrap()
@@ -833,7 +928,15 @@ mod tests {
             "{caras:?}"
         );
         let destino = dir.path().join("dfc.pdf");
-        let r = exportar(&s, &d, &destino, &AtomicBool::new(false), &|_, _, _| {}).unwrap();
+        let r = exportar(
+            &s,
+            &d,
+            &destino,
+            DesignLang::Es,
+            &AtomicBool::new(false),
+            &|_, _, _| {},
+        )
+        .unwrap();
         assert_eq!(r.pages, 2);
     }
 
@@ -862,7 +965,15 @@ mod tests {
         assert_eq!(p.pages.len(), 2, "una hoja normal y una de planos");
         assert!(p.pages[1].big && p.pages[1].slots[0].card_id == d.cards[0].id);
         let destino = dir.path().join("plano.pdf");
-        exportar(&s, &d, &destino, &AtomicBool::new(false), &|_, _, _| {}).unwrap();
+        exportar(
+            &s,
+            &d,
+            &destino,
+            DesignLang::Es,
+            &AtomicBool::new(false),
+            &|_, _, _| {},
+        )
+        .unwrap();
         let doc = lopdf::Document::load(&destino).unwrap();
         let medidas: Vec<(i64, i64)> = doc
             .objects
@@ -894,7 +1005,15 @@ mod tests {
         );
         let destino = dir.path().join("salida.pdf");
         std::fs::write(&destino, b"anterior").unwrap();
-        let e = exportar(&s, &d, &destino, &AtomicBool::new(true), &|_, _, _| {}).unwrap_err();
+        let e = exportar(
+            &s,
+            &d,
+            &destino,
+            DesignLang::Es,
+            &AtomicBool::new(true),
+            &|_, _, _| {},
+        )
+        .unwrap_err();
         assert_eq!(e.code, ErrorCode::Cancelled);
         assert_eq!(std::fs::read(&destino).unwrap(), b"anterior");
     }
@@ -915,6 +1034,7 @@ mod tests {
             &s,
             &d,
             &dir.path().join("mazo.pdf"),
+            DesignLang::Es,
             &AtomicBool::new(false),
             &|_, _, _| {},
         )
@@ -1005,7 +1125,15 @@ mod tests {
             .map(PathBuf::from)
             .unwrap_or_else(|_| std::env::temp_dir().join("proxy-builder-e2e.pdf"));
         let t = std::time::Instant::now();
-        let res = exportar(&s, &d, &destino, &AtomicBool::new(false), &|_, _, _| {}).unwrap();
+        let res = exportar(
+            &s,
+            &d,
+            &destino,
+            DesignLang::Es,
+            &AtomicBool::new(false),
+            &|_, _, _| {},
+        )
+        .unwrap();
         println!("{res:?} en {:?}", t.elapsed());
     }
 }

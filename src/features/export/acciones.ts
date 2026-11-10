@@ -3,7 +3,7 @@ import type { Deck } from "@/bindings/Deck";
 import type { ExportEstimate } from "@/bindings/ExportEstimate";
 import type { ExportPhase } from "@/bindings/ExportPhase";
 import type { ExportResult } from "@/bindings/ExportResult";
-import { paraTraducir, traduccionSuelta } from "@/components/language-provider";
+import { leerIdioma, paraTraducir, traduccionSuelta } from "@/components/language-provider";
 import type { T } from "@/features/decklist/acciones";
 import { guardarParaExportar } from "@/lib/dialogos";
 import { call } from "@/lib/ipc";
@@ -109,7 +109,10 @@ export async function exportarA(
 			() =>
 				call(
 					"export_pdf",
-					opciones.zip ? { deck, path: destino, zip: true } : { deck, path: destino },
+					// `lang`: el idioma de la línea del margen de cada hoja («Hecho con Tapete…»).
+					opciones.zip
+						? { deck, path: destino, zip: true, lang: leerIdioma() }
+						: { deck, path: destino, lang: leerIdioma() },
 				),
 			(p) => useTrabajo.getState().avanzar(t(FASES[p.phase]), p.done, p.total),
 		);

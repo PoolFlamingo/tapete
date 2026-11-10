@@ -39,6 +39,11 @@ pub struct PreviewParams {
     #[serde(default)]
     pub fill_corners: bool,
     pub card: CardSize,
+    /// Pintar el sello de Tapete en este idioma: solo lo pide la vista previa de las hojas
+    /// (con el idioma de la casilla, `Slot.sello`); el editor, las listas y la mesa no.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub sello: Option<proxy_core::diseno::modelo::DesignLang>,
 }
 
 /// La especificación de render de una casilla del plan, para imprimir.
@@ -70,6 +75,8 @@ pub fn spec_de_casilla(
         format: s.encoding.format,
         jpeg_quality: s.encoding.jpeg_quality,
         diseno: None,
+        // En el PDF el sello va como texto encima (`proxy_core::pdf`): el JPEG puede pasar tal cual.
+        sello: None,
     }
 }
 
@@ -87,6 +94,7 @@ pub fn spec_de_miniatura(blob: &str, img: &FaceImage, p: &PreviewParams, ancho: 
         format: ImageFormat::Jpeg,
         jpeg_quality: 85,
         diseno: None,
+        sello: p.sello,
     }
 }
 
@@ -192,6 +200,7 @@ mod tests {
                 h: 129.0,
             },
             bleed_full_mm: 1.5,
+            sello: proxy_core::diseno::modelo::DesignLang::Es,
         }
     }
 
@@ -255,6 +264,26 @@ mod tests {
         assert!(spec.diseno.is_none());
     }
 
+    /// El sello: en la miniatura de la hoja, pintado (si la pantalla lo pide con el idioma de
+    /// la casilla); en el PDF, nunca en la imagen (va encima como texto).
+    #[test]
+    fn el_sello_va_en_la_miniatura_y_nunca_pintado_en_la_imagen_del_pdf() {
+        use proxy_core::diseno::modelo::DesignLang;
+        let img = imagen(ImageOrigin::ScryfallPng);
+        let mut p = params();
+        assert!(spec_de_miniatura("b", &img, &p, 244).sello.is_none());
+        p.sello = Some(DesignLang::Ja);
+        assert_eq!(
+            spec_de_miniatura("b", &img, &p, 244).sello,
+            Some(DesignLang::Ja)
+        );
+        let casilla = casilla(SlotFace::Front, true);
+        let s = PrintSettings::default();
+        assert!(spec_de_casilla(&casilla, &img, &CardEdits::default(), &s)
+            .sello
+            .is_none());
+    }
+
     #[test]
     fn sin_retoques_en_la_casilla_van_los_de_fabrica() {
         let s = PrintSettings::default();
@@ -292,6 +321,7 @@ mod tests {
             bleed_mode: BleedMode::default(),
             fill_corners: false,
             card: CardSize::MTG,
+            sello: None,
         }
     }
 
