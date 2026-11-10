@@ -1274,5 +1274,10 @@
 	"Primer jugador": "先手玩家",
 	"Tiene el turno": "当前回合",
 	"Ruleta al sortear quién empieza": "抽取先手时显示轮盘",
-	"El anfitrión te ha expulsado de la partida.": "主机已将你移出对局。"
+	"El anfitrión te ha expulsado de la partida.": "主机已将你移出对局。",
+	"Invitar amigos": "邀请好友",
+	"Invitar": "邀请",
+	"Invitado": "已邀请",
+	"Elige un deck en la lista para unirte a la partida.": "在列表中选择一副套牌即可加入对局。",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "在列表中选择一副套牌，即可创建对局并邀请 {apodo}。"
 }

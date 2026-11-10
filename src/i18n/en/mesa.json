@@ -1329,5 +1329,10 @@
 	"Primer jugador": "First player",
 	"Tiene el turno": "Has the turn",
 	"Ruleta al sortear quién empieza": "Wheel when drawing who goes first",
-	"El anfitrión te ha expulsado de la partida.": "The host has removed you from the game."
+	"El anfitrión te ha expulsado de la partida.": "The host has removed you from the game.",
+	"Invitar amigos": "Invite friends",
+	"Invitar": "Invite",
+	"Invitado": "Invited",
+	"Elige un deck en la lista para unirte a la partida.": "Choose a deck in the list to join the game.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Choose a deck in the list to create the game and invite {apodo}."
 }

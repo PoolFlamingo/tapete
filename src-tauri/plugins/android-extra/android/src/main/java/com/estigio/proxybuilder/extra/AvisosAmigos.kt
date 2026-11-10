@@ -49,6 +49,48 @@ class AvisosAmigos(contexto: Context, parametros: WorkerParameters) :
          * los de aquí comparten los ajustes del sistema. */
         private const val CANAL = "default"
 
+        /** El verde de Tapete, para el icono pequeño y el acento del aviso. */
+        private const val COLOR = 0xFF2E7D32.toInt()
+
+        /**
+         * Enseña un aviso de amigos: el del `Worker` y también el de la app abierta
+         * (`amigos/avisar.rs` por `avisoAmigo`), para que los dos lleven el icono de Tapete y el
+         * texto entero. Uno por amigo: el siguiente suyo sustituye al anterior.
+         */
+        fun avisar(contexto: Context, amigo: String, titulo: String, cuerpo: String) {
+            val gestor = contexto.getSystemService(NotificationManager::class.java)
+            if (gestor.getNotificationChannel(CANAL) == null) {
+                gestor.createNotificationChannel(
+                    NotificationChannel(CANAL, titulo, NotificationManager.IMPORTANCE_DEFAULT),
+                )
+            }
+            val abrir = contexto.packageManager.getLaunchIntentForPackage(contexto.packageName)
+            val alTocar = abrir?.let {
+                PendingIntent.getActivity(
+                    contexto,
+                    0,
+                    it,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+                )
+            }
+            val aviso = NotificationCompat.Builder(contexto, CANAL)
+                .setSmallIcon(R.drawable.aviso_tapete)
+                .setColor(COLOR)
+                .setContentTitle(titulo)
+                .setContentText(cuerpo)
+                // Expandido (como lo enseñan algunas capas, MIUI entre ellas), el texto sigue ahí.
+                .setStyle(NotificationCompat.BigTextStyle().bigText(cuerpo))
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setAutoCancel(true)
+                .setContentIntent(alTocar)
+                .build()
+            try {
+                NotificationManagerCompat.from(contexto).notify(amigo.hashCode(), aviso)
+            } catch (ex: SecurityException) {
+                // Sin permiso para avisar.
+            }
+        }
+
         /** Con la carpeta de datos lo programa (si ya lo estaba, se queda como estaba); sin
          * ella, lo cancela. */
         fun programar(contexto: Context, datos: String?) {
@@ -93,7 +135,7 @@ class AvisosAmigos(contexto: Context, parametros: WorkerParameters) :
             val avisos = JSONArray(json)
             for (i in 0 until avisos.length()) {
                 val a = avisos.getJSONObject(i)
-                avisar(a.getString("amigo"), a.getString("titulo"), a.getString("cuerpo"))
+                avisar(applicationContext, a.getString("amigo"), a.getString("titulo"), a.getString("cuerpo"))
             }
         } catch (ex: Exception) {
             // JSON roto: nada que enseñar.
@@ -135,38 +177,6 @@ class AvisosAmigos(contexto: Context, parametros: WorkerParameters) :
             Cofre.abrir(sellada.readBytes()).takeIf { it.size == 32 }
         } catch (ex: Exception) {
             null
-        }
-    }
-
-    private fun avisar(amigo: String, titulo: String, cuerpo: String) {
-        val contexto = applicationContext
-        val gestor = contexto.getSystemService(NotificationManager::class.java)
-        if (gestor.getNotificationChannel(CANAL) == null) {
-            gestor.createNotificationChannel(
-                NotificationChannel(CANAL, titulo, NotificationManager.IMPORTANCE_DEFAULT),
-            )
-        }
-        val abrir = contexto.packageManager.getLaunchIntentForPackage(contexto.packageName)
-        val alTocar = abrir?.let {
-            PendingIntent.getActivity(
-                contexto,
-                0,
-                it,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-            )
-        }
-        val aviso = NotificationCompat.Builder(contexto, CANAL)
-            .setSmallIcon(R.drawable.aviso_tapete)
-            .setContentTitle(titulo)
-            .setContentText(cuerpo)
-            .setAutoCancel(true)
-            .setContentIntent(alTocar)
-            .build()
-        try {
-            // Uno por amigo: el siguiente suyo sustituye al anterior.
-            NotificationManagerCompat.from(contexto).notify(amigo.hashCode(), aviso)
-        } catch (ex: SecurityException) {
-            // Sin permiso desde que se comprobó.
         }
     }
 }

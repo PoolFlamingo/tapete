@@ -15,8 +15,11 @@ type AmigosStore = {
 	abierto: boolean;
 	/** La clave del amigo cuya conversación se ve (null: la lista). */
 	chat: string | null;
-	/** Una invitación aceptada: «Jugar» abre «Jugar en red» con este código puesto. */
+	/** Una invitación aceptada: «Jugar» abre «Jugar en red» con este código y se une con el deck
+	 * elegido (si no hay ninguno, el código queda puesto y se pide uno). */
 	unirse: string | null;
+	/** «Invitar a una partida» sin partida creada: «Jugar» la crea y le invita (su clave). */
+	invitarA: string | null;
 	/** Un enlace de amigo: «Añadir con un código» sale con este código puesto. */
 	anadir: string | null;
 	/** Quién me está escribiendo: su clave → hasta cuándo se enseña (ms). */
@@ -26,6 +29,7 @@ type AmigosStore = {
 	cerrar: () => void;
 	verChat: (clave: string | null) => void;
 	pedirUnirse: (codigo: string | null) => void;
+	pedirInvitar: (clave: string | null) => void;
 	pedirAnadir: (codigo: string | null) => void;
 };
 
@@ -34,6 +38,7 @@ export const useAmigos = create<AmigosStore>((set) => ({
 	abierto: false,
 	chat: null,
 	unirse: null,
+	invitarA: null,
 	anadir: null,
 	escribiendo: {},
 	poner: (estado) => set({ estado }),
@@ -41,6 +46,7 @@ export const useAmigos = create<AmigosStore>((set) => ({
 	cerrar: () => set({ abierto: false, chat: null }),
 	verChat: (chat) => set({ chat }),
 	pedirUnirse: (unirse) => set({ unirse }),
+	pedirInvitar: (invitarA) => set({ invitarA }),
 	pedirAnadir: (anadir) => set({ anadir }),
 }));
 
@@ -105,6 +111,7 @@ export function reiniciarAmigos(): void {
 		abierto: false,
 		chat: null,
 		unirse: null,
+		invitarA: null,
 		anadir: null,
 		escribiendo: {},
 	});

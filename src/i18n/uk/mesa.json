@@ -1372,5 +1372,10 @@
 	"Primer jugador": "Перший гравець",
 	"Tiene el turno": "Зараз ходить",
 	"Ruleta al sortear quién empieza": "Рулетка під час жеребкування першого ходу",
-	"El anfitrión te ha expulsado de la partida.": "Хост виключив тебе з партії."
+	"El anfitrión te ha expulsado de la partida.": "Хост виключив тебе з партії.",
+	"Invitar amigos": "Запросити друзів",
+	"Invitar": "Запросити",
+	"Invitado": "Запрошено",
+	"Elige un deck en la lista para unirte a la partida.": "Виберіть колоду в списку, щоб приєднатися до партії.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Виберіть колоду в списку, щоб створити партію й запросити {apodo}."
 }

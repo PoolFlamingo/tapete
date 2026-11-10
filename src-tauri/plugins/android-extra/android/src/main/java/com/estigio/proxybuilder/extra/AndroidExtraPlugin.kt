@@ -69,6 +69,13 @@ class AvisosArgs {
 }
 
 @InvokeArg
+class AvisoArgs {
+    lateinit var amigo: String
+    lateinit var titulo: String
+    lateinit var cuerpo: String
+}
+
+@InvokeArg
 class EscuchaArgs {
     lateinit var handler: Channel
 }
@@ -359,6 +366,18 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
             invoke.resolve()
         } catch (ex: Exception) {
             invoke.reject(ex.message ?: "no se pudieron programar los avisos")
+        }
+    }
+
+    /** Un aviso de amigos con la app abierta (pero sin el foco): el mismo que el del `Worker`. */
+    @Command
+    fun avisoAmigo(invoke: Invoke) {
+        try {
+            val args = invoke.parseArgs(AvisoArgs::class.java)
+            AvisosAmigos.avisar(activity.applicationContext, args.amigo, args.titulo, args.cuerpo)
+            invoke.resolve()
+        } catch (ex: Exception) {
+            invoke.reject(ex.message ?: "no se pudo avisar")
         }
     }
 

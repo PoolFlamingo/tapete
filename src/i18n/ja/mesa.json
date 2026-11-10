@@ -1274,5 +1274,10 @@
 	"Primer jugador": "先攻プレイヤー",
 	"Tiene el turno": "ターン中",
 	"Ruleta al sortear quién empieza": "先攻を決めるときのルーレット",
-	"El anfitrión te ha expulsado de la partida.": "ホストによってゲームから退出させられました。"
+	"El anfitrión te ha expulsado de la partida.": "ホストによってゲームから退出させられました。",
+	"Invitar amigos": "フレンドを招待",
+	"Invitar": "招待",
+	"Invitado": "招待済み",
+	"Elige un deck en la lista para unirte a la partida.": "対戦に参加するには一覧からデッキを選んでください。",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "一覧からデッキを選ぶと、対戦を作成して {apodo} を招待します。"
 }

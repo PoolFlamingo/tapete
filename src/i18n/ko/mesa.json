@@ -1274,5 +1274,10 @@
 	"Primer jugador": "선공 플레이어",
 	"Tiene el turno": "턴 진행 중",
 	"Ruleta al sortear quién empieza": "선공을 뽑을 때 룰렛 표시",
-	"El anfitrión te ha expulsado de la partida.": "호스트가 게임에서 내보냈습니다."
+	"El anfitrión te ha expulsado de la partida.": "호스트가 게임에서 내보냈습니다.",
+	"Invitar amigos": "친구 초대",
+	"Invitar": "초대",
+	"Invitado": "초대함",
+	"Elige un deck en la lista para unirte a la partida.": "게임에 참가하려면 목록에서 덱을 고르세요.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "목록에서 덱을 고르면 게임을 만들고 {apodo} 님을 초대해요."
 }

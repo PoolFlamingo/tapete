@@ -1344,5 +1344,10 @@
 	"Primer jugador": "Primo giocatore",
 	"Tiene el turno": "È il suo turno",
 	"Ruleta al sortear quién empieza": "Ruota per sorteggiare chi inizia",
-	"El anfitrión te ha expulsado de la partida.": "L'host ti ha espulso dalla partita."
+	"El anfitrión te ha expulsado de la partida.": "L'host ti ha espulso dalla partita.",
+	"Invitar amigos": "Invita amici",
+	"Invitar": "Invita",
+	"Invitado": "Invitato",
+	"Elige un deck en la lista para unirte a la partida.": "Scegli un mazzo nella lista per unirti alla partita.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Scegli un mazzo nella lista per creare la partita e invitare {apodo}."
 }

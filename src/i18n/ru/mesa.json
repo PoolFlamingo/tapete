@@ -1367,5 +1367,10 @@
 	"Primer jugador": "Первый игрок",
 	"Tiene el turno": "Сейчас ходит",
 	"Ruleta al sortear quién empieza": "Рулетка при жеребьёвке первого хода",
-	"El anfitrión te ha expulsado de la partida.": "Хост исключил тебя из партии."
+	"El anfitrión te ha expulsado de la partida.": "Хост исключил тебя из партии.",
+	"Invitar amigos": "Пригласить друзей",
+	"Invitar": "Пригласить",
+	"Invitado": "Приглашён",
+	"Elige un deck en la lista para unirte a la partida.": "Выберите колоду в списке, чтобы присоединиться к партии.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Выберите колоду в списке, чтобы создать партию и пригласить {apodo}."
 }

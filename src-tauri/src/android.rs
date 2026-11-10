@@ -206,6 +206,21 @@ pub fn avisos_amigos(_app: &AppHandle, _datos: Option<&Path>) -> AppResult<()> {
     Ok(())
 }
 
+/// Un aviso de amigos con el mismo aspecto que los de la app cerrada (`AvisosAmigos.kt`): icono
+/// de Tapete y el texto también con el aviso expandido. En escritorio, `Unsupported` (va por el
+/// plugin de notificaciones).
+#[cfg(target_os = "android")]
+pub fn aviso_amigo(app: &AppHandle, amigo: &str, titulo: &str, cuerpo: &str) -> AppResult<()> {
+    plugin(app)
+        .aviso_amigo(amigo, titulo, cuerpo)
+        .map_err(de_plugin)
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn aviso_amigo(_app: &AppHandle, _amigo: &str, _titulo: &str, _cuerpo: &str) -> AppResult<()> {
+    Err(sin_android())
+}
+
 /// Pide permiso para enseñar avisos (Android 13+), si aún no se ha decidido.
 #[cfg(target_os = "android")]
 pub fn pedir_permiso_avisos(app: &AppHandle) {

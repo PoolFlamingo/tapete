@@ -783,7 +783,11 @@ le falta una cadena le sale la inglesa.
   0011, `amigos_alias`: el nombre y la nota que pongo a un amigo, solo aquí, `amigos_personal`, `nombreAmigo`).
   «Tu nombre» en Amigos es el mismo de pasar decks (`pasar_nombre_set`, que despierta el `sync` para el `hello`).
   Comandos `amigos_*`, pantalla en `features/amigos/` y `stores/amigos-store.ts`. Una invitación a partida es
-  un mensaje con el código directo **sin IP** (`red::codigo::solo_rele`). Enlaces que se comparten: los de la web
+  un mensaje con el código directo **sin IP** (`red::codigo::solo_rele`); se invita como en Steam (Pablo, 10/11/2026):
+  «Invitar amigos» en la sala de espera (`mesa/red/invitar-amigos.tsx`) o «Invitar a una partida» en el chat, que sin
+  partida pone `invitarA` y «Jugar en red» la crea sola con el deck elegido; «Unirse» en la invitación se une al momento
+  (`pedirUnirse`). En Android todo aviso de amigos va por `AvisosAmigos.avisar` (`android::aviso_amigo`), nunca por
+  `tauri-plugin-notification` (icono «ⓘ» y, expandido, sin texto). Enlaces que se comparten: los de la web
   (`enlace_invitacion` → `/join/<código>`, `enlace_amigo` → `/friend/<TAP-…>`); los que abren la app,
   `tapete://unirse/…` y `tapete://amigo/…` (`enlace.rs`, evento `enlace://entrante`). Cambiar la identidad
   (`red_identidad_importar`) es otra persona para el servidor: `amigos::sincronizar::otra_clave`.

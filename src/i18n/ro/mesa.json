@@ -1344,5 +1344,10 @@
 	"Primer jugador": "Primul jucător",
 	"Tiene el turno": "Este la rând",
 	"Ruleta al sortear quién empieza": "Ruletă la tragerea la sorți a celui care începe",
-	"El anfitrión te ha expulsado de la partida.": "Gazda te-a scos din joc."
+	"El anfitrión te ha expulsado de la partida.": "Gazda te-a scos din joc.",
+	"Invitar amigos": "Invită prieteni",
+	"Invitar": "Invită",
+	"Invitado": "Invitat",
+	"Elige un deck en la lista para unirte a la partida.": "Alege un pachet din listă ca să intri în partidă.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Alege un pachet din listă ca să creezi partida și să-l inviți pe {apodo}."
 }

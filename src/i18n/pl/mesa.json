@@ -1367,5 +1367,10 @@
 	"Primer jugador": "Pierwszy gracz",
 	"Tiene el turno": "Ma turę",
 	"Ruleta al sortear quién empieza": "Koło przy losowaniu, kto zaczyna",
-	"El anfitrión te ha expulsado de la partida.": "Gospodarz usunął cię z gry."
+	"El anfitrión te ha expulsado de la partida.": "Gospodarz usunął cię z gry.",
+	"Invitar amigos": "Zaproś znajomych",
+	"Invitar": "Zaproś",
+	"Invitado": "Zaproszono",
+	"Elige un deck en la lista para unirte a la partida.": "Wybierz talię z listy, aby dołączyć do gry.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Wybierz talię z listy, aby utworzyć grę i zaprosić {apodo}."
 }

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { call } from "@/lib/ipc";
-import { useAmigos } from "@/stores/amigos-store";
+import { nombreAmigo, useAmigos } from "@/stores/amigos-store";
 import { useRed } from "@/stores/red-store";
 import { useTrabajo } from "@/stores/trabajo-store";
 import {
@@ -56,6 +56,7 @@ import {
 	unirsePartida,
 } from "./conexion-red";
 import { type EleccionAplicada, EleccionEnSala } from "./eleccion-en-sala";
+import { InvitarAmigos } from "./invitar-amigos";
 
 /** Lo que trae la entrada de la mesa: el deck elegido y sus opciones. */
 export type Preparacion = {
@@ -121,12 +122,19 @@ export function RedDialog({
 
 function Entrar({ preparar }: { preparar: Preparacion }) {
 	const { t } = useLang();
-	// Con una invitación de un amigo, su código ya puesto (unirse lo pulsa la persona).
+	// Con una invitación de un amigo, su código ya puesto; como la persona ya pulsó «Unirse» en
+	// la invitación, se une sola en cuanto hay deck (si no, el código queda puesto).
+	const [desdeInvitacion] = useState(() => useAmigos.getState().unirse !== null);
 	const [codigo, setCodigo] = useState(() => {
 		const c = useAmigos.getState().unirse ?? "";
 		useAmigos.getState().pedirUnirse(null);
 		return c;
 	});
+	// «Invitar a una partida» desde Amigos sin partida: se crea en cuanto hay deck y, ya en la sala,
+	// `InvitarAmigos` le manda la invitación.
+	const invitarA = useAmigos((s) => s.invitarA);
+	const amigoInvitado = useAmigos((s) => s.estado?.amigos.find((a) => a.clave === s.invitarA));
+	const automatico = useRef(false);
 	const [rol, setRol] = useState<RolEnSala>("jugador");
 	const trabajo = useTrabajo((s) => (s.actual?.tipo === "mesa" ? s.actual : null));
 	const [ocupado, setOcupado] = useState(false);
@@ -142,6 +150,7 @@ function Entrar({ preparar }: { preparar: Preparacion }) {
 	const puedeUnirse = codigoValido && !(rol === "jugador" && sinDeck) && !ocupado && !trabajo;
 	const unirse = async () => {
 		if (!puedeUnirse) return;
+		automatico.current = true;
 		setOcupado(true);
 		await unirsePartida({
 			codigo: limpio,
@@ -154,8 +163,30 @@ function Entrar({ preparar }: { preparar: Preparacion }) {
 		setOcupado(false);
 	};
 
+	// Una sola vez: unirse por la invitación o crear para invitar, en cuanto el deck está listo.
+	const listo = preparar.listo && !ocupado && !trabajo;
+	useEffect(() => {
+		if (automatico.current || !listo || sinDeck) return;
+		if (desdeInvitacion && codigoValido) {
+			automatico.current = true;
+			void unirse();
+		} else if (invitarA && !desdeInvitacion) {
+			automatico.current = true;
+			void crear();
+		}
+	});
+
 	return (
 		<DialogCuerpo>
+			{(desdeInvitacion || invitarA) && sinDeck && (
+				<p className="mb-2.5 rounded-lg border border-amber-500/60 p-2 text-xs">
+					{desdeInvitacion
+						? t("Elige un deck en la lista para unirte a la partida.")
+						: t("Elige un deck en la lista para crear la partida e invitar a {apodo}.", {
+								apodo: amigoInvitado ? nombreAmigo(amigoInvitado) : "",
+							})}
+				</p>
+			)}
 			<div className="grid grid-cols-1 gap-2.5 min-[640px]:grid-cols-2">
 				<section className="flex flex-col gap-2.5 rounded-lg border bg-card/40 p-2.5">
 					<h3 className="flex items-center gap-1.5 text-xs font-semibold">
@@ -361,6 +392,7 @@ function SalaDeEspera({ preparar }: { preparar: Preparacion }) {
 			)}
 			<DialogCuerpo>
 				<div className="flex flex-col gap-2.5 p-1">
+					{anfitrion && codigo && <InvitarAmigos codigo={codigo} />}
 					<EleccionEnSala
 						preparar={preparar}
 						juega={papel !== "espectador"}

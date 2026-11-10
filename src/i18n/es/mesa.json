@@ -1272,5 +1272,10 @@
 	"Primer jugador": "Primer jugador",
 	"Tiene el turno": "Tiene el turno",
 	"Ruleta al sortear quién empieza": "Ruleta al sortear quién empieza",
-	"El anfitrión te ha expulsado de la partida.": "El anfitrión te ha expulsado de la partida."
+	"El anfitrión te ha expulsado de la partida.": "El anfitrión te ha expulsado de la partida.",
+	"Invitar amigos": "Invitar amigos",
+	"Invitar": "Invitar",
+	"Invitado": "Invitado",
+	"Elige un deck en la lista para unirte a la partida.": "Elige un deck en la lista para unirte a la partida.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Elige un deck en la lista para crear la partida e invitar a {apodo}."
 }

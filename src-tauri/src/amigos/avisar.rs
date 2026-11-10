@@ -76,11 +76,20 @@ pub fn mensajes_nuevos(app: &AppHandle, amigos: &[String]) {
             .ok()
             .and_then(|v| v.last().map(|m| m.tipo == "invitacion"))
             .unwrap_or(false);
+        let texto = cuerpo(&textos, &apodo, invitacion);
+        // En Android, el aviso propio (el del plugin de Tauri sale con un icono «ⓘ» y, expandido,
+        // sin el texto).
+        if cfg!(target_os = "android") {
+            if let Err(e) = crate::android::aviso_amigo(app, clave, &textos.titulo, &texto) {
+                tracing::info!(codigo = ?e.code, "amigos: no se pudo avisar");
+            }
+            continue;
+        }
         let r = app
             .notification()
             .builder()
             .title(&textos.titulo)
-            .body(cuerpo(&textos, &apodo, invitacion))
+            .body(texto)
             .show();
         if let Err(e) = r {
             tracing::info!("amigos: no se pudo avisar: {e}");

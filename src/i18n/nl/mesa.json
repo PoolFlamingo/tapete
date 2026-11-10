@@ -1329,5 +1329,10 @@
 	"Primer jugador": "Eerste speler",
 	"Tiene el turno": "Is aan de beurt",
 	"Ruleta al sortear quién empieza": "Rad bij het loten van wie begint",
-	"El anfitrión te ha expulsado de la partida.": "De host heeft je uit het spel verwijderd."
+	"El anfitrión te ha expulsado de la partida.": "De host heeft je uit het spel verwijderd.",
+	"Invitar amigos": "Vrienden uitnodigen",
+	"Invitar": "Uitnodigen",
+	"Invitado": "Uitgenodigd",
+	"Elige un deck en la lista para unirte a la partida.": "Kies een deck in de lijst om mee te doen.",
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Kies een deck in de lijst om het potje te maken en {apodo} uit te nodigen."
 }

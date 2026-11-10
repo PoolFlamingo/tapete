@@ -58,6 +58,13 @@ struct Avisos<'a> {
     datos: Option<&'a str>,
 }
 
+#[derive(Serialize)]
+struct AvisoAmigo<'a> {
+    amigo: &'a str,
+    titulo: &'a str,
+    cuerpo: &'a str,
+}
+
 #[derive(Deserialize)]
 struct Nombre {
     nombre: Option<String>,
@@ -156,6 +163,18 @@ impl<R: Runtime> AndroidExtra<R> {
             "avisosAmigos",
             Avisos {
                 datos: datos.as_deref(),
+            },
+        )
+    }
+
+    /// Un aviso de amigos (icono de Tapete, texto entero; uno por amigo).
+    pub fn aviso_amigo(&self, amigo: &str, titulo: &str, cuerpo: &str) -> Resultado<()> {
+        self.0.run_mobile_plugin(
+            "avisoAmigo",
+            AvisoAmigo {
+                amigo,
+                titulo,
+                cuerpo,
             },
         )
     }

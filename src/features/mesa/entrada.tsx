@@ -101,11 +101,12 @@ function Entrada() {
 	const [local, setLocal] = useState(false);
 	const [historial, setHistorial] = useState(false);
 	const [masOpciones, setMasOpciones] = useState(false);
-	// Una invitación de un amigo (plan D5): «Jugar en red» con su código puesto.
+	// Una invitación de un amigo (plan D5) o «Invitar a una partida» desde Amigos: «Jugar en red».
 	const invitacion = useAmigosStore((s) => s.unirse);
+	const invitarA = useAmigosStore((s) => s.invitarA);
 	useEffect(() => {
-		if (invitacion) setRed(true);
-	}, [invitacion]);
+		if (invitacion || invitarA) setRed(true);
+	}, [invitacion, invitarA]);
 	const enSala = useRed((s) => s.papel !== null);
 	const trabajo = useTrabajo((s) => (s.actual?.tipo === "mesa" ? s.actual : null));
 

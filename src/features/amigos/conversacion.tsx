@@ -63,6 +63,9 @@ export function Conversacion({
 	const cursor = useRef<{ inicio: number | null; fin: number | null } | null>(null);
 	const final = useRef<HTMLDivElement>(null);
 	const codigoPartida = useRed((s) => (s.papel === "anfitrion" && !s.empezada ? s.codigo : null));
+	// Sin partida propia en espera se puede invitar igual (se crea al llegar a «Jugar»); no si ya
+	// se está jugando o se es invitado en la de otro.
+	const puedeInvitar = useRed((s) => s.papel === null || (s.papel === "anfitrion" && !s.empezada));
 	const hora = new Intl.DateTimeFormat(localeDe(lang), {
 		hour: "2-digit",
 		minute: "2-digit",
@@ -120,7 +123,13 @@ export function Conversacion({
 		}
 	};
 	const invitar = async () => {
-		if (!codigoPartida) return;
+		if (!codigoPartida) {
+			// Como en Steam: «Jugar» crea la partida con el deck elegido y le manda la invitación.
+			useAmigos.getState().pedirInvitar(amigo.clave);
+			useAmigos.getState().cerrar();
+			useUi.getState().setVista("mesa");
+			return;
+		}
 		try {
 			const r = await call("amigos_invitar", { clave: amigo.clave, codigo: codigoPartida });
 			poner(r.mensaje);
@@ -266,10 +275,10 @@ export function Conversacion({
 			</ScrollArea>
 
 			<div className="flex flex-col gap-1.5">
-				{codigoPartida && (
+				{puedeInvitar && amigo.claveValida && (
 					<Button size="sm" variant="outline" onClick={() => void invitar()}>
 						<Icono icon="lucide:swords" className="size-4" />
-						{t("Invitar a tu partida")}
+						{codigoPartida ? t("Invitar a tu partida") : t("Invitar a una partida")}
 					</Button>
 				)}
 				<div className="flex gap-1.5">
