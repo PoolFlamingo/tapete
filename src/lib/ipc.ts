@@ -19,7 +19,6 @@ import type { CardSummary } from "@/bindings/CardSummary";
 import type { CartaDeLista } from "@/bindings/CartaDeLista";
 import type { ColeccionIconos } from "@/bindings/ColeccionIconos";
 import type { Collection } from "@/bindings/Collection";
-import type { ComoEnSala } from "@/bindings/ComoEnSala";
 import type { ConfigMesa } from "@/bindings/ConfigMesa";
 import type { DatosIcono } from "@/bindings/DatosIcono";
 import type { DecisionPasar } from "@/bindings/DecisionPasar";
@@ -34,13 +33,14 @@ import type { DesignDraft } from "@/bindings/DesignDraft";
 import type { DesignLang } from "@/bindings/DesignLang";
 import type { DestinoPasar } from "@/bindings/DestinoPasar";
 import type { EleccionPasar } from "@/bindings/EleccionPasar";
+import type { EnlaceEntrante } from "@/bindings/EnlaceEntrante";
+import type { Envio } from "@/bindings/Envio";
 import type { EquipoCerca } from "@/bindings/EquipoCerca";
+import type { EstadoAmigos } from "@/bindings/EstadoAmigos";
 import type { EstadoEmisor } from "@/bindings/EstadoEmisor";
 import type { EstadoMesa } from "@/bindings/EstadoMesa";
 import type { EstadoReceptor } from "@/bindings/EstadoReceptor";
 import type { EstadoRed } from "@/bindings/EstadoRed";
-import type { EstadoSala } from "@/bindings/EstadoSala";
-import type { EstadoSalas } from "@/bindings/EstadoSalas";
 import type { ExportEstimate } from "@/bindings/ExportEstimate";
 import type { FaceImage } from "@/bindings/FaceImage";
 import type { FichaCarta } from "@/bindings/FichaCarta";
@@ -57,11 +57,11 @@ import type { Identidad } from "@/bindings/Identidad";
 import type { IdentifyRequest } from "@/bindings/IdentifyRequest";
 import type { IdJugador } from "@/bindings/IdJugador";
 import type { InfoPaquete } from "@/bindings/InfoPaquete";
-import type { Invitacion } from "@/bindings/Invitacion";
 import type { LetraInfo } from "@/bindings/LetraInfo";
 import type { LetraLibre } from "@/bindings/LetraLibre";
 import type { ListaDeJuego } from "@/bindings/ListaDeJuego";
 import type { ListasDeDeck } from "@/bindings/ListasDeDeck";
+import type { MensajeAmigo } from "@/bindings/MensajeAmigo";
 import type { MensajeMesa } from "@/bindings/MensajeMesa";
 import type { ModoPaquete } from "@/bindings/ModoPaquete";
 import type { NombresIdiomasInfo } from "@/bindings/NombresIdiomasInfo";
@@ -77,7 +77,6 @@ import type { PaqueteLeido } from "@/bindings/PaqueteLeido";
 import type { ParsedDecklist } from "@/bindings/ParsedDecklist";
 import type { PeticionUnion } from "@/bindings/PeticionUnion";
 import type { Plataforma } from "@/bindings/Plataforma";
-import type { Playgroup } from "@/bindings/Playgroup";
 import type { Preset } from "@/bindings/Preset";
 import type { PresetKind } from "@/bindings/PresetKind";
 import type { PrintSettings } from "@/bindings/PrintSettings";
@@ -86,8 +85,6 @@ import type { ResolucionPasar } from "@/bindings/ResolucionPasar";
 import type { ResolveOptions } from "@/bindings/ResolveOptions";
 import type { Resumen } from "@/bindings/Resumen";
 import type { ResumenPartida } from "@/bindings/ResumenPartida";
-import type { RolPlaygroup } from "@/bindings/RolPlaygroup";
-import type { SalaNueva } from "@/bindings/SalaNueva";
 import type { SaveResult } from "@/bindings/SaveResult";
 import type { SetInfo } from "@/bindings/SetInfo";
 import type { SimbolosInfo } from "@/bindings/SimbolosInfo";
@@ -96,8 +93,8 @@ import type { Tag } from "@/bindings/Tag";
 import type { Tapete } from "@/bindings/Tapete";
 import type { TemaCatalogo } from "@/bindings/TemaCatalogo";
 import type { TemaInstalado } from "@/bindings/TemaInstalado";
+import type { TextosAvisos } from "@/bindings/TextosAvisos";
 import type { TipoCarpeta } from "@/bindings/TipoCarpeta";
-import type { Usada } from "@/bindings/Usada";
 import type { VistaAspectoDados } from "@/bindings/VistaAspectoDados";
 import type { VistaBanquillo } from "@/bindings/VistaBanquillo";
 import type { VistaEncuentro } from "@/bindings/VistaEncuentro";
@@ -271,7 +268,7 @@ export interface Commands {
 		args: { blob: string; x: number; y: number; w: number; h: number };
 		result: ArtRef;
 	};
-	export_pdf: { args: { deck: Deck; path: string; zip?: boolean }; result: number };
+	export_pdf: { args: { deck: Deck; path: string; zip?: boolean; lang?: string }; result: number };
 	export_estimate: { args: { deck: Deck }; result: ExportEstimate };
 	export_calibration: {
 		args: { settings: PrintSettings; path: string; texts: CalibrationTextsInput };
@@ -331,11 +328,13 @@ export interface Commands {
 	preset_delete: { args: { id: string }; result: null };
 	mesa_empezar: { args: { config: ConfigMesa }; result: number };
 	mesa_retomar: { args: Record<string, never>; result: number };
-	enlace_pendiente: { args: Record<string, never>; result: string | null };
+	enlace_pendiente: { args: Record<string, never>; result: EnlaceEntrante | null };
 	pbdeck_pendiente: { args: Record<string, never>; result: string | null };
 	compartir_fichero: { args: { ruta: string }; result: null };
 	fichero_temporal: { args: { nombre: string }; result: string };
-	enlace_invitacion: { args: { codigo: string }; result: string | null };
+	enlace_invitacion: { args: { codigo: string }; result: string };
+	enlace_amigo: { args: { codigo: string }; result: string | null };
+	red_expulsar: { args: { jugador: number }; result: null };
 	mesa_estado: { args: Record<string, never>; result: EstadoMesa };
 	mesa_suscribir: { args: { canal: Channel<MensajeMesa> }; result: null };
 	mesa_vista: { args: Record<string, never>; result: VistaMesa };
@@ -397,33 +396,6 @@ export interface Commands {
 		result: null;
 	};
 	mesa_senal: { args: { carta: IdCarta | null; a: IdJugador | null }; result: null };
-	salas_conectar: { args: { apodo: string }; result: EstadoSalas };
-	salas_estado: { args: Record<string, never>; result: EstadoSalas };
-	salas_playgroups: { args: Record<string, never>; result: Playgroup[] };
-	salas_pg_crear: { args: { nombre: string }; result: Playgroup[] };
-	salas_pg_salir: { args: { playgroup: string }; result: Playgroup[] };
-	salas_pg_expulsar: { args: { playgroup: string; clave: string }; result: Playgroup[] };
-	salas_pg_rol: {
-		args: { playgroup: string; clave: string; rol: RolPlaygroup };
-		result: Playgroup[];
-	};
-	salas_invitar: { args: { playgroup: string | null }; result: Invitacion };
-	salas_revocar: { args: { codigo: string }; result: null };
-	salas_usar: { args: { codigo: string; como: ComoEnSala | null; apodo: string }; result: Usada };
-	salas_sala_crear: { args: { nueva: SalaNueva; apodo: string }; result: EstadoSala };
-	salas_sala_unirse: {
-		args: { sala: string; como: ComoEnSala; apodo: string };
-		result: EstadoSala;
-	};
-	salas_sala_salir: { args: Record<string, never>; result: null };
-	salas_sala_expulsar: { args: { clave: string }; result: null };
-	salas_sala_expulsar_jugador: { args: { jugador: number }; result: null };
-	salas_deck: {
-		args: { deckId: string; lista: string | null; formato: Formato };
-		result: number;
-	};
-	salas_empezar: { args: Record<string, never>; result: null };
-	salas_terminar: { args: Record<string, never>; result: null };
 	mesa_listas: { args: { deck: string }; result: ListasDeDeck };
 	mesa_lista_cartas: { args: { deck: string }; result: CartaDeLista[] };
 	mesa_lista_comprobar: {
@@ -437,6 +409,32 @@ export interface Commands {
 	iconos_buscar: { args: { texto: string }; result: string[] };
 	iconos_datos: { args: { ids: string[] }; result: Record<string, DatosIcono> };
 	iconos_elegir: { args: { id: string }; result: DatosIcono };
+	amigos_estado: { args: Record<string, never>; result: EstadoAmigos };
+	amigos_activar: { args: Record<string, never>; result: EstadoAmigos };
+	amigos_desactivar: {
+		args: { borrarServidor: boolean; borrarLocal: boolean };
+		result: EstadoAmigos;
+	};
+	amigos_sincronizar: { args: Record<string, never>; result: EstadoAmigos };
+	amigos_pedir: { args: { codigo: string }; result: string };
+	amigos_responder: { args: { id: string; aceptar: boolean }; result: null };
+	amigos_quitar: { args: { clave: string }; result: null };
+	amigos_bloquear: { args: { clave: string; bloquear: boolean }; result: null };
+	amigos_denunciar: {
+		args: { clave: string; motivo: string; nota: string | null };
+		result: null;
+	};
+	amigos_nuevo_codigo: { args: Record<string, never>; result: string };
+	amigos_mandar: { args: { clave: string; texto: string }; result: Envio };
+	amigos_invitar: { args: { clave: string; codigo: string }; result: Envio };
+	amigos_reintentar: { args: { id: number }; result: Envio };
+	amigos_conversacion: { args: { clave: string; antes: number | null }; result: MensajeAmigo[] };
+	amigos_leido: { args: { clave: string }; result: null };
+	amigos_verificar: { args: { clave: string; verificado: boolean }; result: null };
+	amigos_ritmo: { args: { chatAbierto: boolean }; result: null };
+	amigos_textos: { args: { textos: TextosAvisos }; result: null };
+	amigos_privacidad: { args: Record<string, never>; result: null };
+	amigos_qr: { args: Record<string, never>; result: string | null };
 }
 
 export function call<C extends keyof Commands>(
@@ -466,7 +464,6 @@ export interface Events {
 	"packs://progress": import("@/bindings/DescargaProgressEvent").DescargaProgressEvent;
 	"names://progress": import("@/bindings/NombresProgressEvent").NombresProgressEvent;
 	"update://progress": import("@/bindings/ActualizacionProgressEvent").ActualizacionProgressEvent;
-	"salas://enlace": string;
 	"pbdeck://abierto": string;
 	"mesa://progress": import("@/bindings/MesaProgressEvent").MesaProgressEvent;
 	"mesa://done": import("@/bindings/MesaDoneEvent").MesaDoneEvent;
@@ -477,6 +474,10 @@ export interface Events {
 	"pasar://imagenes-done": import("@/bindings/ImagenesFin").ImagenesFin;
 	"optimizar://progress": import("@/bindings/OptimizarProgreso").OptimizarProgreso;
 	"optimizar://done": import("@/bindings/OptimizarFin").OptimizarFin;
+	"enlace://entrante": EnlaceEntrante;
+	"amigos://estado": EstadoAmigos;
+	/** Las claves de los amigos que escribieron algo nuevo. */
+	"amigos://mensajes": string[];
 }
 
 /** Escucha un evento de Rust. Devuelve la función que deja de escuchar. */

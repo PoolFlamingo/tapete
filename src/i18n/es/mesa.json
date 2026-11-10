@@ -574,7 +574,6 @@
 	"Atajos": "Atajos",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.",
 	"La mesa no deja hacer eso ahora.": "La mesa no deja hacer eso ahora.",
-	"El servidor de salas ha dado un error.": "El servidor de salas ha dado un error.",
 	"Esa carta o ese jugador ya no está ahí.": "Esa carta o ese jugador ya no está ahí.",
 	"Eso es de otro jugador: no puedes tocarlo.": "Eso es de otro jugador: no puedes tocarlo.",
 	"Solo el jugador activo puede hacer eso.": "Solo el jugador activo puede hacer eso.",
@@ -612,7 +611,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "Este deck tiene más cartas de las que se juegan: elige una lista para jugar.",
 	"La lista para jugar no vale para este formato: revísala.": "La lista para jugar no vale para este formato: revísala.",
 	"Ponle un nombre a la lista.": "Ponle un nombre a la lista.",
-	"Volver a la sala": "Volver a la sala",
 	"En red…": "En red…",
 	"¿Salir de la partida?": "¿Salir de la partida?",
 	"Eres el anfitrión: la partida se cierra para todos.": "Eres el anfitrión: la partida se cierra para todos.",
@@ -771,8 +769,6 @@
 	"Expulsar de la partida": "Expulsar de la partida",
 	"¿Expulsar a {nombre}?": "¿Expulsar a {nombre}?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "Quedará eliminado de la partida y no podrá volver a entrar en ella.",
-	"Quien creó la sala te ha expulsado de ella.": "Quien creó la sala te ha expulsado de ella.",
-	"Expulsar de la sala": "Expulsar de la sala",
 	"Solo el anfitrión puede hacer eso.": "Solo el anfitrión puede hacer eso.",
 	"Fuera en la ronda {r}, por {quien}": "Fuera en la ronda {r}, por {quien}",
 	"Puesto {puesto}": "Puesto {puesto}",
@@ -1213,7 +1209,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.",
 	"Ver el resultado": "Ver el resultado",
 	"Volver a la partida en red": "Volver a la partida en red",
-	"Volver a la sala de amigos": "Volver a la sala de amigos",
 	"Subir": "Subir",
 	"Bajar": "Bajar",
 	"Vida": "Vida",
@@ -1276,5 +1271,6 @@
 	"Turno de {quien}": "Turno de {quien}",
 	"Primer jugador": "Primer jugador",
 	"Tiene el turno": "Tiene el turno",
-	"Ruleta al sortear quién empieza": "Ruleta al sortear quién empieza"
+	"Ruleta al sortear quién empieza": "Ruleta al sortear quién empieza",
+	"El anfitrión te ha expulsado de la partida.": "El anfitrión te ha expulsado de la partida."
 }

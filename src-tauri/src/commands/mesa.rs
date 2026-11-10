@@ -615,7 +615,7 @@ pub fn mesa_salir(app: AppHandle, state: State<'_, AppState>, guardar: bool) -> 
         }
         *v = None;
     }
-    // En red, salir de la mesa es salir de la partida (y de su sala del servidor).
+    // En red, salir de la mesa es salir de la partida.
     // Un invitado que se va estando conectado ya no quiere volver; con la
     // conexión perdida, sí puede (`red/vuelta.rs`).
     let conectado = state.red.con_sala(|s| match s {
@@ -629,12 +629,6 @@ pub fn mesa_salir(app: AppHandle, state: State<'_, AppState>, guardar: bool) -> 
     }
     if let Some(sala) = state.red.quitar_sala() {
         tauri::async_runtime::spawn(sala.cerrar());
-    }
-    if state.red.con_salon(|s| s.is_some()) {
-        if let Some(c) = state.red.con_servidor(|c| c.clone()) {
-            c.mandar(crate::red::servidor::mensajes::AlServidor::SalaSalir);
-        }
-        crate::red::servidor::sala::salir(&app);
     }
     if !guardar && !era_repeticion {
         guardada::borrar(&state.paths.data);

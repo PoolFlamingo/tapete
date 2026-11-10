@@ -327,6 +327,7 @@ fn spec(img: &FaceImage, edits: CardEdits, deck: &Deck, dorso: bool) -> RenderSp
         format: ImageFormat::Jpeg,
         jpeg_quality: 85,
         diseno: None,
+        sello: None,
     }
 }
 

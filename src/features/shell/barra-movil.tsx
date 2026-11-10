@@ -1,6 +1,7 @@
 import { FilaMenu, HojaMenu } from "@/components/hoja-menu";
 import { Icono } from "@/components/icono";
 import { paraTraducir, useLang } from "@/components/language-provider";
+import { FilaAmigos, PuntoAmigos } from "@/features/amigos/boton-amigos";
 import { cn } from "@/lib/utils";
 import { useUi, type Vista } from "@/stores/ui-store";
 import { BotonActualizar, PuntoActualizacion, useAvisoAjustes } from "./actualizacion-automatica";
@@ -83,6 +84,7 @@ export function BarraInferiorMovil({
 				<span className="relative">
 					<Icono icon="lucide:menu" className="size-5" />
 					<PuntoActualizacion />
+					<PuntoAmigos />
 				</span>
 				<span className="max-w-full truncate">{t("Más")}</span>
 			</button>
@@ -115,6 +117,7 @@ export function HojaMas({
 				onClick={onAjustes}
 				marca={<PuntoActualizacion />}
 			/>
+			<FilaAmigos />
 			<FilaMenu
 				icono="lucide:circle-help"
 				texto={t("Tutorial de esta pantalla")}

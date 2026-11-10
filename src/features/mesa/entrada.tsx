@@ -34,12 +34,11 @@ import { useOrganizados, ZonaDecks } from "@/features/library/zona-decks";
 import { useFormato } from "@/lib/formato";
 import { call } from "@/lib/ipc";
 import { cn } from "@/lib/utils";
+import { useAmigos as useAmigosStore } from "@/stores/amigos-store";
 import { abrirDeck } from "@/stores/deck-store";
 import { useRed } from "@/stores/red-store";
-import { useSalas } from "@/stores/salas-store";
 import { useTrabajo } from "@/stores/trabajo-store";
 import { useUi } from "@/stores/ui-store";
-import { SalasDialog } from "../salas/salas-dialog";
 import { COLORES_JUGADOR } from "./colores";
 import { empezar, retomar, salir } from "./conexion";
 import { PanelEmpezarMovil, TODO_EL_DECK } from "./entrada-movil";
@@ -99,16 +98,14 @@ function Entrada() {
 	const [listasDe, setListasDe] = useState<string | null>(null);
 	const [editando, setEditando] = useState<{ lista: ListaDeJuego | null } | null>(null);
 	const [red, setRed] = useState(false);
-	const [amigos, setAmigos] = useState(false);
 	const [local, setLocal] = useState(false);
 	const [historial, setHistorial] = useState(false);
 	const [masOpciones, setMasOpciones] = useState(false);
-	const enSalaServidor = useSalas((s) => s.sala !== null);
-	const enlaceEntrante = useSalas((s) => s.enlaceEntrante);
-	// Un enlace de invitación abre «Con amigos…» con el código puesto.
+	// Una invitación de un amigo (plan D5): «Jugar en red» con su código puesto.
+	const invitacion = useAmigosStore((s) => s.unirse);
 	useEffect(() => {
-		if (enlaceEntrante) setAmigos(true);
-	}, [enlaceEntrante]);
+		if (invitacion) setRed(true);
+	}, [invitacion]);
 	const enSala = useRed((s) => s.papel !== null);
 	const trabajo = useTrabajo((s) => (s.actual?.tipo === "mesa" ? s.actual : null));
 
@@ -391,13 +388,13 @@ function Entrada() {
 			)}
 			<Button
 				size="lg"
-				variant={enSalaServidor ? "default" : "outline"}
-				onClick={() => setAmigos(true)}
+				variant="outline"
+				onClick={() => useAmigosStore.getState().abrir()}
 				data-tutorial="mesa-amigos"
 				className={botonMovil}
 			>
 				<Icono icon="lucide:users" className="size-4" />
-				{enSalaServidor ? t("Volver a la sala de amigos") : t("Con amigos…")}
+				{t("Con amigos…")}
 			</Button>
 			<Button
 				size="lg"
@@ -411,13 +408,13 @@ function Entrada() {
 			</Button>
 			<Button
 				size="lg"
-				variant={enSala && !enSalaServidor ? "default" : "outline"}
+				variant={enSala ? "default" : "outline"}
 				onClick={() => setRed(true)}
 				data-tutorial="mesa-red"
 				className={botonMovil}
 			>
 				<Icono icon="lucide:plug" className="size-4" />
-				{enSala && !enSalaServidor ? t("Volver a la partida en red") : t("En red…")}
+				{enSala ? t("Volver a la partida en red") : t("En red…")}
 			</Button>
 		</div>
 	);
@@ -449,15 +446,6 @@ function Entrada() {
 					}}
 				/>
 			)}
-			<SalasDialog
-				abierto={amigos}
-				onCerrar={() => {
-					setAmigos(false);
-					useSalas.getState().poner({ enlaceEntrante: null });
-				}}
-				preparar={preparar}
-				onConCodigo={() => setRed(true)}
-			/>
 			<PartidaLocalDialog
 				abierto={local}
 				onCerrar={() => setLocal(false)}

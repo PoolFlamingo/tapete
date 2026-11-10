@@ -1,9 +1,9 @@
-//! **El TLS de cada plataforma**, en un solo sitio. Hay tres consumidores: los
-//! clientes HTTP (`reqwest`, el actualizador incluido), el WebSocket del
-//! servidor de salas (`rustls`) y el nodo de iroh.
+//! **El TLS de cada plataforma**, en un solo sitio. Hay dos consumidores: los
+//! clientes HTTP (`reqwest`: Scryfall, el actualizador, el servidor de Tapete…) y
+//! el nodo de iroh.
 //!
-//! En escritorio, el verificador del sistema (`rustls-platform-verifier`: los
-//! certificados que el sistema ya tiene, con su revocación). En Android (y iOS,
+//! En escritorio, el verificador del sistema (los certificados que el sistema ya
+//! tiene, con su revocación). En Android (y iOS,
 //! hasta que se pruebe allí) ese verificador entra en pánico si no se inicializa
 //! con su parte de Kotlin, así que en móvil se usan los certificados raíz de
 //! Mozilla incrustados en la app: sin Kotlin ni JNI en el arranque. Se pierden
@@ -13,8 +13,6 @@
 //! 🛑 Nadie más crea un cliente: ningún `reqwest::Client::builder()`,
 //! `with_platform_verifier` ni `CaTlsConfig::` fuera de este fichero (lo
 //! vigila un test).
-
-use crate::error::{AppError, AppResult, ErrorCode};
 
 /// El `User-Agent` de todas las peticiones de la app: Scryfall pide nombre y una forma de
 /// contacto, y lo ven también GitHub, Google Fonts y los demás sitios de `fuentes`.
@@ -48,26 +46,6 @@ fn raices_reqwest() -> &'static [reqwest::Certificate] {
             .filter_map(|c| reqwest::Certificate::from_der(c.as_ref()).ok())
             .collect()
     })
-}
-
-/// La configuración de `rustls` para el WebSocket del servidor de salas.
-pub fn rustls() -> AppResult<rustls::ClientConfig> {
-    use std::sync::Arc;
-    let proveedor = Arc::new(rustls::crypto::ring::default_provider());
-    let red = |e: rustls::Error| AppError::new(ErrorCode::Network).with("detalle", e);
-    let b = rustls::ClientConfig::builder_with_provider(proveedor)
-        .with_safe_default_protocol_versions()
-        .map_err(red)?;
-    #[cfg(not(mobile))]
-    let b = {
-        use rustls_platform_verifier::BuilderVerifierExt;
-        b.with_platform_verifier().map_err(red)?
-    };
-    #[cfg(mobile)]
-    let b = b.with_root_certificates(rustls::RootCertStore {
-        roots: webpki_roots::TLS_SERVER_ROOTS.to_vec(),
-    });
-    Ok(b.with_no_client_auth())
 }
 
 /// Los certificados con los que el nodo de iroh comprueba los relés.

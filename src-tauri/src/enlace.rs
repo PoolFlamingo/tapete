@@ -1,44 +1,65 @@
-//! **Enlaces `proxybuilder://` y `tapete://`** (Q-F3): un enlace de invitación
-//! abre la app y lleva al diálogo de «Con amigos…» con el código puesto.
+//! **Enlaces `tapete://` y `proxybuilder://`**: un enlace de invitación abre la app con el
+//! código ya puesto. Desde la retirada de las salas del servidor (plan Tapete, D7):
 //!
-//! Formato: `proxybuilder://unirse/<código>` o `tapete://unirse/<código>` (el
-//! nombre nuevo; entra desde la 3.6.0 para que los enlaces que genere la 4.x
-//! abran las copias ya instaladas), con el código de 10 caracteres
-//! del servidor (base32 de Crockford). El enlace **no hace nada por sí
-//! solo**: Rust solo valida el código y se lo pasa a la pantalla, que lo
-//! pone en «Unirse con un código» y espera a que la persona pulse el botón.
-//! Cualquier otra cosa (otro esquema, otra ruta, un código mal formado, un
-//! enlace enorme) se ignora.
+//! - `tapete://unirse/<código directo>` (`PB1-…`): «Jugar en red» con el código puesto.
+//! - `tapete://amigo/<código de amigo>` (`TAP-XXXX-XXXX`): «Amigos» con el código puesto.
 //!
-//! Se escucha aquí, en Rust (`tauri-plugin-deep-link`, y
-//! `tauri-plugin-single-instance` para que una segunda instancia lance el
-//! enlace a la primera en Windows y Linux), y a la pantalla le llega el
-//! evento `salas://enlace` con el código. Si el enlace es el que abrió la
-//! app, la pantalla aún no escucha: queda guardado y lo pide con
-//! `enlace_pendiente`.
+//! `proxybuilder://` se sigue aceptando con el mismo formato (los enlaces ya enviados y las
+//! versiones anteriores a la 4.0, que lo generaban). El enlace **no hace nada por sí solo**:
+//! Rust solo comprueba el código y se lo pasa a la pantalla; unirse o pedir amistad lo pulsa la
+//! persona. Cualquier otra cosa (otro esquema, otra ruta, un código mal formado, un enlace
+//! enorme) se ignora.
+//!
+//! Los enlaces que la app genera para compartir son los de la web
+//! (`https://tapete.zodhub.app/join/<código>` y `/friend/<código>`), que abren la app con el
+//! esquema que entienda la versión de cada uno o llevan a descargarla.
+//!
+//! Se escucha aquí, en Rust (`tauri-plugin-deep-link`, y `tauri-plugin-single-instance` para
+//! que una segunda instancia lance el enlace a la primera en Windows y Linux), y a la pantalla
+//! le llega el evento `enlace://entrante`. Si el enlace es el que abrió la app, la pantalla aún
+//! no escucha: queda guardado y lo pide con `enlace_pendiente`.
 
 use std::sync::Mutex;
 
+use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager};
+use ts_rs::TS;
 
 use crate::state::AppState;
 
-/// El esquema de los enlaces que genera la app. 🛑 Sigue siendo el viejo hasta
-/// que todas las copias entiendan `tapete://` (lo cambia la 4.0.0).
-pub const ESQUEMA: &str = "proxybuilder";
+/// El esquema del nombre nuevo (el que abre la web).
+pub const ESQUEMA: &str = "tapete";
 /// Los esquemas que se aceptan, los dos registrados en `tauri.conf.json`
 /// (`plugins.deep-link`, escritorio y móvil) y en el `intent-filter` de Android.
-pub const ESQUEMAS: [&str; 2] = [ESQUEMA, "tapete"];
-const ALFABETO: &str = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-const LARGO: usize = 10;
-/// Un enlace más largo que esto no es de la app.
-const MAX_ENLACE: usize = 200;
+pub const ESQUEMAS: [&str; 2] = ["proxybuilder", ESQUEMA];
+/// La web que abre la app (y lleva a descargarla si no está).
+pub const WEB: &str = "https://tapete.zodhub.app";
+/// Un enlace más largo que esto no es de la app (un código directo cabe en 4 KiB).
+const MAX_ENLACE: usize = 4_200;
+const MAX_CODIGO_PARTIDA: usize = 4_096;
 
-/// El código de invitación como lo guarda el servidor (`normalizar` de
-/// `server/src/invitaciones.ts`): sin espacios ni guiones, en mayúsculas y
-/// con I, L y O leídas como 1 y 0.
-pub fn normalizar(texto: &str) -> Option<String> {
-    let c: String = texto
+/// Lo que trae un enlace.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, TS)]
+#[serde(tag = "tipo", content = "codigo", rename_all = "camelCase")]
+#[ts(export)]
+pub enum EnlaceEntrante {
+    /// Un código directo de partida (`PB1-…`).
+    Unirse(String),
+    /// Un código de amigo, ya normalizado (`TAP-XXXX-XXXX`).
+    Amigo(String),
+}
+
+const CROCKFORD: &str = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+/// El código de amigo como lo guarda el servidor: 8 caracteres de Crockford (con o sin `TAP-`,
+/// guiones, espacios; I y L se leen como 1 y O como 0) → `TAP-XXXX-XXXX`.
+pub fn codigo_amigo(texto: &str) -> Option<String> {
+    let t = texto.trim();
+    let t = t
+        .strip_prefix("TAP-")
+        .or_else(|| t.strip_prefix("tap-"))
+        .unwrap_or(t);
+    let c: String = t
         .chars()
         .filter(|c| !c.is_whitespace() && *c != '-')
         .map(|c| match c.to_ascii_uppercase() {
@@ -47,12 +68,38 @@ pub fn normalizar(texto: &str) -> Option<String> {
             x => x,
         })
         .collect();
-    (c.chars().count() == LARGO && c.chars().all(|x| ALFABETO.contains(x))).then_some(c)
+    (c.chars().count() == 8 && c.chars().all(|x| CROCKFORD.contains(x)))
+        .then(|| format!("TAP-{}-{}", &c[..4], &c[4..]))
 }
 
-/// El código de un enlace `proxybuilder://unirse/<código>` (o `tapete://`), o `None` si el
-/// enlace es de otra cosa o el código no puede ser uno.
-pub fn codigo_de(enlace: &str) -> Option<String> {
+/// El código de amigo de lo que se pega o se lee de un QR: el código suelto, el enlace de la web
+/// (`…/friend/<código>`) o el de la app (`tapete://amigo/<código>`).
+pub fn codigo_amigo_pegado(texto: &str) -> Option<String> {
+    let t = texto.trim();
+    if t.len() > MAX_ENLACE {
+        return None;
+    }
+    codigo_amigo(t).or_else(|| {
+        let (_, resto) = t
+            .rsplit_once("/friend/")
+            .or_else(|| t.rsplit_once("://amigo/"))?;
+        codigo_amigo(resto.split(['/', '?', '#']).next()?)
+    })
+}
+
+/// Un código directo de partida con pinta de serlo (Rust lo comprueba de verdad al unirse).
+fn codigo_partida(texto: &str) -> Option<String> {
+    let resto = texto.strip_prefix("PB1-")?;
+    (resto.len() >= 8
+        && texto.len() <= MAX_CODIGO_PARTIDA
+        && resto
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_'))
+    .then(|| texto.to_string())
+}
+
+/// Lo que trae un enlace `tapete://…` o `proxybuilder://…`, o `None` si no es de la app.
+pub fn leer(enlace: &str) -> Option<EnlaceEntrante> {
     if enlace.len() > MAX_ENLACE {
         return None;
     }
@@ -63,40 +110,39 @@ pub fn codigo_de(enlace: &str) -> Option<String> {
     // Sin la consulta ni el fragmento.
     let resto = resto.split(['?', '#']).next()?;
     let mut partes = resto.trim_matches('/').split('/');
-    if !partes.next()?.eq_ignore_ascii_case("unirse") {
-        return None;
-    }
+    let ruta = partes.next()?;
     let codigo = partes.next()?;
     // Ni nada más detrás.
     if partes.next().is_some() {
         return None;
     }
-    normalizar(codigo)
+    if ruta.eq_ignore_ascii_case("unirse") {
+        codigo_partida(codigo).map(EnlaceEntrante::Unirse)
+    } else if ruta.eq_ignore_ascii_case("amigo") {
+        codigo_amigo(codigo).map(EnlaceEntrante::Amigo)
+    } else {
+        None
+    }
 }
 
-/// El enlace de invitación de un código.
-pub fn enlace_de(codigo: &str) -> Option<String> {
-    normalizar(codigo).map(|c| format!("{ESQUEMA}://unirse/{c}"))
-}
+/// El enlace que lo pendiente (por si la pantalla aún no escucha).
+static PENDIENTE: Mutex<Option<EnlaceEntrante>> = Mutex::new(None);
 
-/// El enlace que abrió la app (o el último), por si la pantalla aún no escucha.
-static PENDIENTE: Mutex<Option<String>> = Mutex::new(None);
-
-fn pendiente() -> std::sync::MutexGuard<'static, Option<String>> {
+fn pendiente() -> std::sync::MutexGuard<'static, Option<EnlaceEntrante>> {
     match PENDIENTE.lock() {
         Ok(g) => g,
         Err(e) => e.into_inner(),
     }
 }
 
-/// Llegan enlaces (de la primera instancia o de una segunda): los que valen
-/// se guardan y se avisa a la pantalla, y la ventana pasa al frente.
+/// Llegan enlaces (de la primera instancia o de una segunda): el primero que vale se guarda y
+/// se avisa a la pantalla, y la ventana pasa al frente.
 pub fn recibir<S: AsRef<str>>(app: &AppHandle, enlaces: impl IntoIterator<Item = S>) {
-    let Some(codigo) = enlaces.into_iter().find_map(|e| codigo_de(e.as_ref())) else {
+    let Some(e) = enlaces.into_iter().find_map(|e| leer(e.as_ref())) else {
         return;
     };
-    *pendiente() = Some(codigo.clone());
-    let _ = app.emit("salas://enlace", &codigo);
+    *pendiente() = Some(e.clone());
+    let _ = app.emit("enlace://entrante", &e);
     if let Some(v) = app.get_webview_window("main") {
         let _ = v.show();
         #[cfg(desktop)]
@@ -107,76 +153,81 @@ pub fn recibir<S: AsRef<str>>(app: &AppHandle, enlaces: impl IntoIterator<Item =
 
 /// El enlace pendiente, una sola vez: la pantalla lo pide al arrancar.
 #[tauri::command]
-pub fn enlace_pendiente(_state: tauri::State<'_, AppState>) -> Option<String> {
+pub fn enlace_pendiente(_state: tauri::State<'_, AppState>) -> Option<EnlaceEntrante> {
     pendiente().take()
 }
 
-/// El enlace de invitación de un código (el que se copia en el panel).
+/// El enlace de la web para invitar a una partida con un código directo: sin las IP del
+/// anfitrión (solo el relé), como en las invitaciones a amigos.
 #[tauri::command]
-pub fn enlace_invitacion(codigo: String) -> Option<String> {
-    enlace_de(&codigo)
+pub fn enlace_invitacion(codigo: String) -> crate::error::AppResult<String> {
+    let solo = crate::red::codigo::solo_rele(codigo.trim())?;
+    Ok(format!("{WEB}/join/{solo}"))
+}
+
+/// El enlace de la web para que alguien te añada de amigo.
+#[tauri::command]
+pub fn enlace_amigo(codigo: String) -> Option<String> {
+    codigo_amigo(&codigo).map(|c| format!("{WEB}/friend/{c}"))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    fn partida() -> String {
+        format!("PB1-{}", "AbC_d-9".repeat(10))
+    }
+
     #[test]
-    fn un_enlace_de_invitacion_da_su_codigo() {
-        assert_eq!(
-            codigo_de("proxybuilder://unirse/ABCDE12345").as_deref(),
-            Some("ABCDE12345")
-        );
-        // Las barras de más, las mayúsculas y el guion del código bonito.
-        assert_eq!(
-            codigo_de("ProxyBuilder://UNIRSE/abcde-12345/").as_deref(),
-            Some("ABCDE12345")
-        );
-        // Lo que añaden los navegadores y los chats.
-        assert_eq!(
-            codigo_de("proxybuilder://unirse/ABCDE12345?utm=x#y").as_deref(),
-            Some("ABCDE12345")
-        );
+    fn unirse_con_cualquiera_de_los_dos_esquemas() {
+        let c = partida();
+        for e in [
+            format!("tapete://unirse/{c}"),
+            format!("Tapete://UNIRSE/{c}/"),
+            format!("proxybuilder://unirse/{c}?utm=x#y"),
+        ] {
+            assert_eq!(leer(&e), Some(EnlaceEntrante::Unirse(c.clone())), "{e}");
+        }
+    }
+
+    #[test]
+    fn un_codigo_de_amigo_sale_normalizado() {
+        for e in [
+            "tapete://amigo/TAP-7K2M-9QXD",
+            "tapete://amigo/7k2m9qxd",
+            "proxybuilder://amigo/tap-7K2M 9QXD",
+        ] {
+            assert_eq!(
+                leer(e),
+                Some(EnlaceEntrante::Amigo("TAP-7K2M-9QXD".into())),
+                "{e}"
+            );
+        }
         // I, L y O se leen como 1, 1 y 0.
-        assert_eq!(
-            codigo_de("proxybuilder://unirse/ILOABCDEFG").as_deref(),
-            Some("110ABCDEFG")
-        );
+        assert_eq!(codigo_amigo("ILO0ABCD").as_deref(), Some("TAP-1100-ABCD"));
     }
 
-    #[test]
-    fn el_esquema_nuevo_tambien_entra() {
-        assert_eq!(
-            codigo_de("tapete://unirse/ABCDE12345").as_deref(),
-            Some("ABCDE12345")
-        );
-        assert_eq!(
-            codigo_de("Tapete://UNIRSE/abcde-12345/?x=1").as_deref(),
-            Some("ABCDE12345")
-        );
-    }
-
-    /// Los esquemas aceptados son los registrados: si uno se queda sin
-    /// registrar, el sistema no abriría la app con él.
     #[test]
     fn los_esquemas_aceptados_son_los_registrados() {
         let conf: serde_json::Value =
             serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
         let dl = &conf["plugins"]["deep-link"];
-        let escritorio: Vec<&str> = dl["desktop"]["schemes"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|v| v.as_str().unwrap())
-            .collect();
-        let movil: Vec<&str> = dl["mobile"][0]["scheme"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|v| v.as_str().unwrap())
-            .collect();
-        assert_eq!(escritorio, ESQUEMAS);
-        assert_eq!(movil, ESQUEMAS);
+        let lista = |v: &serde_json::Value| -> Vec<String> {
+            v.as_array()
+                .unwrap()
+                .iter()
+                .map(|x| x.as_str().unwrap().to_string())
+                .collect()
+        };
+        let mut esperados: Vec<String> = ESQUEMAS.iter().map(|s| s.to_string()).collect();
+        esperados.sort();
+        let mut escritorio = lista(&dl["desktop"]["schemes"]);
+        escritorio.sort();
+        let mut movil = lista(&dl["mobile"][0]["scheme"]);
+        movil.sort();
+        assert_eq!(escritorio, esperados);
+        assert_eq!(movil, esperados);
         let manifiesto = include_str!("../gen/android/app/src/main/AndroidManifest.xml");
         for e in ESQUEMAS {
             assert!(
@@ -187,38 +238,57 @@ mod tests {
     }
 
     #[test]
-    fn lo_que_no_es_una_invitacion_se_ignora() {
+    fn lo_que_no_es_un_enlace_de_la_app_se_ignora() {
+        let c = partida();
         for malo in [
-            "",
-            "https://unirse/ABCDE12345",
-            "proxybuilder://abrir/ABCDE12345",
-            "proxybuilder://unirse/",
-            "proxybuilder://unirse/ABCDE1234",
-            "proxybuilder://unirse/ABCDE123456",
-            "proxybuilder://unirse/ABCDE1234U",
-            "proxybuilder://unirse/ABCDE12345/mas",
-            "proxybuilder://unirse/../../etc/passwd",
-            "proxybuilder:unirse/ABCDE12345",
-            "tapete:unirse/ABCDE12345",
-            "tapetes://unirse/ABCDE12345",
-            "tap://unirse/ABCDE12345",
-            "tapete://abrir/ABCDE12345",
-            "tapete://unirse/ABCDE1234",
-            "http://tapete.zodhub.app/unirse/ABCDE12345",
+            String::new(),
+            format!("https://unirse/{c}"),
+            format!("tapete://abrir/{c}"),
+            "tapete://unirse/".into(),
+            "tapete://unirse/ABCDE12345".into(),
+            "tapete://unirse/PB1-corto".into(),
+            "tapete://unirse/PB1-con espacio".into(),
+            format!("tapete://unirse/{c}/mas"),
+            "tapete://unirse/../../etc/passwd".into(),
+            format!("tapete:unirse/{c}"),
+            format!("tapetes://unirse/{c}"),
+            "tapete://amigo/TAP-123".into(),
+            "tapete://amigo/TAP-UUUU-UUUU".into(),
+            format!("tapete://unirse/PB1-{}", "a".repeat(5000)),
         ] {
-            assert_eq!(codigo_de(malo), None, "{malo}");
+            assert_eq!(leer(&malo), None, "{malo}");
         }
-        assert_eq!(
-            codigo_de(&format!("proxybuilder://unirse/{}", "A".repeat(500))),
-            None
-        );
     }
 
     #[test]
-    fn el_enlace_de_un_codigo_vuelve_a_dar_el_codigo() {
-        let e = enlace_de("abcde-12345").unwrap();
-        assert_eq!(e, "proxybuilder://unirse/ABCDE12345");
-        assert_eq!(codigo_de(&e).as_deref(), Some("ABCDE12345"));
-        assert_eq!(enlace_de("corto"), None);
+    fn los_enlaces_para_compartir_son_los_de_la_web() {
+        assert_eq!(
+            enlace_amigo("7k2m9qxd".into()).as_deref(),
+            Some("https://tapete.zodhub.app/friend/TAP-7K2M-9QXD")
+        );
+        assert_eq!(enlace_amigo("nada".into()), None);
+        for pegado in [
+            "https://tapete.zodhub.app/friend/TAP-7K2M-9QXD",
+            "https://tapete.zodhub.app/friend/7k2m-9qxd/?x=1",
+            "tapete://amigo/TAP-7K2M-9QXD",
+            " tap-7k2m-9qxd ",
+        ] {
+            assert_eq!(
+                codigo_amigo_pegado(pegado).as_deref(),
+                Some("TAP-7K2M-9QXD"),
+                "{pegado}"
+            );
+        }
+        assert_eq!(codigo_amigo_pegado("https://otra.web/friend/nada"), None);
+        assert!(enlace_invitacion("PB1-xx".into()).is_err());
+    }
+
+    #[test]
+    fn el_evento_lleva_el_tipo_y_el_codigo() {
+        let j = serde_json::to_value(EnlaceEntrante::Amigo("TAP-AAAA-BBBB".into())).unwrap();
+        assert_eq!(
+            j,
+            serde_json::json!({"tipo": "amigo", "codigo": "TAP-AAAA-BBBB"})
+        );
     }
 }

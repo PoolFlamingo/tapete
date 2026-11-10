@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { NINGUNA, tableroDe, useMesa } from "@/stores/mesa-store";
 import { useOriginales } from "@/stores/originales-store";
 import { useRed } from "@/stores/red-store";
-import { useSalas } from "@/stores/salas-store";
 import { useVivo } from "@/stores/vivo-store";
 import { salir } from "../conexion";
 import { atacantesDe } from "../cuentas-flechas";
@@ -81,11 +80,9 @@ export function SelectorTablero() {
 	const flechas = useMesa((s) => s.general?.flechas ?? NINGUNA);
 	const cartas = useMesa((s) => s.cartas);
 	const apuntando = usePantalla((s) => s.modo?.tipo === "flecha");
-	const creador = useSalas((s) => s.sala?.sala.creador ?? null);
-	const claveYo = useSalas((s) => s.yo);
 	const [porExpulsar, setPorExpulsar] = useState<number | null>(null);
-	// Expulsa quien creó la sala del servidor o, con un código, el anfitrión.
-	const puedeExpulsar = creador !== null ? creador === claveYo : papel === "anfitrion";
+	// Expulsa el anfitrión.
+	const puedeExpulsar = papel === "anfitrion";
 	// Con varios tableros a la vez, cada miniatura ya lleva su nombre y su vida.
 	if (asientos.length < 2 || config.modo !== "unico") return null;
 	return (
@@ -196,8 +193,7 @@ export function SelectorTablero() {
 				accion={t("Expulsar")}
 				destructiva
 				onConfirmar={() => {
-					if (porExpulsar !== null)
-						void call("salas_sala_expulsar_jugador", { jugador: porExpulsar });
+					if (porExpulsar !== null) void call("red_expulsar", { jugador: porExpulsar });
 					setPorExpulsar(null);
 				}}
 			/>

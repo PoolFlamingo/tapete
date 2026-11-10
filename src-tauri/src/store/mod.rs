@@ -1,6 +1,7 @@
 //! **La biblioteca local**: SQLite (`library.db`) y el almacén de imágenes por
 //! huella (`blobs/`), los dos en `app_data_dir`.
 
+pub mod amigos;
 pub mod blobs;
 pub mod colecciones;
 pub mod db;

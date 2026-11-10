@@ -574,7 +574,6 @@
 	"Atajos": "ショートカット",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "ほとんどの操作にキーがあります（T でタップ、G で墓地へ、H で手札へ…）。? で一覧を表示。Ctrl+Z で元に戻せます（一人回しなら無制限）。",
 	"La mesa no deja hacer eso ahora.": "今はテーブルでその操作はできません。",
-	"El servidor de salas ha dado un error.": "ルームサーバーでエラーが発生しました。",
 	"Esa carta o ese jugador ya no está ahí.": "そのカードまたはプレイヤーはもうそこにいません。",
 	"Eso es de otro jugador: no puedes tocarlo.": "他のプレイヤーのものです。触れることはできません。",
 	"Solo el jugador activo puede hacer eso.": "アクティブ・プレイヤーだけができる操作です。",
@@ -612,7 +611,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "このデッキにはプレイする枚数より多くのカードがあります。プレイ用リストを選んでください。",
 	"La lista para jugar no vale para este formato: revísala.": "プレイ用リストがこのフォーマットに合っていません。見直してください。",
 	"Ponle un nombre a la lista.": "リストに名前を付けてください。",
-	"Volver a la sala": "ロビーに戻る",
 	"En red…": "オンライン…",
 	"¿Salir de la partida?": "ゲームを抜けますか？",
 	"Eres el anfitrión: la partida se cierra para todos.": "あなたはホストです：ゲームは全員分終了します。",
@@ -771,8 +769,6 @@
 	"Expulsar de la partida": "ゲームから退場させる",
 	"¿Expulsar a {nombre}?": "{nombre} を退場させますか？",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "ゲームから脱落となり、再び参加することはできません。",
-	"Quien creó la sala te ha expulsado de ella.": "ルームの作成者があなたを退室させました。",
-	"Expulsar de la sala": "ルームから退室させる",
 	"Solo el anfitrión puede hacer eso.": "それができるのはホストだけです。",
 	"Fuera en la ronda {r}, por {quien}": "ラウンド{r}で脱落（{quien}による）",
 	"Puesto {puesto}": "{puesto}位",
@@ -1213,7 +1209,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "コードは「PB1-」で始まります。受け取ったとおり全部貼り付けてください。",
 	"Ver el resultado": "結果を見る",
 	"Volver a la partida en red": "オンライン対戦に戻る",
-	"Volver a la sala de amigos": "フレンドの部屋に戻る",
 	"Subir": "上へ",
 	"Bajar": "下へ",
 	"Vida": "ライフ",
@@ -1278,5 +1273,6 @@
 	"Turno de {quien}": "{quien}のターン",
 	"Primer jugador": "先攻プレイヤー",
 	"Tiene el turno": "ターン中",
-	"Ruleta al sortear quién empieza": "先攻を決めるときのルーレット"
+	"Ruleta al sortear quién empieza": "先攻を決めるときのルーレット",
+	"El anfitrión te ha expulsado de la partida.": "ホストによってゲームから退出させられました。"
 }

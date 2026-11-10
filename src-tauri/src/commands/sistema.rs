@@ -1,7 +1,31 @@
 //! Comandos de sistema: comprobar que el puente con la pantalla funciona.
 
+use serde::{Deserialize, Serialize};
+use ts_rs::TS;
+
 use crate::error::{AppError, AppResult, ErrorCode};
-use crate::red::servidor::mensajes::Plataforma;
+
+/// En qué sistema corre la app (`app_plataforma`; la pantalla, en `lib/plataforma.ts`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "lowercase")]
+#[ts(export)]
+pub enum Plataforma {
+    Escritorio,
+    Android,
+    Ios,
+}
+
+impl Plataforma {
+    pub const fn actual() -> Self {
+        if cfg!(target_os = "android") {
+            Self::Android
+        } else if cfg!(target_os = "ios") {
+            Self::Ios
+        } else {
+            Self::Escritorio
+        }
+    }
+}
 
 /// Contesta `"pong"`. Sirve para comprobar el puente IPC de punta a punta.
 #[tauri::command]

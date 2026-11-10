@@ -618,7 +618,6 @@
 	"Atajos": "Atalhos",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "Quase tudo tem sua tecla (T vira, G para o cemitério, H para a mão…). Pressione ? para ver a lista. Ctrl+Z desfaz, sem limite no modo solitário.",
 	"La mesa no deja hacer eso ahora.": "A mesa não permite fazer isso agora.",
-	"El servidor de salas ha dado un error.": "O servidor de salas retornou um erro.",
 	"Esa carta o ese jugador ya no está ahí.": "Esse card ou esse jogador não está mais lá.",
 	"Eso es de otro jugador: no puedes tocarlo.": "Isso é de outro jogador: você não pode mexer.",
 	"Solo el jugador activo puede hacer eso.": "Só o jogador ativo pode fazer isso.",
@@ -676,7 +675,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "Este deck tem mais cards do que os que são jogados: escolha uma lista para jogar.",
 	"La lista para jugar no vale para este formato: revísala.": "A lista para jogar não serve para este formato: revise-a.",
 	"Ponle un nombre a la lista.": "Dê um nome à lista.",
-	"Volver a la sala": "Voltar à sala",
 	"En red…": "Online…",
 	"¿Salir de la partida?": "Sair da partida?",
 	"Eres el anfitrión: la partida se cierra para todos.": "Você é o anfitrião: a partida se fecha para todos.",
@@ -839,8 +837,6 @@
 	"Expulsar de la partida": "Expulsar da partida",
 	"¿Expulsar a {nombre}?": "Expulsar {nombre}?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "Ficará eliminado da partida e não poderá voltar a entrar.",
-	"Quien creó la sala te ha expulsado de ella.": "Quem criou a sala expulsou-te dela.",
-	"Expulsar de la sala": "Expulsar da sala",
 	"Solo el anfitrión puede hacer eso.": "Só o anfitrião pode fazer isso.",
 	"Fuera en la ronda {r}, por {quien}": "Fora na rodada {r}, por {quien}",
 	"Puesto {puesto}": "Lugar {puesto}",
@@ -1281,7 +1277,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "Um código começa com «PB1-»: cole-o inteiro, como você o recebeu.",
 	"Ver el resultado": "Ver o resultado",
 	"Volver a la partida en red": "Voltar à partida online",
-	"Volver a la sala de amigos": "Voltar à sala dos amigos",
 	"Subir": "Subir",
 	"Bajar": "Descer",
 	"Vida": "Vida",
@@ -1348,5 +1343,6 @@
 	"Turno de {quien}": "Turno de {quien}",
 	"Primer jugador": "Primeiro jogador",
 	"Tiene el turno": "Está no turno",
-	"Ruleta al sortear quién empieza": "Roleta ao sortear quem começa"
+	"Ruleta al sortear quién empieza": "Roleta ao sortear quem começa",
+	"El anfitrión te ha expulsado de la partida.": "O anfitrião expulsou você da partida."
 }

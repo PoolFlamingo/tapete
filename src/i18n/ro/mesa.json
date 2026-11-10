@@ -618,7 +618,6 @@
 	"Atajos": "Comenzi rapide",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "Aproape orice are tasta sa (T rotește, G în cimitir, H în mână…). Apasă ? ca să vezi lista. Ctrl+Z anulează, fără limită în modul solo.",
 	"La mesa no deja hacer eso ahora.": "Masa nu permite asta acum.",
-	"El servidor de salas ha dado un error.": "Serverul de camere a returnat o eroare.",
 	"Esa carta o ese jugador ya no está ahí.": "Cartea sau jucătorul acela nu mai e acolo.",
 	"Eso es de otro jugador: no puedes tocarlo.": "Asta e a altui jucător: nu o poți atinge.",
 	"Solo el jugador activo puede hacer eso.": "Doar jucătorul activ poate face asta.",
@@ -676,7 +675,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "Acest pachet are mai multe cărți decât se joacă: alege o listă de joc.",
 	"La lista para jugar no vale para este formato: revísala.": "Lista de joc nu e validă pentru acest format: verific-o.",
 	"Ponle un nombre a la lista.": "Dă-i un nume listei.",
-	"Volver a la sala": "Înapoi în sală",
 	"En red…": "Online…",
 	"¿Salir de la partida?": "Ieși din partidă?",
 	"Eres el anfitrión: la partida se cierra para todos.": "Ești gazda: partida se închide pentru toți.",
@@ -839,8 +837,6 @@
 	"Expulsar de la partida": "Elimină din partidă",
 	"¿Expulsar a {nombre}?": "Îl elimini pe {nombre}?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "Va fi eliminat din partidă și nu va mai putea reintra.",
-	"Quien creó la sala te ha expulsado de ella.": "Persoana care a creat sala te-a eliminat din ea.",
-	"Expulsar de la sala": "Elimină din sală",
 	"Solo el anfitrión puede hacer eso.": "Doar gazda poate face asta.",
 	"Fuera en la ronda {r}, por {quien}": "Eliminat în runda {r}, de {quien}",
 	"Puesto {puesto}": "Locul {puesto}",
@@ -1281,7 +1277,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "Un cod începe cu „PB1-”: lipește-l întreg, exact cum l-ai primit.",
 	"Ver el resultado": "Vezi rezultatul",
 	"Volver a la partida en red": "Înapoi la partida online",
-	"Volver a la sala de amigos": "Înapoi la camera prietenilor",
 	"Subir": "Mai sus",
 	"Bajar": "Mai jos",
 	"Vida": "Viață",
@@ -1348,5 +1343,6 @@
 	"Turno de {quien}": "Tura lui {quien}",
 	"Primer jugador": "Primul jucător",
 	"Tiene el turno": "Este la rând",
-	"Ruleta al sortear quién empieza": "Ruletă la tragerea la sorți a celui care începe"
+	"Ruleta al sortear quién empieza": "Ruletă la tragerea la sorți a celui care începe",
+	"El anfitrión te ha expulsado de la partida.": "Gazda te-a scos din joc."
 }

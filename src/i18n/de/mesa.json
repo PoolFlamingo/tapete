@@ -610,7 +610,6 @@
 	"Atajos": "Tastenkürzel",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "Fast alles hat seine Taste (T tappt, G auf den Friedhof, H auf die Hand…). Drück ?, um die Liste zu sehen. Ctrl+Z macht rückgängig, im Solo unbegrenzt.",
 	"La mesa no deja hacer eso ahora.": "Der Tisch lässt das gerade nicht zu.",
-	"El servidor de salas ha dado un error.": "Der Raumserver hat einen Fehler gemeldet.",
 	"Esa carta o ese jugador ya no está ahí.": "Diese Karte oder dieser Spieler ist nicht mehr da.",
 	"Eso es de otro jugador: no puedes tocarlo.": "Das gehört einem anderen Spieler: Du kannst es nicht anfassen.",
 	"Solo el jugador activo puede hacer eso.": "Nur der aktive Spieler kann das tun.",
@@ -663,7 +662,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "Dieses Deck hat mehr Karten, als gespielt werden: Wähle eine Spielliste.",
 	"La lista para jugar no vale para este formato: revísala.": "Die Spielliste passt nicht zu diesem Format: Überprüfe sie.",
 	"Ponle un nombre a la lista.": "Gib der Liste einen Namen.",
-	"Volver a la sala": "Zurück zur Lobby",
 	"En red…": "Online…",
 	"¿Salir de la partida?": "Partie verlassen?",
 	"Eres el anfitrión: la partida se cierra para todos.": "Du bist der Gastgeber: Die Partie wird für alle geschlossen.",
@@ -825,8 +823,6 @@
 	"Expulsar de la partida": "Aus der Partie entfernen",
 	"¿Expulsar a {nombre}?": "{nombre} entfernen?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "Die Person scheidet aus der Partie aus und kann nicht wieder beitreten.",
-	"Quien creó la sala te ha expulsado de ella.": "Die Person, die den Raum erstellt hat, hat dich daraus entfernt.",
-	"Expulsar de la sala": "Aus dem Raum entfernen",
 	"Solo el anfitrión puede hacer eso.": "Das kann nur der Gastgeber.",
 	"Fuera en la ronda {r}, por {quien}": "Raus in Runde {r}, durch {quien}",
 	"Puesto {puesto}": "Platz {puesto}",
@@ -1267,7 +1263,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "Ein Code beginnt mit „PB1-“: Füge ihn vollständig ein, genau wie du ihn bekommen hast.",
 	"Ver el resultado": "Ergebnis ansehen",
 	"Volver a la partida en red": "Zurück zur Online-Partie",
-	"Volver a la sala de amigos": "Zurück zum Freundesraum",
 	"Subir": "Nach oben",
 	"Bajar": "Nach unten",
 	"Vida": "Leben",
@@ -1333,5 +1328,6 @@
 	"Turno de {quien}": "{quien} ist am Zug",
 	"Primer jugador": "Startspieler",
 	"Tiene el turno": "Ist am Zug",
-	"Ruleta al sortear quién empieza": "Glücksrad beim Auslosen des Startspielers"
+	"Ruleta al sortear quién empieza": "Glücksrad beim Auslosen des Startspielers",
+	"El anfitrión te ha expulsado de la partida.": "Der Gastgeber hat dich aus der Partie entfernt."
 }

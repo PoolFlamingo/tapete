@@ -30,6 +30,20 @@ pub struct Codigo {
 
 /// Un secreto nuevo de 16 bytes del generador del sistema, en hexadecimal.
 /// 🛑 Sin entropía no hay secreto: da un error, nunca uno adivinable.
+/// El mismo código de partida sin las IP del anfitrión: solo su clave, el relé y el secreto. Es
+/// el que va dentro de una invitación a un amigo (plan Tapete, D5): la IP no se le da a nadie
+/// que no haya entrado ya a la partida. Sin relé no sirve a distancia: error `sin_rele`.
+pub fn solo_rele(t: &str) -> AppResult<String> {
+    let mut c = Codigo::de_texto(t)?;
+    c.addr
+        .addrs
+        .retain(|a| matches!(a, iroh::TransportAddr::Relay(_)));
+    if c.addr.addrs.is_empty() {
+        return Err(AppError::new(ErrorCode::InvalidInput).with("motivo", "sin_rele"));
+    }
+    c.a_texto()
+}
+
 pub fn secreto_nuevo() -> AppResult<String> {
     let mut b = [0u8; 16];
     getrandom::fill(&mut b)
@@ -103,6 +117,33 @@ impl Codigo {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn la_invitacion_lleva_el_rele_y_nunca_las_ip() {
+        let k = iroh::SecretKey::generate();
+        let rele: iroh::RelayUrl = "https://rele.ejemplo/".parse().unwrap();
+        let c = Codigo {
+            addr: EndpointAddr::new(k.public()).with_addrs([
+                iroh::TransportAddr::Ip("192.168.1.20:4242".parse().unwrap()),
+                iroh::TransportAddr::Ip("[2001:db8::1]:4242".parse().unwrap()),
+                iroh::TransportAddr::Relay(rele.clone()),
+            ]),
+            secreto: "ab".repeat(16),
+        };
+        let solo = Codigo::de_texto(&solo_rele(&c.a_texto().unwrap()).unwrap()).unwrap();
+        assert_eq!(solo.addr.id, k.public());
+        assert_eq!(solo.secreto, c.secreto);
+        assert_eq!(solo.addr.ip_addrs().count(), 0);
+        assert_eq!(solo.addr.relay_urls().collect::<Vec<_>>(), [&rele]);
+        // Sin relé no vale para invitar a distancia.
+        let sin = Codigo {
+            addr: EndpointAddr::new(k.public())
+                .with_addrs([iroh::TransportAddr::Ip("10.0.0.1:1".parse().unwrap())]),
+            secreto: "ab".repeat(16),
+        };
+        let e = solo_rele(&sin.a_texto().unwrap()).unwrap_err();
+        assert_eq!(e.params.get("motivo").map(String::as_str), Some("sin_rele"));
+    }
 
     #[test]
     fn ida_y_vuelta_y_codigos_malos() {

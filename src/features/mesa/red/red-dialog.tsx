@@ -17,7 +17,8 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { limpiarCodigoDirecto } from "@/features/salas/codigo";
+import { call } from "@/lib/ipc";
+import { useAmigos } from "@/stores/amigos-store";
 import { useRed } from "@/stores/red-store";
 import { useTrabajo } from "@/stores/trabajo-store";
 import {
@@ -43,6 +44,7 @@ import {
 	problemaDeEquipos,
 } from "../config-local";
 import { ID_ANFITRION, mismoOrden, sentados, sincronizarAsientos } from "../config-sala";
+import { limpiarCodigoDirecto } from "./codigo";
 import {
 	cambiarApodo,
 	cambiarDeckAnfitrion,
@@ -119,7 +121,12 @@ export function RedDialog({
 
 function Entrar({ preparar }: { preparar: Preparacion }) {
 	const { t } = useLang();
-	const [codigo, setCodigo] = useState("");
+	// Con una invitación de un amigo, su código ya puesto (unirse lo pulsa la persona).
+	const [codigo, setCodigo] = useState(() => {
+		const c = useAmigos.getState().unirse ?? "";
+		useAmigos.getState().pedirUnirse(null);
+		return c;
+	});
 	const [rol, setRol] = useState<RolEnSala>("jugador");
 	const trabajo = useTrabajo((s) => (s.actual?.tipo === "mesa" ? s.actual : null));
 	const [ocupado, setOcupado] = useState(false);
@@ -223,7 +230,7 @@ function SalaDeEspera({ preparar }: { preparar: Preparacion }) {
 	const codigo = useRed((s) => s.codigo);
 	const sala = useRed((s) => s.sala);
 	const trabajo = useTrabajo((s) => (s.actual?.tipo === "mesa" ? s.actual : null));
-	const [copiado, setCopiado] = useState(false);
+	const [copiado, setCopiado] = useState<"codigo" | "enlace" | null>(null);
 	const anfitrion = papel === "anfitrion";
 	// El anfitrión solo dice con qué deck se le ve (lo prepara al empezar); un
 	// invitado lo prepara y se lo manda al anfitrión.
@@ -273,11 +280,17 @@ function SalaDeEspera({ preparar }: { preparar: Preparacion }) {
 	};
 
 	const puedeCompartir = usePuedeCompartir();
-	const copiar = async () => {
-		if (!codigo) return;
-		if (!(await copiarTexto(codigo))) return;
-		setCopiado(true);
-		window.setTimeout(() => setCopiado(false), 1500);
+	// El enlace de la web (abre la app o lleva a descargarla) va sin las IP del anfitrión.
+	const enlace = async () => (codigo ? call("enlace_invitacion", { codigo }) : null);
+	const copiar = async (que: "codigo" | "enlace") => {
+		const texto = que === "codigo" ? codigo : await enlace().catch(() => null);
+		if (!texto || !(await copiarTexto(texto))) return;
+		setCopiado(que);
+		window.setTimeout(() => setCopiado(null), 1500);
+	};
+	const compartir = async () => {
+		const texto = (await enlace().catch(() => null)) ?? codigo;
+		if (texto) await compartirTexto(texto);
 	};
 
 	const nombreDe = (id: number) =>
@@ -319,19 +332,28 @@ function SalaDeEspera({ preparar }: { preparar: Preparacion }) {
 						<code className="max-h-24 flex-1 overflow-hidden rounded-md border bg-muted/40 p-1.5 font-mono text-[10px] break-all select-text">
 							{codigo}
 						</code>
-						<Button size="sm" variant="outline" onClick={() => void copiar()}>
-							{copiado ? (
+						<Button size="sm" variant="outline" onClick={() => void copiar("codigo")}>
+							{copiado === "codigo" ? (
 								<Icono icon="lucide:check" className="size-3.5" />
 							) : (
 								<Icono icon="lucide:copy" className="size-3.5" />
 							)}
-							{copiado ? t("Copiado") : t("Copiar")}
+							{copiado === "codigo" ? t("Copiado") : t("Copiar")}
 						</Button>
-						{puedeCompartir && (
-							// El selector de apps de Android: para mandarlo por mensajería.
-							<Button size="sm" onClick={() => void compartirTexto(codigo)}>
+						{puedeCompartir ? (
+							// El selector de apps de Android: el enlace, para mandarlo por mensajería.
+							<Button size="sm" onClick={() => void compartir()}>
 								<Icono icon="lucide:share-2" className="size-3.5" />
 								{t("Compartir")}
+							</Button>
+						) : (
+							<Button size="sm" variant="outline" onClick={() => void copiar("enlace")}>
+								{copiado === "enlace" ? (
+									<Icono icon="lucide:check" className="size-3.5" />
+								) : (
+									<Icono icon="lucide:link" className="size-3.5" />
+								)}
+								{copiado === "enlace" ? t("Copiado") : t("Copiar enlace")}
 							</Button>
 						)}
 					</div>

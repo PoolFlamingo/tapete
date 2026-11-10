@@ -610,7 +610,6 @@
 	"Atajos": "Sneltoetsen",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "Bijna alles heeft een toets (T tapt, G naar het kerkhof, H naar de hand…). Druk op ? om de lijst te zien. Ctrl+Z maakt ongedaan, onbeperkt in solo.",
 	"La mesa no deja hacer eso ahora.": "De tafel laat dat nu niet toe.",
-	"El servidor de salas ha dado un error.": "De server voor de spelkamers gaf een fout.",
 	"Esa carta o ese jugador ya no está ahí.": "Die kaart of die speler is er niet meer.",
 	"Eso es de otro jugador: no puedes tocarlo.": "Dat is van een andere speler: daar mag je niet aankomen.",
 	"Solo el jugador activo puede hacer eso.": "Alleen de actieve speler kan dat doen.",
@@ -663,7 +662,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "Dit deck heeft meer kaarten dan er gespeeld worden: kies een speellijst.",
 	"La lista para jugar no vale para este formato: revísala.": "De speellijst is niet geldig voor dit formaat: controleer hem.",
 	"Ponle un nombre a la lista.": "Geef de lijst een naam.",
-	"Volver a la sala": "Terug naar de lobby",
 	"En red…": "Online…",
 	"¿Salir de la partida?": "Het spel verlaten?",
 	"Eres el anfitrión: la partida se cierra para todos.": "Jij bent de host: het spel sluit voor iedereen.",
@@ -825,8 +823,6 @@
 	"Expulsar de la partida": "Uit het spel zetten",
 	"¿Expulsar a {nombre}?": "{nombre} eruit zetten?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "Hij wordt uit het spel geëlimineerd en kan er niet meer in terugkomen.",
-	"Quien creó la sala te ha expulsado de ella.": "Degene die de kamer heeft gemaakt, heeft je eruit gezet.",
-	"Expulsar de la sala": "Uit de kamer zetten",
 	"Solo el anfitrión puede hacer eso.": "Alleen de host kan dat doen.",
 	"Fuera en la ronda {r}, por {quien}": "Uit in ronde {r}, door {quien}",
 	"Puesto {puesto}": "Plaats {puesto}",
@@ -1267,7 +1263,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "Een code begint met „PB1-”: plak hem helemaal, precies zoals je hem kreeg.",
 	"Ver el resultado": "Uitslag bekijken",
 	"Volver a la partida en red": "Terug naar het online potje",
-	"Volver a la sala de amigos": "Terug naar de vriendenkamer",
 	"Subir": "Omhoog",
 	"Bajar": "Omlaag",
 	"Vida": "Leven",
@@ -1333,5 +1328,6 @@
 	"Turno de {quien}": "Beurt van {quien}",
 	"Primer jugador": "Eerste speler",
 	"Tiene el turno": "Is aan de beurt",
-	"Ruleta al sortear quién empieza": "Rad bij het loten van wie begint"
+	"Ruleta al sortear quién empieza": "Rad bij het loten van wie begint",
+	"El anfitrión te ha expulsado de la partida.": "De host heeft je uit het spel verwijderd."
 }

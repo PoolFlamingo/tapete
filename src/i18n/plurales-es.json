@@ -304,11 +304,6 @@
 		"many": "{n} líneas sin entender",
 		"other": "{n} líneas sin entender"
 	},
-	"{n} miembros": {
-		"one": "{n} miembro",
-		"many": "{n} miembros",
-		"other": "{n} miembros"
-	},
 	"{n} nombres descargados.": {
 		"one": "{n} nombre descargado.",
 		"many": "{n} nombres descargados.",

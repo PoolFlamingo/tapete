@@ -12,8 +12,8 @@
 //!
 //! 🛑 **Un solo nodo por instalación** (`red::Red::nodo`): el mismo `Endpoint`
 //! que la mesa, con el ALPN `deck/1` entre los suyos. Quien atiende lo que
-//! entra se reparte así: mientras hay una partida (anfitrión de código
-//! directo o sala del servidor) lo hacen sus bucles de `accept`, que mandan
+//! entra se reparte así: mientras hay una partida en red, lo hacen sus bucles
+//! de `accept` (el del anfitrión o el de la sucesión), que mandan
 //! `deck/1` a [`atender`]; el resto del tiempo, el bucle propio de aquí
 //! (`Registro`). Nunca dos a la vez: dos bucles de `accept` se repartirían las
 //! conexiones al azar. [`ceder`] los coordina.
@@ -80,7 +80,7 @@ pub trait Entorno: Clone + Send + Sync + 'static {
     fn nombre_del_sistema(&self) -> Option<String> {
         None
     }
-    /// Si hay una partida en red (o una sala) que pueda esperar conexiones
+    /// Si hay una partida en red que pueda esperar conexiones
     /// de la mesa en este nodo (la sucesión del anfitrión, Fase K).
     fn partida_en_red(&self) -> bool {
         self.estado().red.ocupada()
@@ -452,7 +452,7 @@ mod tests {
         let g1 = ceder(id);
         dejar_correr().await;
         assert_eq!(vivos.load(Ordering::SeqCst), 0);
-        // Otra a la vez (la sala y el anfitrión): sigue parado al soltar una.
+        // Dos a la vez: sigue parado al soltar una.
         let g2 = ceder(id);
         drop(g1);
         dejar_correr().await;

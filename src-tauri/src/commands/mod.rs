@@ -2,6 +2,7 @@
 //! solo los registra.
 
 pub mod actualizar;
+pub mod amigos;
 pub mod buscar;
 pub mod cards;
 pub mod carpetas;
@@ -18,7 +19,6 @@ pub mod library;
 pub mod mesa;
 pub mod pasar;
 pub mod red;
-pub mod salas;
 pub mod sistema;
 pub mod stats;
 pub mod temas;

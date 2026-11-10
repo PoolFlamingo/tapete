@@ -36,6 +36,8 @@ pub fn evento(window: &Window, event: &WindowEvent) {
 fn al_irse(app: &AppHandle) {
     if let Some(estado) = app.try_state::<AppState>() {
         crate::commands::mesa::guardar_si_toca(&estado, true);
+        // En segundo plano no se llama al servidor de amigos (plan D1).
+        estado.amigos.segundo_plano(true);
     }
     let _ = app.emit("ciclo://pausa", ());
 }
@@ -43,6 +45,9 @@ fn al_irse(app: &AppHandle) {
 #[cfg(mobile)]
 fn al_volver(app: &AppHandle) {
     let _ = app.emit("ciclo://vuelta", ());
+    if let Some(estado) = app.try_state::<AppState>() {
+        estado.amigos.segundo_plano(false);
+    }
     let app = app.clone();
     tauri::async_runtime::spawn(async move {
         if let Some(estado) = app.try_state::<AppState>() {

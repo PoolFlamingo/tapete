@@ -75,6 +75,7 @@ pub async fn red_identidad_importar(
         identidad::importar(&state.paths.data, &copia, cofre.as_deref())?
     };
     state.red.cambiar_clave(nueva).await;
+    crate::amigos::sincronizar::otra_clave(&app).await?;
     identidad::leer(&state.db, &state.red.clave())
 }
 
@@ -109,9 +110,9 @@ fn ocupada() -> AppError {
     AppError::new(ErrorCode::Busy).with("motivo", "partida")
 }
 
-/// En una partida, o en una sala del servidor, no se abre otra por código.
+/// En una partida no se abre otra por código.
 fn ocupado(state: &AppState) -> bool {
-    state.hay_partida() || state.hay_mirada() || state.red.con_salon(|s| s.is_some())
+    state.hay_partida() || state.hay_mirada()
 }
 
 #[tauri::command]
@@ -553,6 +554,42 @@ pub fn mesa_senal(state: State<'_, AppState>, carta: Option<IdCarta>, a: Option<
 pub async fn red_salir(state: State<'_, AppState>) -> AppResult<()> {
     if let Some(s) = state.red.quitar_sala() {
         s.cerrar().await;
+    }
+    Ok(())
+}
+
+/// El anfitrión expulsa a un jugador de la partida (por su asiento): corta su conexión, ya no
+/// entra y, con la partida empezada, se le da por eliminado. Antes iba por el servidor de salas
+/// (retirado en el plan Tapete, D7), que con un código directo no llegaba a encontrar el nodo.
+#[tauri::command]
+pub fn red_expulsar(app: AppHandle, state: State<'_, AppState>, jugador: u8) -> AppResult<()> {
+    use crate::red::mesa::Mesa;
+    let anf = state
+        .red
+        .con_sala(|s| match s {
+            Some(Sala::Anfitrion { anf, .. }) => Some(anf.clone()),
+            _ => None,
+        })
+        .ok_or_else(|| AppError::new(ErrorCode::Rejected).with("motivo", "no_anfitrion"))?;
+    let yo = state.red.clave().public();
+    let nodo = anf
+        .nodos(yo)
+        .into_iter()
+        .find(|n| n.jugador == IdJugador(jugador))
+        .and_then(|n| n.nodo.parse::<iroh::EndpointId>().ok())
+        .filter(|n| *n != yo)
+        .ok_or_else(|| AppError::new(ErrorCode::NotFound))?;
+    let mesa = MesaDeApp(app.clone());
+    match anf.expulsar(nodo) {
+        Some(jugador) => mesa.con(|m| {
+            if let Some(s) = m.as_mut() {
+                let yo = s.yo;
+                if let Err(e) = s.suplir(yo, mesa::Accion::Eliminar { jugador, por: None }) {
+                    tracing::warn!(error = ?e.code, "no se pudo eliminar al expulsado");
+                }
+            }
+        }),
+        None => anf.avisar_sala(&mesa),
     }
     Ok(())
 }

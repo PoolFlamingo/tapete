@@ -574,7 +574,6 @@
 	"Atajos": "단축키",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "거의 모든 동작에 키가 있어요(T 탭, G 무덤으로, H 손으로…). ?를 누르면 목록을 볼 수 있어요. Ctrl+Z로 실행 취소해요. 혼자 하기에서는 제한이 없어요.",
 	"La mesa no deja hacer eso ahora.": "지금은 테이블에서 그렇게 할 수 없어요.",
-	"El servidor de salas ha dado un error.": "방 서버에서 오류가 났어요.",
 	"Esa carta o ese jugador ya no está ahí.": "그 카드나 플레이어는 이제 거기에 없어요.",
 	"Eso es de otro jugador: no puedes tocarlo.": "다른 플레이어의 것이에요. 건드릴 수 없어요.",
 	"Solo el jugador activo puede hacer eso.": "활성 플레이어만 할 수 있어요.",
@@ -612,7 +611,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "이 덱에는 플레이하는 것보다 많은 카드가 있어요. 플레이용 목록을 고르세요.",
 	"La lista para jugar no vale para este formato: revísala.": "플레이용 목록이 이 포맷에 맞지 않아요. 확인해 주세요.",
 	"Ponle un nombre a la lista.": "목록에 이름을 붙여 주세요.",
-	"Volver a la sala": "대기실로 돌아가기",
 	"En red…": "온라인…",
 	"¿Salir de la partida?": "게임에서 나가시겠어요?",
 	"Eres el anfitrión: la partida se cierra para todos.": "호스트입니다: 모두의 게임이 종료됩니다.",
@@ -771,8 +769,6 @@
 	"Expulsar de la partida": "게임에서 내보내기",
 	"¿Expulsar a {nombre}?": "{nombre}님을 내보낼까요?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "게임에서 탈락하며 다시 참여할 수 없습니다.",
-	"Quien creó la sala te ha expulsado de ella.": "방을 만든 사람이 당신을 내보냈습니다.",
-	"Expulsar de la sala": "방에서 내보내기",
 	"Solo el anfitrión puede hacer eso.": "호스트만 할 수 있습니다.",
 	"Fuera en la ronda {r}, por {quien}": "{r}라운드에 탈락 ({quien} 때문)",
 	"Puesto {puesto}": "{puesto}위",
@@ -1213,7 +1209,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "코드는 “PB1-”로 시작합니다. 받은 그대로 전부 붙여 넣으세요.",
 	"Ver el resultado": "결과 보기",
 	"Volver a la partida en red": "온라인 게임으로 돌아가기",
-	"Volver a la sala de amigos": "친구 방으로 돌아가기",
 	"Subir": "위로",
 	"Bajar": "아래로",
 	"Vida": "생명점수",
@@ -1278,5 +1273,6 @@
 	"Turno de {quien}": "{quien} 님의 턴",
 	"Primer jugador": "선공 플레이어",
 	"Tiene el turno": "턴 진행 중",
-	"Ruleta al sortear quién empieza": "선공을 뽑을 때 룰렛 표시"
+	"Ruleta al sortear quién empieza": "선공을 뽑을 때 룰렛 표시",
+	"El anfitrión te ha expulsado de la partida.": "호스트가 게임에서 내보냈습니다."
 }

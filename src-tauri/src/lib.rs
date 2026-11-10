@@ -9,6 +9,7 @@
 
 pub mod abrir;
 pub mod actualizar;
+pub mod amigos;
 pub mod android;
 pub mod archidekt;
 pub mod biblioteca;
@@ -57,6 +58,8 @@ pub fn run() {
     let constructor = constructor
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
+        // Los avisos de mensajes nuevos de amigos (`amigos/avisar.rs`).
+        .plugin(tauri_plugin_notification::init())
         // Solo lo usa Rust (`fichero.rs`, para leer y escribir un `content://`
         // de Android): sin permisos `fs:` en las capacidades.
         .plugin(tauri_plugin_fs::init())
@@ -146,6 +149,8 @@ pub fn run() {
             let estado =
                 state::AppState::open_con(paths, cofre.as_deref()).map_err(|e| e.to_string())?;
             app.manage(estado);
+            // Amigos y mensajes: solo si la persona aceptó usar el servidor (D0).
+            amigos::sincronizar::arrancar(app.handle().clone());
             // Las partidas que terminan se guardan en el historial (Fase H).
             let h = app.handle().clone();
             mesa::historial::instalar(move |p| {
@@ -185,6 +190,26 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::sistema::ping,
+            commands::amigos::amigos_estado,
+            commands::amigos::amigos_qr,
+            commands::amigos::amigos_activar,
+            commands::amigos::amigos_desactivar,
+            commands::amigos::amigos_sincronizar,
+            commands::amigos::amigos_pedir,
+            commands::amigos::amigos_responder,
+            commands::amigos::amigos_quitar,
+            commands::amigos::amigos_bloquear,
+            commands::amigos::amigos_denunciar,
+            commands::amigos::amigos_nuevo_codigo,
+            commands::amigos::amigos_mandar,
+            commands::amigos::amigos_invitar,
+            commands::amigos::amigos_reintentar,
+            commands::amigos::amigos_conversacion,
+            commands::amigos::amigos_leido,
+            commands::amigos::amigos_verificar,
+            commands::amigos::amigos_ritmo,
+            commands::amigos::amigos_textos,
+            commands::amigos::amigos_privacidad,
             commands::carpetas::carpeta_recordar,
             commands::carpetas::carpeta_inicial,
             commands::sistema::ping_error,
@@ -363,6 +388,7 @@ pub fn run() {
             commands::fichero::compartir_fichero,
             commands::fichero::fichero_temporal,
             enlace::enlace_invitacion,
+            enlace::enlace_amigo,
             commands::mesa::mesa_sparring_carta,
             commands::mesa::mesa_tapete_get,
             commands::mesa::mesa_tapete_set,
@@ -380,6 +406,7 @@ pub fn run() {
             commands::red::red_identidad_exportar,
             commands::red::red_identidad_importar,
             commands::red::red_estado,
+            commands::red::red_expulsar,
             commands::red::red_crear,
             commands::red::red_unirse,
             commands::red::red_apodo,
@@ -392,24 +419,6 @@ pub fn run() {
             commands::red::red_salir,
             commands::red::mesa_fantasma,
             commands::red::mesa_senal,
-            commands::salas::salas_conectar,
-            commands::salas::salas_estado,
-            commands::salas::salas_playgroups,
-            commands::salas::salas_pg_crear,
-            commands::salas::salas_pg_salir,
-            commands::salas::salas_pg_expulsar,
-            commands::salas::salas_pg_rol,
-            commands::salas::salas_invitar,
-            commands::salas::salas_revocar,
-            commands::salas::salas_usar,
-            commands::salas::salas_sala_crear,
-            commands::salas::salas_sala_unirse,
-            commands::salas::salas_sala_salir,
-            commands::salas::salas_sala_expulsar,
-            commands::salas::salas_sala_expulsar_jugador,
-            commands::salas::salas_deck,
-            commands::salas::salas_empezar,
-            commands::salas::salas_terminar,
         ])
         .run(tauri::generate_context!());
 

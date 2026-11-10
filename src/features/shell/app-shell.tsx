@@ -12,9 +12,11 @@ import { Input } from "@/components/ui/input";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { WithTooltip } from "@/components/ui/with-tooltip";
+import { AmigosDialog, TextosAvisosAmigos } from "@/features/amigos/amigos-dialog";
+import { BotonAmigos } from "@/features/amigos/boton-amigos";
+import { useEnlacesEntrantes } from "@/features/amigos/enlaces";
 import { useAbrirPbdeck } from "@/features/library/abrir-pbdeck";
 import { DialogosPasar } from "@/features/pasar/dialogos-pasar";
-import { useEnlacesEntrantes } from "@/features/salas/enlaces-entrantes";
 import { SettingsDialog } from "@/features/settings/settings-dialog";
 import { Tutorial, useTutorialInicial } from "@/features/tutorial/tutorial";
 import { fijarAtrasPorDefecto, registrarAtras } from "@/lib/atras";
@@ -23,6 +25,7 @@ import { useFormato } from "@/lib/formato";
 import { engancharTeclado } from "@/lib/teclado";
 import { useNombreDeck } from "@/lib/use-nombre-deck";
 import { cn } from "@/lib/utils";
+import { iniciarAmigos } from "@/stores/amigos-store";
 import { useDeck } from "@/stores/deck-store";
 import { useEdicion } from "@/stores/edicion-store";
 import { useUi, type Vista } from "@/stores/ui-store";
@@ -88,6 +91,7 @@ export function AppShell({
 	});
 	const mesaCompleta = useMesaAPantallaCompleta();
 	useTutorialInicial();
+	useEffect(() => iniciarAmigos(), []);
 	const principal = useRef<HTMLElement>(null);
 	useScrollPorVista(movil && vista === "deck" ? `deck:${subpestana}` : vista, principal);
 	// Salir de «Diseñar» con la carta sin guardar pregunta, y se puede guardar
@@ -153,6 +157,8 @@ export function AppShell({
 	const pantalla = (
 		<>
 			<SettingsDialog open={ajustes} onOpenChange={setAjustes} />
+			<AmigosDialog />
+			<TextosAvisosAmigos />
 			<Tutorial />
 			<DialogosPasar />
 			<ConfirmarCierre />
@@ -334,6 +340,7 @@ export function AppShell({
 							{t("Exportar")}
 						</Button>
 					)}
+					<BotonAmigos />
 					<WithTooltip content={t("Tutorial de esta pantalla")}>
 						<Button
 							size="icon-sm"

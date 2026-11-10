@@ -21,13 +21,13 @@ const TEXTOS: Record<ErrorCode, string> = {
 	Busy: paraTraducir("Hay un trabajo en marcha; espera a que termine."),
 	Internal: paraTraducir("Error interno inesperado."),
 	Rejected: paraTraducir("La mesa no deja hacer eso ahora."),
-	Server: paraTraducir("El servidor de salas ha dado un error."),
+	Server: paraTraducir("El servidor ha dado un error."),
 };
 
 /**
  * Los rechazos de la mesa (`mesa::Rechazo`, en `params.motivo`), la
  * actualización que espera a la partida (`Busy` con `motivo: partida`) y los
- * errores del servidor de salas (`params.code`), con su texto propio. Lo que
+ * errores del servidor de Tapete (`params.code`), con su texto propio. Lo que
  * no esté aquí sale con el texto general de su código.
  */
 const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
@@ -47,6 +47,13 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 		),
 		deck: paraTraducir("Elige un deck para jugar."),
 		identidad: paraTraducir("Ese fichero no es una identidad de Tapete."),
+		// Amigos y mensajes (`commands/amigos.rs`).
+		amigos_apagado: paraTraducir("Primero acepta usar amigos."),
+		mensaje_largo: paraTraducir("El mensaje es demasiado largo."),
+		vacio: paraTraducir("Escribe algo antes de enviarlo."),
+		sin_rele: paraTraducir(
+			"Esa partida no se puede compartir a distancia todavía: espera unos segundos y vuelve a probar.",
+		),
 	},
 	// Los de `crate::error::{red, estado_http}`: el porqué de un fallo de red.
 	Network: {
@@ -61,7 +68,6 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 		estado: paraTraducir(
 			"El servidor ha devuelto un error ({estado}). Vuelve a intentarlo más tarde.",
 		),
-		sin_servidor: paraTraducir("No hay conexión con el servidor de salas."),
 		sin_respuesta: paraTraducir("El anfitrión no responde."),
 		desconectado: paraTraducir("Se ha perdido la conexión con la partida."),
 	},
@@ -84,7 +90,7 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 		ritmo: paraTraducir("Demasiadas acciones seguidas: espera un momento."),
 		espectador: paraTraducir("Estás mirando: los espectadores no pueden jugar."),
 		sin_partida: paraTraducir("La partida aún no ha empezado."),
-		expulsado: paraTraducir("Quien creó la sala te ha expulsado de ella."),
+		expulsado: paraTraducir("El anfitrión te ha expulsado de la partida."),
 		no_anfitrion: paraTraducir("Solo el anfitrión puede hacer eso."),
 		sin_mayoria: paraTraducir(
 			"Sin la mayoría de los jugadores conectados no se juega: espera a que vuelvan.",
@@ -115,18 +121,41 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 			"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.",
 		),
 	},
-	// Los códigos del servidor de salas (`params.code`; `server/docs/protocolo.md`).
+	// Los códigos del servidor de Tapete (`params.code`; `docs/api.md` del servidor).
 	Server: {
-		version: paraTraducir("El servidor de salas usa otra versión: actualiza la app."),
-		firma: paraTraducir("El servidor no ha reconocido esta instalación."),
-		limite: paraTraducir("Has llegado al límite: espera un momento o deja algo libre."),
-		no_existe: paraTraducir("Eso ya no existe en el servidor."),
-		caducada: paraTraducir("La invitación ha caducado o ya se usó del todo."),
-		llena: paraTraducir("Está llena."),
-		sin_permiso: paraTraducir("No tienes permiso para eso."),
-		ya_empezada: paraTraducir("La partida ya ha empezado: puedes entrar a mirar."),
-		expulsado: paraTraducir("Quien creó la sala te ha expulsado de ella."),
-		mensaje: paraTraducir("El servidor no ha entendido la petición."),
+		bad_request: paraTraducir("El servidor no ha entendido la petición."),
+		payload_too_large: paraTraducir("El mensaje es demasiado largo."),
+		message_too_large: paraTraducir("El mensaje es demasiado largo."),
+		missing_signature: paraTraducir("El servidor no ha reconocido esta instalación."),
+		bad_key: paraTraducir("El servidor no ha reconocido esta instalación."),
+		bad_timestamp: paraTraducir("El servidor no ha reconocido esta instalación."),
+		bad_nonce: paraTraducir("El servidor no ha reconocido esta instalación."),
+		bad_signature: paraTraducir("El servidor no ha reconocido esta instalación."),
+		replayed_nonce: paraTraducir("El servidor no ha reconocido esta instalación."),
+		clock_skew: paraTraducir(
+			"La hora de este equipo no es correcta: ajústala (o pon la hora automática) y vuelve a probar.",
+		),
+		not_registered: paraTraducir("Este equipo ya no está dado de alta en el servidor."),
+		player_blocked: paraTraducir("El servidor ha bloqueado esta instalación."),
+		app_outdated: paraTraducir("Esta versión de la app ya no vale para amigos: actualízala."),
+		rate_limited: paraTraducir("Demasiado seguido: espera un momento y vuelve a probar."),
+		too_many_connections: paraTraducir("Demasiado seguido: espera un momento y vuelve a probar."),
+		bad_encryption_key: paraTraducir(
+			"La clave de cifrado de esa persona no está bien firmada: no se le puede escribir.",
+		),
+		friend_code_not_found: paraTraducir("Ese código de amigo no existe."),
+		cannot_befriend_self: paraTraducir("Ese es tu propio código."),
+		already_friends: paraTraducir("Ya sois amigos."),
+		blocked_by_you: paraTraducir("Tienes bloqueada a esa persona: desbloquéala primero."),
+		daily_request_limit: paraTraducir("Has pedido demasiadas amistades hoy: prueba mañana."),
+		request_not_found: paraTraducir("Esa solicitud ya no existe."),
+		not_friends: paraTraducir("Ya no sois amigos: no se le puede escribir."),
+		recipient_inbox_full: paraTraducir(
+			"Esa persona tiene demasiados mensajes sin leer: espera a que los lea.",
+		),
+		daily_report_limit: paraTraducir("Has enviado demasiadas denuncias hoy."),
+		internal: paraTraducir("El servidor ha tenido un problema: prueba más tarde."),
+		maintenance: paraTraducir("El servidor está en mantenimiento: prueba en unos minutos."),
 	},
 };
 

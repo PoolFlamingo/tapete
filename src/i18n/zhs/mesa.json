@@ -574,7 +574,6 @@
 	"Atajos": "快捷键",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "几乎所有操作都有快捷键（T 横置、G 置入坟墓场、H 移回手上……）。按 ? 查看列表。Ctrl+Z 撤销，单人模式下没有次数限制。",
 	"La mesa no deja hacer eso ahora.": "牌桌现在不允许这样做。",
-	"El servidor de salas ha dado un error.": "房间服务器出错了。",
 	"Esa carta o ese jugador ya no está ahí.": "那张牌或那位牌手已经不在了。",
 	"Eso es de otro jugador: no puedes tocarlo.": "那是其他牌手的：你不能操作。",
 	"Solo el jugador activo puede hacer eso.": "只有主动牌手可以这样做。",
@@ -612,7 +611,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "此套牌的牌比实际使用的多：请选择一个游玩列表。",
 	"La lista para jugar no vale para este formato: revísala.": "游玩列表不符合此赛制：请检查。",
 	"Ponle un nombre a la lista.": "请给列表起个名字。",
-	"Volver a la sala": "返回房间",
 	"En red…": "联机…",
 	"¿Salir de la partida?": "离开对局？",
 	"Eres el anfitrión: la partida se cierra para todos.": "你是主机：对局会为所有人关闭。",
@@ -771,8 +769,6 @@
 	"Expulsar de la partida": "移出对局",
 	"¿Expulsar a {nombre}?": "要移出 {nombre} 吗？",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "该玩家将被淘汰，且无法重新加入对局。",
-	"Quien creó la sala te ha expulsado de ella.": "房间的创建者已将你移出房间。",
-	"Expulsar de la sala": "移出房间",
 	"Solo el anfitrión puede hacer eso.": "只有主机可以这样做。",
 	"Fuera en la ronda {r}, por {quien}": "第 {r} 轮出局，被 {quien} 淘汰",
 	"Puesto {puesto}": "第 {puesto} 名",
@@ -1213,7 +1209,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "代码以“PB1-”开头：请按收到的样子完整粘贴。",
 	"Ver el resultado": "查看结果",
 	"Volver a la partida en red": "返回联网对局",
-	"Volver a la sala de amigos": "返回好友房间",
 	"Subir": "上移",
 	"Bajar": "下移",
 	"Vida": "生命",
@@ -1278,5 +1273,6 @@
 	"Turno de {quien}": "{quien} 的回合",
 	"Primer jugador": "先手玩家",
 	"Tiene el turno": "当前回合",
-	"Ruleta al sortear quién empieza": "抽取先手时显示轮盘"
+	"Ruleta al sortear quién empieza": "抽取先手时显示轮盘",
+	"El anfitrión te ha expulsado de la partida.": "主机已将你移出对局。"
 }

@@ -46,11 +46,10 @@ uuid = { version = "1", features = ["v4"] }
 # macOS. Ya lo encendía otra dependencia (`tauri-plugin-updater`); se pide aquí
 # para no depender de ella.
 reqwest = { version = "0.13", default-features = false, features = ["json", "query", "rustls", "gzip", "system-proxy"] }
-# El WebSocket del servidor de salas (Fase F): TLS con rustls y el verificador
-# del sistema, como reqwest (`red/servidor/cliente.rs` monta la configuración).
-tokio-tungstenite = { version = "0.30", default-features = false, features = ["connect", "__rustls-tls"] }
+# Sin uso directo desde que se retiró el WebSocket del servidor de salas (plan Tapete, D7),
+# pero fija `ring` y `tls12` en la unificación de features de rustls que comparten reqwest e
+# iroh: quitarlo podría cambiar el proveedor de cifrado que acaban usando.
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
-rustls-platform-verifier = "0.7"
 tokio = { version = "1", features = ["rt", "sync", "time", "macros", "io-util", "fs"] }
 # La mesa de juego en red (`red/`): conexiones QUIC entre jugadores por clave
 # pública, con camino directo y relé de respaldo. Sin `metrics`; TLS con ring
@@ -107,6 +106,9 @@ tauri-plugin-fs = "2"
 # completa, MulticastLock, abrir ficheros): `plugins/android-extra`, en
 # Kotlin. Se registra solo en móvil; en escritorio no hace nada.
 tauri-plugin-android-extra = { path = "plugins/android-extra" }
+crypto_box = { version = "0.9.1", default-features = false, features = ["std", "salsa20", "getrandom"] }
+hkdf = "0.13.0"
+tauri-plugin-notification = "2"
 
 [features]
 # 🛑 Solo para probar el actualizador en un emulador (`actualizar.rs`): las
@@ -141,7 +143,6 @@ arboard = { version = "3", default-features = false, features = ["image-data"] }
 # el verificador del sistema entra en pánico en Android sin su parte de Kotlin.
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
 webpki-root-certs = "1"
-webpki-roots = "1"
 # Leer el QR de pasar decks con la cámara (`src/lib/escaner.ts`): solo móvil.
 tauri-plugin-barcode-scanner = "2"
 

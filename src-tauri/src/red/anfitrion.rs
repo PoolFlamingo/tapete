@@ -90,9 +90,6 @@ pub struct Anfitrion {
     pub deck: Mutex<Option<String>>,
     sala: Mutex<Sala>,
     siguiente: AtomicU64,
-    /// Con el servidor de salas no hay secreto: entra quien está en la sala
-    /// (su nodo de iroh es su clave en el servidor).
-    permitidos: Mutex<Option<std::collections::BTreeSet<EndpointId>>>,
     /// Los expulsados de esta partida: no vuelven a entrar (G8).
     expulsados: Mutex<std::collections::BTreeSet<EndpointId>>,
     /// El asiento de esta app: el 0 al abrir la partida; al heredarla, el
@@ -151,7 +148,6 @@ impl Anfitrion {
                 pares: Vec::new(),
             }),
             siguiente: AtomicU64::new(1),
-            permitidos: Mutex::new(None),
             expulsados: Mutex::new(Default::default()),
             mi_jugador: IdJugador(0),
             mi_nodo: None,
@@ -211,7 +207,6 @@ impl Anfitrion {
                 pares,
             }),
             siguiente: AtomicU64::new(1),
-            permitidos: Mutex::new(None),
             expulsados: Mutex::new(Default::default()),
             mi_jugador,
             mi_nodo: Some(mi_nodo),
@@ -385,20 +380,12 @@ impl Anfitrion {
         &self.secreto
     }
 
-    /// Solo entran estos nodos (los de la sala del servidor), sin secreto.
-    pub fn permitir_solo(&self, nodos: impl IntoIterator<Item = EndpointId>) {
-        *cerrojo(&self.permitidos) = Some(nodos.into_iter().collect());
-    }
-
     /// Si este nodo con este secreto puede entrar.
     fn deja_entrar(&self, nodo: EndpointId, secreto: Option<&str>) -> bool {
         if cerrojo(&self.expulsados).contains(&nodo) {
             return false;
         }
-        match cerrojo(&self.permitidos).as_ref() {
-            Some(p) => p.contains(&nodo),
-            None => secreto.is_some_and(|s| mismo_secreto(s, &self.secreto)),
-        }
+        secreto.is_some_and(|s| mismo_secreto(s, &self.secreto))
     }
 
     pub fn empezada(&self) -> bool {

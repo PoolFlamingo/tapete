@@ -30,7 +30,6 @@ pub mod protocolo;
 mod pruebas;
 #[cfg(test)]
 mod pruebas_procesos;
-pub mod servidor;
 pub mod sucesion;
 pub mod vuelta;
 
@@ -74,10 +73,6 @@ pub struct Red {
     clave: std::sync::RwLock<SecretKey>,
     nodo: tokio::sync::Mutex<Option<Endpoint>>,
     sala: std::sync::Mutex<Option<Sala>>,
-    /// El cliente del servidor de salas (Fase F), si se ha conectado.
-    servidor: std::sync::Mutex<Option<Arc<servidor::cliente::Cliente>>>,
-    /// La sala del servidor en la que está esta app.
-    salon: std::sync::Mutex<Option<Arc<servidor::sala::Salon>>>,
 }
 
 impl Red {
@@ -86,30 +81,7 @@ impl Red {
             clave: std::sync::RwLock::new(clave),
             nodo: tokio::sync::Mutex::new(None),
             sala: std::sync::Mutex::new(None),
-            servidor: std::sync::Mutex::new(None),
-            salon: std::sync::Mutex::new(None),
         }
-    }
-
-    /// Con la sala del servidor (si la hay).
-    pub fn con_salon<R>(&self, f: impl FnOnce(&mut Option<Arc<servidor::sala::Salon>>) -> R) -> R {
-        let mut g = match self.salon.lock() {
-            Ok(g) => g,
-            Err(e) => e.into_inner(),
-        };
-        f(&mut g)
-    }
-
-    /// Con el cliente del servidor (si se ha arrancado).
-    pub fn con_servidor<R>(
-        &self,
-        f: impl FnOnce(&mut Option<Arc<servidor::cliente::Cliente>>) -> R,
-    ) -> R {
-        let mut g = match self.servidor.lock() {
-            Ok(g) => g,
-            Err(e) => e.into_inner(),
-        };
-        f(&mut g)
     }
 
     /// Con la sala (si la hay).
@@ -134,20 +106,19 @@ impl Red {
         }
     }
 
-    /// Cambia la identidad: cierra el nodo y el cliente del servidor (que se
-    /// levantarán de nuevo con la clave nueva cuando haga falta).
+    /// Cambia la identidad: cierra el nodo (que se levantará de nuevo con la clave
+    /// nueva cuando haga falta).
     pub async fn cambiar_clave(&self, nueva: SecretKey) {
         self.parar().await;
-        self.con_servidor(|c| *c = None);
         match self.clave.write() {
             Ok(mut g) => *g = nueva,
             Err(e) => *e.into_inner() = nueva,
         }
     }
 
-    /// Si hay una partida en red o una sala del servidor abiertas.
+    /// Si hay una partida en red abierta.
     pub fn ocupada(&self) -> bool {
-        self.con_sala(|s| s.is_some()) || self.con_salon(|s| s.is_some())
+        self.con_sala(|s| s.is_some())
     }
 
     /// El nodo, levantándolo si aún no lo está.

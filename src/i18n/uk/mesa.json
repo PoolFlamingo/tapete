@@ -639,7 +639,6 @@
 	"Atajos": "Скорочення",
 	"Casi todo tiene su tecla (T gira, G al cementerio, H a la mano…). Pulsa ? para ver la lista. Ctrl+Z deshace, sin límite en solitario.": "Майже все має свою клавішу (T повертає, G — на кладовище, H — у руку…). Натисніть ?, щоб побачити список. Ctrl+Z скасовує, у соло без обмежень.",
 	"La mesa no deja hacer eso ahora.": "Стіл зараз не дозволяє цього зробити.",
-	"El servidor de salas ha dado un error.": "Сервер кімнат повернув помилку.",
 	"Esa carta o ese jugador ya no está ahí.": "Цієї карти або цього гравця там уже немає.",
 	"Eso es de otro jugador: no puedes tocarlo.": "Це належить іншому гравцю: ви не можете цього торкатися.",
 	"Solo el jugador activo puede hacer eso.": "Лише активний гравець може це зробити.",
@@ -702,7 +701,6 @@
 	"Este deck tiene más cartas de las que se juegan: elige una lista para jugar.": "У цій колоді більше карт, ніж потрібно для гри: виберіть список для гри.",
 	"La lista para jugar no vale para este formato: revísala.": "Список для гри не підходить для цього формату: перевірте його.",
 	"Ponle un nombre a la lista.": "Дайте списку назву.",
-	"Volver a la sala": "Повернутися до лобі",
 	"En red…": "Мережею…",
 	"¿Salir de la partida?": "Вийти з партії?",
 	"Eres el anfitrión: la partida se cierra para todos.": "Ви хост: партія закриється для всіх.",
@@ -866,8 +864,6 @@
 	"Expulsar de la partida": "Виключити з партії",
 	"¿Expulsar a {nombre}?": "Виключити {nombre}?",
 	"Quedará eliminado de la partida y no podrá volver a entrar en ella.": "Гравця буде виключено з партії, і він не зможе повернутися.",
-	"Quien creó la sala te ha expulsado de ella.": "Той, хто створив кімнату, виключив вас із неї.",
-	"Expulsar de la sala": "Виключити з кімнати",
 	"Solo el anfitrión puede hacer eso.": "Це може зробити лише хост.",
 	"Fuera en la ronda {r}, por {quien}": "Вибув у раунді {r}, через: {quien}",
 	"Puesto {puesto}": "Місце {puesto}",
@@ -1308,7 +1304,6 @@
 	"Un código empieza por «PB1-»: pégalo entero, tal como te lo pasaron.": "Код починається з «PB1-»: вставте його повністю, як вам його надіслали.",
 	"Ver el resultado": "Переглянути підсумок",
 	"Volver a la partida en red": "Повернутися до мережевої партії",
-	"Volver a la sala de amigos": "Повернутися до кімнати друзів",
 	"Subir": "Вгору",
 	"Bajar": "Вниз",
 	"Vida": "Життя",
@@ -1376,5 +1371,6 @@
 	"Turno de {quien}": "Хід: {quien}",
 	"Primer jugador": "Перший гравець",
 	"Tiene el turno": "Зараз ходить",
-	"Ruleta al sortear quién empieza": "Рулетка під час жеребкування першого ходу"
+	"Ruleta al sortear quién empieza": "Рулетка під час жеребкування першого ходу",
+	"El anfitrión te ha expulsado de la partida.": "Хост виключив тебе з партії."
 }

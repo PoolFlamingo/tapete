@@ -1,0 +1,68 @@
+{
+	"formato": "tapete-clave-cifrado-v1",
+	"nota": "La clave de cifrado X25519 que manda `POST /api/v1/hello` va firmada con la ed25519 de la identidad. Mensaje firmado: «TAPETE-v1-cifrado\\n<x25519 hex>». La derivación (HKDF-SHA256 de la semilla, sal vacía, info «tapete/cifrado/v1», 32 bytes) es la de la Fase D2 de la app: el servidor no la usa, solo comprueba la firma. La app guarda una copia IDÉNTICA.",
+	"prefijo": "TAPETE-v1-cifrado",
+	"derivacion": {
+		"hash": "sha256",
+		"sal": "",
+		"info": "tapete/cifrado/v1",
+		"largo": 32
+	},
+	"casos": [
+		{
+			"nombre": "derivada-1",
+			"semilla": "0000000000000000000000000000000000000000000000000000000000000001",
+			"clavePublica": "4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29",
+			"secretoCifrado": "eca8460da062795dfcac665362dc0a41b7ae14becc6d80e96e60406e3020bc6e",
+			"claveCifrado": "e7932edd7694c7d7bfb411f2f202c3b43782733ef9c8424ec8d7c6554aaebd37",
+			"mensaje": "TAPETE-v1-cifrado\ne7932edd7694c7d7bfb411f2f202c3b43782733ef9c8424ec8d7c6554aaebd37",
+			"firma": "ef3066c53f9eee093e7645cf8ee5f8563017fa14677c502a3ad5cb68d469157240584284855795794e680c3b23dac82cd5eca58e467f0889683700051c1ab706",
+			"valida": true,
+			"nota": "Clave X25519 derivada de la semilla y firmada por su ed25519."
+		},
+		{
+			"nombre": "derivada-2",
+			"semilla": "7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e",
+			"clavePublica": "51bfae7fa92c515512cd3ad442760e41612e59dfec3913f670b721c04255b068",
+			"secretoCifrado": "4dfba69f9ddb357ef0c55b686b8ecd90b6b935745d8f636d1f6a15a6b75158d0",
+			"claveCifrado": "77dda10e98ef5943ec3e521e7bc90a100794eac2016212ce40c3cbda6ad51064",
+			"mensaje": "TAPETE-v1-cifrado\n77dda10e98ef5943ec3e521e7bc90a100794eac2016212ce40c3cbda6ad51064",
+			"firma": "3d8512531ec61b322a0ed01adb368d337cd517bff3f1a3b7a4c9b6d9aa3f467afa42d64a6391ca6904bf5167fdd1cd40582d8c0986eb39a01763f8bd512dc700",
+			"valida": true,
+			"nota": "Clave X25519 derivada de la semilla y firmada por su ed25519."
+		},
+		{
+			"nombre": "derivada-3",
+			"semilla": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+			"clavePublica": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+			"secretoCifrado": "6b5e7f2b429968712b91d840fd7b63fc0004688c135bef12a04de7cf8b2873a0",
+			"claveCifrado": "535877b090c84f95ccdeab30a9b318ac8a8a3bdbb0c0a145f09a11fc61f36c0e",
+			"mensaje": "TAPETE-v1-cifrado\n535877b090c84f95ccdeab30a9b318ac8a8a3bdbb0c0a145f09a11fc61f36c0e",
+			"firma": "3b620dd25ecbb156b61637fc2ee088d456d7505df925a40a3f9fcee467a700b0a91bf1b962944501a429f36f44abf4399df6937d4b991197c12b4cf59922d30e",
+			"valida": true,
+			"nota": "Clave X25519 derivada de la semilla y firmada por su ed25519."
+		},
+		{
+			"nombre": "firmada-por-otro",
+			"semilla": "7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e",
+			"clavePublica": "4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29",
+			"secretoCifrado": "4dfba69f9ddb357ef0c55b686b8ecd90b6b935745d8f636d1f6a15a6b75158d0",
+			"claveCifrado": "77dda10e98ef5943ec3e521e7bc90a100794eac2016212ce40c3cbda6ad51064",
+			"mensaje": "TAPETE-v1-cifrado\n77dda10e98ef5943ec3e521e7bc90a100794eac2016212ce40c3cbda6ad51064",
+			"firma": "3d8512531ec61b322a0ed01adb368d337cd517bff3f1a3b7a4c9b6d9aa3f467afa42d64a6391ca6904bf5167fdd1cd40582d8c0986eb39a01763f8bd512dc700",
+			"valida": false,
+			"nota": "La firma es de la clave del caso 2, pero se presenta con la clave pública del caso 1."
+		},
+		{
+			"nombre": "otra-clave-de-cifrado",
+			"semilla": "0000000000000000000000000000000000000000000000000000000000000001",
+			"clavePublica": "4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29",
+			"secretoCifrado": "eca8460da062795dfcac665362dc0a41b7ae14becc6d80e96e60406e3020bc6e",
+			"claveCifrado": "0000000000000000000000000000000000000000000000000000000000000009",
+			"mensaje": "TAPETE-v1-cifrado\n0000000000000000000000000000000000000000000000000000000000000009",
+			"firma": "ef3066c53f9eee093e7645cf8ee5f8563017fa14677c502a3ad5cb68d469157240584284855795794e680c3b23dac82cd5eca58e467f0889683700051c1ab706",
+			"valida": false,
+			"nota": "Firma del caso 1 sobre su clave, pero se publica otra clave de cifrado."
+		}
+	]
+}

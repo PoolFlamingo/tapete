@@ -3,13 +3,13 @@
 //! partida en red) y se cierra al salir de ella o de la app.
 //!
 //! Los protocolos (ALPN): `proxy-builder/mesa/1` (la partida),
-//! `proxy-builder/img/1` (las imágenes propias de cada jugador),
-//! `proxy-builder/ping/1` (la malla de la sala) y `proxy-builder/deck/1`
-//! (pasar decks entre equipos, `pasar/`). **Un solo nodo por instalación**
+//! `proxy-builder/img/1` (las imágenes propias de cada jugador) y
+//! `proxy-builder/deck/1` (pasar decks entre equipos, `pasar/`). (Hubo un
+//! `proxy-builder/ping/1` para la malla de las salas del servidor, que se retiró sin
+//! llegar a desplegarse: plan Tapete, D7.) **Un solo nodo por instalación**
 //! para todos: dos nodos con la misma clave se pisarían en el relé. Quien
-//! atiende lo que entra reparte por ALPN: `anfitrion::atender` y
-//! `servidor::sala::aceptar` mientras hay una partida, y `pasar/` el resto
-//! del tiempo (`pasar::ceder`).
+//! atiende lo que entra reparte por ALPN: `anfitrion::atender` mientras hay
+//! una partida y `pasar/` el resto del tiempo (`pasar::ceder`).
 //!
 //! Relés: con `PB_RELAY` (solo en debug), el que diga (`none` = sin relé,
 //! para LAN y pruebas; una URL = solo ese). Si no, con el relé propio de
@@ -25,9 +25,6 @@ use crate::error::{AppError, AppResult, ErrorCode};
 
 pub const ALPN_MESA: &[u8] = b"proxy-builder/mesa/1";
 pub const ALPN_IMG: &[u8] = b"proxy-builder/img/1";
-/// La malla de la sala (Fase F): una conexión ligera con cada jugador solo
-/// para medir la latencia y el camino.
-pub const ALPN_PING: &[u8] = b"proxy-builder/ping/1";
 /// Pasar un deck de un equipo a otro (`pasar/`). Su versión va en el ALPN.
 pub const ALPN_DECK: &[u8] = b"proxy-builder/deck/1";
 
@@ -92,12 +89,7 @@ pub(crate) fn de_red(e: impl std::fmt::Display) -> AppError {
 
 /// Levanta un nodo con esta clave y estos relés.
 pub async fn crear(clave: SecretKey, relay: Relay) -> AppResult<Endpoint> {
-    let alpns = vec![
-        ALPN_MESA.to_vec(),
-        ALPN_IMG.to_vec(),
-        ALPN_PING.to_vec(),
-        ALPN_DECK.to_vec(),
-    ];
+    let alpns = vec![ALPN_MESA.to_vec(), ALPN_IMG.to_vec(), ALPN_DECK.to_vec()];
     let b = match &relay {
         Relay::Ninguno => Endpoint::builder(presets::Minimal).relay_mode(RelayMode::Disabled),
         Relay::N0 => Endpoint::builder(presets::N0),
@@ -109,7 +101,7 @@ pub async fn crear(clave: SecretKey, relay: Relay) -> AppResult<Endpoint> {
         }
     };
     // Los certificados del relé, los de esta plataforma (`tls.rs`, como
-    // reqwest y el cliente del servidor de salas).
+    // los clientes HTTP).
     let ep = b
         .ca_tls_config(crate::tls::iroh())
         .secret_key(clave)

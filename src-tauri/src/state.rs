@@ -51,6 +51,8 @@ pub struct AppState {
     pub mirada: Mutex<Option<crate::red::mirada::Mirada>>,
     /// Pasar decks a otro equipo: lo que hay en marcha (`pasar/`).
     pub pasar: crate::pasar::Pasar,
+    /// Amigos y mensajes con el servidor de Tapete (`amigos/`).
+    pub amigos: crate::amigos::Amigos,
     /// Trabajos de resolución/exportación en marcha (la limpieza de imágenes
     /// no corre mientras haya alguno).
     trabajos: AtomicUsize,
@@ -95,6 +97,7 @@ impl AppState {
             mesa: Mutex::new(None),
             mirada: Mutex::new(None),
             pasar: Default::default(),
+            amigos: Default::default(),
             red,
             trabajos: AtomicUsize::new(0),
         })
