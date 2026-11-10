@@ -66,5 +66,13 @@
 	"Ocultar el QR": "Masquer le QR code",
 	"Código QR de tu código de amigo": "QR code de votre code ami",
 	"Visto {cuando}": "Vu {cuando}",
-	"Aceptar solicitud": "Accepter"
+	"Aceptar solicitud": "Accepter",
+	"Escribiendo…": "En train d'écrire…",
+	"Nombre y nota": "Nom et note",
+	"Nota": "Note",
+	"Tiene una nota": "A une note",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Vous seul le voyez, sur cet appareil. {apodo} voit toujours son propre nom.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Ce que vous voulez retenir : d'où vous le connaissez, quels decks il joue…",
+	"Cambiar tu nombre": "Changer votre nom",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "C'est ainsi que vous voient vos amis et les appareils proches lors des échanges de decks. Vide : le nom de l'appareil."
 }

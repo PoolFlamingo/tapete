@@ -18,7 +18,8 @@ import { localeDe } from "@/lib/idiomas";
 import { call } from "@/lib/ipc";
 import { useOcupado } from "@/lib/use-ocupado";
 import { cn } from "@/lib/utils";
-import { useAmigos } from "@/stores/amigos-store";
+import { nombreAmigo, useAmigos, useEscribiendo } from "@/stores/amigos-store";
+import { TuNombre } from "./nombres";
 import { vistoHace } from "./visto";
 
 /** La lista: mi código, añadir, solicitudes, amigos y salir. */
@@ -111,6 +112,8 @@ export function Lista({
 						{a.textos[lang] ?? a.textos.en ?? a.textos.es ?? ""}
 					</div>
 				))}
+
+				<TuNombre onError={onError} />
 
 				<section className="flex flex-col gap-1.5 rounded-lg border p-2.5">
 					<span className="font-medium">{t("Tu código de amigo")}</span>
@@ -303,6 +306,11 @@ function FilaSolicitud({ s, children }: { s: SolicitudVista; children: React.Rea
 function FilaAmigo({ a }: { a: AmigoVista }) {
 	const { t, lang } = useLang();
 	const visto = a.enLinea ? null : vistoHace(a.visto, localeDe(lang));
+	const escribe = useEscribiendo(a.clave);
+	// Debajo del nombre: «escribiendo…»; si no, su nombre (si le puse otro) y cuándo se le vio.
+	const debajo = [a.alias ? a.apodo : null, visto ? t("Visto {cuando}", { cuando: visto }) : null]
+		.filter(Boolean)
+		.join(" · ");
 	return (
 		<button
 			type="button"
@@ -318,13 +326,20 @@ function FilaAmigo({ a }: { a: AmigoVista }) {
 				aria-label={a.enLinea ? t("Conectado") : t("Desconectado")}
 			/>
 			<span className="flex min-w-0 flex-1 flex-col">
-				<span className="truncate font-medium">{a.apodo}</span>
-				{visto && (
-					<span className="truncate text-[11px] text-muted-foreground">
-						{t("Visto {cuando}", { cuando: visto })}
-					</span>
+				<span className="truncate font-medium">{nombreAmigo(a)}</span>
+				{escribe ? (
+					<span className="truncate text-[11px] text-primary">{t("Escribiendo…")}</span>
+				) : (
+					debajo && <span className="truncate text-[11px] text-muted-foreground">{debajo}</span>
 				)}
 			</span>
+			{a.nota && (
+				<Icono
+					icon="lucide:sticky-note"
+					className="size-4 shrink-0 text-muted-foreground"
+					aria-label={t("Tiene una nota")}
+				/>
+			)}
 			{a.claveCambio && (
 				<Icono
 					icon="lucide:shield-alert"

@@ -66,5 +66,13 @@
 	"Ocultar el QR": "Nascondi il QR",
 	"Código QR de tu código de amigo": "QR del tuo codice amico",
 	"Visto {cuando}": "Visto {cuando}",
-	"Aceptar solicitud": "Accetta"
+	"Aceptar solicitud": "Accetta",
+	"Escribiendo…": "Sta scrivendo…",
+	"Nombre y nota": "Nome e nota",
+	"Nota": "Nota",
+	"Tiene una nota": "Ha una nota",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Lo vedi solo tu, su questo dispositivo. {apodo} continua a vedere il proprio nome.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Ciò che vuoi ricordare: come vi conoscete, quali mazzi gioca…",
+	"Cambiar tu nombre": "Cambia il tuo nome",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "Così ti vedono i tuoi amici e i dispositivi vicini quando passi i mazzi. Vuoto: il nome del dispositivo."
 }

@@ -11,9 +11,12 @@
 //! Lo que se comparte con la app, en `app_data_dir/amigos/`:
 //! - `textos-avisos.json`: los textos ya traducidos que manda la pantalla (`amigos_textos`). Rust
 //!   no escribe prosa: sin ellos no se avisa.
+//! - `alias.json`: los nombres que la persona puso a sus amigos (`amigos_alias`), que salen en el
+//!   aviso en lugar del suyo, como con la app abierta.
 //! - `avisados.json`: los ids de los mensajes ya avisados que siguen en el servidor (así un
 //!   mensaje sin recoger no avisa cada 15 minutos).
 
+use std::collections::BTreeMap;
 use std::path::Path;
 
 use base64::Engine;
@@ -28,6 +31,7 @@ use crate::error::{AppError, AppResult, ErrorCode};
 const CARPETA: &str = "amigos";
 const TEXTOS: &str = "textos-avisos.json";
 const AVISADOS: &str = "avisados.json";
+const ALIAS: &str = "alias.json";
 
 /// Un aviso para el sistema, ya escrito.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -54,6 +58,16 @@ pub fn guardar_textos(datos: &Path, t: &TextosAvisos) -> AppResult<()> {
     Ok(())
 }
 
+/// Guarda los nombres puestos a los amigos para cuando la app esté cerrada.
+pub fn guardar_alias(datos: &Path, alias: &BTreeMap<String, String>) -> AppResult<()> {
+    let carpeta = datos.join(CARPETA);
+    std::fs::create_dir_all(&carpeta)?;
+    let json = serde_json::to_vec(alias)
+        .map_err(|e| AppError::new(ErrorCode::Internal).with("detalle", e))?;
+    std::fs::write(carpeta.join(ALIAS), json)?;
+    Ok(())
+}
+
 fn leer<T: for<'de> Deserialize<'de>>(ruta: &Path) -> Option<T> {
     std::fs::read(ruta)
         .ok()
@@ -66,6 +80,7 @@ pub(crate) fn avisos_de(
     clave: &SecretKey,
     s: &Sync,
     textos: &TextosAvisos,
+    alias: &BTreeMap<String, String>,
     avisados: &[String],
 ) -> (Vec<Aviso>, Vec<String>) {
     // Por amigo, si lo último nuevo es una invitación (como `avisar::mensajes_nuevos`).
@@ -103,7 +118,10 @@ pub(crate) fn avisos_de(
     let avisos = por_amigo
         .into_iter()
         .filter_map(|(k, invitacion)| {
-            let apodo = &s.friends.iter().find(|f| f.key == k)?.nickname;
+            let apodo = match alias.get(&k) {
+                Some(a) => a,
+                None => &s.friends.iter().find(|f| f.key == k)?.nickname,
+            };
             Some(Aviso {
                 titulo: textos.titulo.clone(),
                 cuerpo: cuerpo(textos, apodo, invitacion),
@@ -124,7 +142,8 @@ pub async fn comprobar(datos: &Path, clave: &SecretKey) -> AppResult<Vec<Aviso>>
     let s = Cliente::nuevo(super::cliente::base())?
         .sync(clave, None)
         .await?;
-    let (avisos, quedan) = avisos_de(clave, &s, &textos, &avisados.ids);
+    let alias = leer::<BTreeMap<String, String>>(&carpeta.join(ALIAS)).unwrap_or_default();
+    let (avisos, quedan) = avisos_de(clave, &s, &textos, &alias, &avisados.ids);
     if quedan != avisados.ids {
         let json = serde_json::to_vec(&Avisados { ids: quedan }).unwrap_or_default();
         std::fs::write(carpeta.join(AVISADOS), json)?;
@@ -259,14 +278,14 @@ mod tests {
                 ),
             ],
         );
-        let (avisos, quedan) = avisos_de(&yo, &s, &textos(), &[]);
+        let (avisos, quedan) = avisos_de(&yo, &s, &textos(), &BTreeMap::new(), &[]);
         let cuerpos: Vec<_> = avisos.iter().map(|a| a.cuerpo.as_str()).collect();
         assert_eq!(cuerpos, ["Mensaje de Ana", "Bea te invita a una partida"]);
         assert!(avisos.iter().all(|a| !a.cuerpo.contains("secreto")));
         assert_eq!(quedan, ["1", "2", "3"]);
 
         // La siguiente vuelta, con lo mismo sin recoger, no avisa otra vez.
-        let (avisos, quedan2) = avisos_de(&yo, &s, &textos(), &quedan);
+        let (avisos, quedan2) = avisos_de(&yo, &s, &textos(), &BTreeMap::new(), &quedan);
         assert!(avisos.is_empty());
         assert_eq!(quedan2, quedan);
 
@@ -275,9 +294,30 @@ mod tests {
             vec![amigo(&ana, "Ana")],
             vec![mensaje("4", &ana, &yo, texto("hola"))],
         );
-        let (avisos, quedan) = avisos_de(&yo, &s, &textos(), &quedan);
+        let (avisos, quedan) = avisos_de(&yo, &s, &textos(), &BTreeMap::new(), &quedan);
         assert_eq!(avisos.len(), 1);
         assert_eq!(quedan, ["4"]);
+    }
+
+    #[test]
+    fn el_aviso_lleva_el_nombre_que_le_puse() {
+        let yo = SecretKey::generate();
+        let ana = SecretKey::generate();
+        let s = sync(
+            vec![amigo(&ana, "Ana")],
+            vec![mensaje(
+                "1",
+                &ana,
+                &yo,
+                Contenido::Texto { texto: "x".into() },
+            )],
+        );
+        let alias = BTreeMap::from([(
+            super::super::sincronizar::firma_hex(&ana),
+            "Mi hermana".to_string(),
+        )]);
+        let (avisos, _) = avisos_de(&yo, &s, &textos(), &alias, &[]);
+        assert_eq!(avisos[0].cuerpo, "Mensaje de Mi hermana");
     }
 
     #[test]
@@ -295,7 +335,7 @@ mod tests {
                 Contenido::Texto { texto: "x".into() },
             )],
         );
-        let (avisos, quedan) = avisos_de(&yo, &s, &textos(), &[]);
+        let (avisos, quedan) = avisos_de(&yo, &s, &textos(), &BTreeMap::new(), &[]);
         assert!(avisos.is_empty());
         assert!(quedan.is_empty());
     }

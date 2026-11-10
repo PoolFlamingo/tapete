@@ -66,5 +66,13 @@
 	"Ocultar el QR": "QRコードを隠す",
 	"Código QR de tu código de amigo": "あなたのフレンドコードのQRコード",
 	"Visto {cuando}": "最終確認：{cuando}",
-	"Aceptar solicitud": "承認"
+	"Aceptar solicitud": "承認",
+	"Escribiendo…": "入力中…",
+	"Nombre y nota": "名前とメモ",
+	"Nota": "メモ",
+	"Tiene una nota": "メモあり",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "この端末で、あなたにだけ表示されます。{apodo} には元の名前のままです。",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "覚えておきたいこと（知り合ったきっかけ、使っているデッキなど）",
+	"Cambiar tu nombre": "自分の名前を変更",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "フレンドや、デッキを渡すときに近くの端末から見える名前です。空欄なら端末の名前になります。"
 }

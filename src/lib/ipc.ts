@@ -432,6 +432,11 @@ export interface Commands {
 	amigos_leido: { args: { clave: string }; result: null };
 	amigos_verificar: { args: { clave: string; verificado: boolean }; result: null };
 	amigos_ritmo: { args: { chatAbierto: boolean }; result: null };
+	amigos_personal: {
+		args: { clave: string; alias: string; nota: string };
+		result: EstadoAmigos;
+	};
+	amigos_escribiendo: { args: { clave: string }; result: null };
 	amigos_textos: { args: { textos: TextosAvisos }; result: null };
 	amigos_privacidad: { args: Record<string, never>; result: null };
 	amigos_qr: { args: Record<string, never>; result: string | null };
@@ -478,6 +483,8 @@ export interface Events {
 	"amigos://estado": EstadoAmigos;
 	/** Las claves de los amigos que escribieron algo nuevo. */
 	"amigos://mensajes": string[];
+	/** Un amigo está escribiendo (su clave), por `/events`. */
+	"amigos://escribiendo": string;
 }
 
 /** Escucha un evento de Rust. Devuelve la función que deja de escuchar. */

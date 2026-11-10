@@ -66,5 +66,13 @@
 	"Ocultar el QR": "QR 코드 숨기기",
 	"Código QR de tu código de amigo": "내 친구 코드의 QR 코드",
 	"Visto {cuando}": "마지막 접속: {cuando}",
-	"Aceptar solicitud": "수락"
+	"Aceptar solicitud": "수락",
+	"Escribiendo…": "입력 중…",
+	"Nombre y nota": "이름과 메모",
+	"Nota": "메모",
+	"Tiene una nota": "메모 있음",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "이 기기에서 나만 볼 수 있어요. {apodo} 님에게는 원래 이름이 그대로 보여요.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "기억하고 싶은 것: 어떻게 알게 됐는지, 어떤 덱을 쓰는지…",
+	"Cambiar tu nombre": "내 이름 바꾸기",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "친구와 덱을 주고받을 때 근처 기기에 보이는 이름이에요. 비워 두면 기기 이름이 쓰여요."
 }

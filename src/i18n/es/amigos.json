@@ -66,5 +66,13 @@
 	"Ocultar el QR": "Ocultar el QR",
 	"Código QR de tu código de amigo": "Código QR de tu código de amigo",
 	"Visto {cuando}": "Visto {cuando}",
-	"Aceptar solicitud": "Aceptar solicitud"
+	"Aceptar solicitud": "Aceptar solicitud",
+	"Escribiendo…": "Escribiendo…",
+	"Nombre y nota": "Nombre y nota",
+	"Nota": "Nota",
+	"Tiene una nota": "Tiene una nota",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Lo que quieras recordar: de qué le conoces, qué decks juega…",
+	"Cambiar tu nombre": "Cambiar tu nombre",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo."
 }

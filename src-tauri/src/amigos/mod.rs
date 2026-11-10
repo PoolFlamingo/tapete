@@ -7,6 +7,7 @@
 //!   seguridad.
 //! - `cliente.rs`: las rutas del API.
 //! - `sincronizar.rs`: el bucle de `sync` y lo que hace con cada respuesta.
+//! - `directo.rs`: los avisos en directo del servidor (`/events`, SSE), que despiertan ese bucle.
 //! - `avisar.rs`: el aviso del sistema con la app abierta; `fondo.rs`, con la app cerrada
 //!   (Android, WorkManager).
 //!
@@ -18,6 +19,7 @@
 pub mod avisar;
 pub mod cifrado;
 pub mod cliente;
+pub mod directo;
 pub mod firma;
 pub mod fondo;
 pub mod sincronizar;
@@ -48,8 +50,13 @@ pub(crate) const CODIGO: &str = "amigos.codigo";
 pub struct AmigoVista {
     /// Su identidad (clave ed25519 en hex).
     pub clave: String,
+    /// El nombre con el que se presenta (el suyo, igual para todos).
     pub apodo: String,
-    /// Visto hace menos de 2,5 minutos.
+    /// El que le puse yo, solo para mí (`amigos_alias`). La pantalla lo enseña antes que `apodo`.
+    pub alias: Option<String>,
+    /// Una nota mía sobre él (como en el LoL), solo para mí.
+    pub nota: Option<String>,
+    /// Visto hace menos de 2,5 minutos, o con la app abierta ahora mismo.
     pub en_linea: bool,
     /// Cuándo se le vio por última vez (ISO), si se sabe.
     pub visto: Option<String>,
@@ -120,6 +127,14 @@ pub struct Amigos {
     pub(crate) en_segundo_plano: AtomicBool,
     pub(crate) en_marcha: AtomicBool,
     pub(crate) despertar: Notify,
+    /// La escucha de `/events` está en marcha (`directo.rs`).
+    pub(crate) escuchando: AtomicBool,
+    /// …y conectada ahora mismo: el `sync` no necesita ir más deprisa con un chat abierto.
+    pub(crate) en_directo: AtomicBool,
+    /// Corta la conexión de `/events` (segundo plano, salir, otra identidad) o la despierta. Con
+    /// `notify_waiters`, que no deja avisos guardados: un aviso viejo cortaría la siguiente
+    /// conexión nada más abrirse. Lo que se pierda lo ve la propia conexión con cada latido.
+    pub(crate) cortar: Notify,
     /// Una sincronización a la vez (el servidor admite 3 peticiones a la vez por clave).
     pub(crate) turno: tokio::sync::Mutex<()>,
 }
@@ -151,6 +166,8 @@ impl Amigos {
 
     pub fn segundo_plano(&self, si: bool) {
         self.en_segundo_plano.store(si, Ordering::SeqCst);
+        // En segundo plano se cierra `/events`; al volver, se abre otra vez.
+        self.cortar.notify_waiters();
         if !si {
             self.ya();
         }

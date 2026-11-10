@@ -240,6 +240,7 @@ pub fn olvidar(db: &Db, amigo: &str) -> AppResult<()> {
     let c = db.conn()?;
     c.execute("DELETE FROM amigos_mensajes WHERE amigo = ?1", [amigo])?;
     c.execute("DELETE FROM amigos_claves WHERE amigo = ?1", [amigo])?;
+    c.execute("DELETE FROM amigos_alias WHERE amigo = ?1", [amigo])?;
     Ok(())
 }
 
@@ -248,7 +249,69 @@ pub fn borrar_todo(db: &Db) -> AppResult<()> {
     let c = db.conn()?;
     c.execute("DELETE FROM amigos_mensajes", [])?;
     c.execute("DELETE FROM amigos_claves", [])?;
+    c.execute("DELETE FROM amigos_alias", [])?;
     Ok(())
+}
+
+/// Lo más largo que puede ser el nombre que le pongo a un amigo (en caracteres).
+pub const MAX_ALIAS: usize = 32;
+/// Lo más larga que puede ser la nota de un amigo (en caracteres).
+pub const MAX_NOTA: usize = 500;
+
+/// Lo que apunto de un amigo, solo para mí (migración 0011).
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Personal {
+    pub alias: Option<String>,
+    pub nota: Option<String>,
+}
+
+fn limpio(texto: &str, max: usize) -> Option<String> {
+    let t: String = texto.trim().chars().take(max).collect();
+    let t = t.trim_end().to_string();
+    (!t.is_empty()).then_some(t)
+}
+
+/// Pone el nombre con el que veo a un amigo y su nota (vacío quita cada uno). Devuelve lo que queda.
+pub fn poner_personal(db: &Db, amigo: &str, alias: &str, nota: &str) -> AppResult<Personal> {
+    let p = Personal {
+        alias: limpio(alias, MAX_ALIAS),
+        nota: limpio(nota, MAX_NOTA),
+    };
+    let c = db.conn()?;
+    if p.alias.is_none() && p.nota.is_none() {
+        c.execute("DELETE FROM amigos_alias WHERE amigo = ?1", [amigo])?;
+    } else {
+        c.execute(
+            "INSERT INTO amigos_alias (amigo, alias, nota) VALUES (?1, ?2, ?3)
+             ON CONFLICT(amigo) DO UPDATE SET alias = excluded.alias, nota = excluded.nota",
+            (amigo, &p.alias, &p.nota),
+        )?;
+    }
+    Ok(p)
+}
+
+/// Lo apuntado de cada amigo.
+pub fn personal(db: &Db) -> AppResult<BTreeMap<String, Personal>> {
+    let c = db.conn()?;
+    let mut st = c.prepare("SELECT amigo, alias, nota FROM amigos_alias")?;
+    let filas = st.query_map([], |r| {
+        Ok((
+            r.get::<_, String>(0)?,
+            Personal {
+                alias: r.get(1)?,
+                nota: r.get(2)?,
+            },
+        ))
+    })?;
+    Ok(filas.collect::<Result<_, _>>()?)
+}
+
+/// Solo los nombres puestos, por amigo (para los avisos).
+pub fn alias(db: &Db) -> AppResult<BTreeMap<String, String>> {
+    Ok(personal(db)?
+        .into_iter()
+        .filter_map(|(k, p)| p.alias.map(|a| (k, a)))
+        .collect())
 }
 
 #[cfg(test)]
@@ -260,6 +323,34 @@ mod tests {
             contenido: Contenido::Texto { texto: t.into() },
             enviado,
         }
+    }
+
+    #[test]
+    fn nombre_y_nota_se_ponen_se_quitan_y_se_olvidan_con_el_amigo() {
+        let db = Db::in_memory().unwrap();
+        let p = poner_personal(
+            &db,
+            "ana",
+            "  Ana del club ",
+            " Juega Atraxa, odia el control ",
+        )
+        .unwrap();
+        assert_eq!(p.alias.as_deref(), Some("Ana del club"));
+        assert_eq!(p.nota.as_deref(), Some("Juega Atraxa, odia el control"));
+        // Solo la nota: el nombre se quita y la fila sigue.
+        let p = poner_personal(&db, "ana", "", "nota").unwrap();
+        assert_eq!(p.alias, None);
+        assert!(alias(&db).unwrap().is_empty());
+        assert_eq!(personal(&db).unwrap()["ana"].nota.as_deref(), Some("nota"));
+        let largo = "x".repeat(600);
+        let p = poner_personal(&db, "bea", &largo, &largo).unwrap();
+        assert_eq!(p.alias.map(|a| a.chars().count()), Some(MAX_ALIAS));
+        assert_eq!(p.nota.map(|a| a.chars().count()), Some(MAX_NOTA));
+        // Sin nada, la fila se va.
+        poner_personal(&db, "bea", " ", "").unwrap();
+        assert_eq!(personal(&db).unwrap().len(), 1);
+        olvidar(&db, "ana").unwrap();
+        assert!(personal(&db).unwrap().is_empty());
     }
 
     #[test]

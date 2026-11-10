@@ -768,14 +768,20 @@ le falta una cadena le sale la inglesa.
   petición firmada con la clave ed25519 del nodo: `TAPETE-v1`, método, ruta, hora, nonce y SHA-256 del cuerpo),
   `cifrado.rs` (X25519 sacada de la misma semilla con HKDF, `info` `tapete/cifrado/v1`; `crypto_box`, formato
   `[1][nonce 24][caja]`; número de seguridad), `cliente.rs` (`PRODUCCION`; en debug, `PB_TAPETE`, también al compilar: la app de Android no ve las variables),
-  `sincronizar.rs` (cada 60 s, 10 s con un chat abierto, parado en segundo plano, con espera creciente),
+  `sincronizar.rs` (al momento con cada aviso de `/events`; si no, cada 60 s, 10 s con un chat abierto sin
+  `/events`, parado en segundo plano, con espera creciente), `directo.rs` (🛑 los avisos en directo por SSE,
+  `GET /events`: `hola`/`cambio` solo despiertan el `sync`, nunca llevan datos; `escribiendo` → `amigos://escribiendo`;
+  se cierra en segundo plano con `cortar.notify_waiters()`, nunca `notify_one`: un aviso guardado cortaría la
+  siguiente conexión; un 404 sin JSON = servidor viejo, se deja y queda el `sync`),
   `avisar.rs` (aviso del sistema solo sin foco y nunca con el texto del mensaje; Rust no escribe prosa: los
   textos llegan de la pantalla con `amigos_textos`), `fondo.rs` (con la app cerrada, en Android: WorkManager cada ~15 min
   despierta `AvisosAmigos.kt` del plugin, que abre la clave con el `Cofre` y llama por JNI a `Nativo.comprobar`; 🛑 solo mira:
   `sync` sin cursor ni `ack` ni base de datos, y nunca escribe los ficheros de la identidad; textos y avisados en
   `app_data_dir/amigos/`; el permiso de avisos se pide en `amigos_activar`). 🛑 Los vectores de `amigos/vectores/*.json` son copia
   exacta de los del servidor: si cambian, en los dos lados. Conversaciones en `store/amigos.rs` (migración
-  0010, `amigos_mensajes`, `amigos_claves`: una clave de cifrado que cambia se marca y quita lo verificado).
+  0010, `amigos_mensajes`, `amigos_claves`: una clave de cifrado que cambia se marca y quita lo verificado;
+  0011, `amigos_alias`: el nombre y la nota que pongo a un amigo, solo aquí, `amigos_personal`, `nombreAmigo`).
+  «Tu nombre» en Amigos es el mismo de pasar decks (`pasar_nombre_set`, que despierta el `sync` para el `hello`).
   Comandos `amigos_*`, pantalla en `features/amigos/` y `stores/amigos-store.ts`. Una invitación a partida es
   un mensaje con el código directo **sin IP** (`red::codigo::solo_rele`). Enlaces que se comparten: los de la web
   (`enlace_invitacion` → `/join/<código>`, `enlace_amigo` → `/friend/<TAP-…>`); los que abren la app,

@@ -66,5 +66,13 @@
 	"Ocultar el QR": "Ascunde codul QR",
 	"Código QR de tu código de amigo": "Codul QR al codului tău de prieten",
 	"Visto {cuando}": "Văzut {cuando}",
-	"Aceptar solicitud": "Acceptă"
+	"Aceptar solicitud": "Acceptă",
+	"Escribiendo…": "Scrie…",
+	"Nombre y nota": "Nume și notă",
+	"Nota": "Notă",
+	"Tiene una nota": "Are o notă",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Doar tu vezi asta, pe acest dispozitiv. {apodo} își vede în continuare propriul nume.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Ce vrei să ții minte: de unde vă cunoașteți, ce pachete joacă…",
+	"Cambiar tu nombre": "Schimbă-ți numele",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "Așa te văd prietenii și dispozitivele din apropiere când treci pachete. Gol: numele dispozitivului."
 }

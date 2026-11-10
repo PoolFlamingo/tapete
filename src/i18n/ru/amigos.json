@@ -66,5 +66,13 @@
 	"Ocultar el QR": "Скрыть QR-код",
 	"Código QR de tu código de amigo": "QR-код твоего кода друга",
 	"Visto {cuando}": "Был в сети {cuando}",
-	"Aceptar solicitud": "Принять"
+	"Aceptar solicitud": "Принять",
+	"Escribiendo…": "Печатает…",
+	"Nombre y nota": "Имя и заметка",
+	"Nota": "Заметка",
+	"Tiene una nota": "Есть заметка",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Это видите только вы, на этом устройстве. {apodo} по-прежнему видит своё имя.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Что хотите запомнить: откуда вы знакомы, какими колодами играет…",
+	"Cambiar tu nombre": "Изменить своё имя",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "Так вас видят друзья и устройства рядом при передаче колод. Пусто: имя устройства."
 }

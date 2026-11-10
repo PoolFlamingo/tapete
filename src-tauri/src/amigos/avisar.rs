@@ -64,10 +64,14 @@ pub fn mensajes_nuevos(app: &AppHandle, amigos: &[String]) {
         .lock()
         .map(|a| a.clone())
         .unwrap_or_default();
+    let alias = almacen::alias(&st.db).unwrap_or_default();
     for clave in amigos {
-        let apodo = conocidos
-            .get(clave)
-            .map_or_else(|| clave.chars().take(8).collect(), |a| a.nickname.clone());
+        // El nombre que le puse yo, si le puse uno; si no, el suyo.
+        let apodo = alias.get(clave).cloned().unwrap_or_else(|| {
+            conocidos
+                .get(clave)
+                .map_or_else(|| clave.chars().take(8).collect(), |a| a.nickname.clone())
+        });
         let invitacion = almacen::conversacion(&st.db, clave, None, 1)
             .ok()
             .and_then(|v| v.last().map(|m| m.tipo == "invitacion"))

@@ -78,6 +78,8 @@ pub async fn amigos_desactivar(
         }
     }
     settings::set(&st.db, ACTIVO, "0")?;
+    // Cierra `/events`; la escucha ve que ya no está activo y se para.
+    st.amigos.cortar.notify_waiters();
     if let Err(e) = crate::android::avisos_amigos(&app, None) {
         tracing::info!(codigo = ?e.code, "amigos: no se pudieron cancelar los avisos");
     }
@@ -332,6 +334,49 @@ pub fn amigos_verificar(app: AppHandle, clave: String, verificado: bool) -> AppR
     }
     publicar(&app, e);
     Ok(())
+}
+
+/// Pone (o quita, con vacío) el nombre con el que veo a un amigo y mi nota sobre él, solo en este
+/// equipo. Devuelve el estado con el cambio ya puesto.
+#[tauri::command]
+pub fn amigos_personal(
+    app: AppHandle,
+    st: State<'_, AppState>,
+    clave: String,
+    alias: String,
+    nota: String,
+) -> AppResult<EstadoAmigos> {
+    let queda = almacen::poner_personal(&st.db, &clave, &alias, &nota)?;
+    // Para los avisos con la app cerrada (Android), que no leen la base de datos.
+    if cfg!(target_os = "android") {
+        let todos = almacen::alias(&st.db)?;
+        if let Err(e) = crate::amigos::fondo::guardar_alias(&st.paths.data, &todos) {
+            tracing::info!(codigo = ?e.code, "amigos: no se guardaron los nombres para los avisos");
+        }
+    }
+    let mut e = st.amigos.estado();
+    if let Some(a) = e.amigos.iter_mut().find(|a| a.clave == clave) {
+        a.alias = queda.alias;
+        a.nota = queda.nota;
+    }
+    publicar(&app, e.clone());
+    Ok(e)
+}
+
+/// «Estoy escribiendo» a un amigo: el servidor se lo pasa al momento si está conectado. La
+/// pantalla lo manda como mucho cada 3 s mientras se escribe; un fallo no importa.
+#[tauri::command]
+pub async fn amigos_escribiendo(app: AppHandle, clave: String) {
+    let st = app.state::<AppState>();
+    if !activo(&st) {
+        return;
+    }
+    let yo = st.red.clave();
+    if let Ok(c) = st.amigos.cliente() {
+        if let Err(e) = c.escribiendo(&yo, &clave).await {
+            tracing::debug!(codigo = ?e.code, "amigos: no se pudo avisar de que se escribe");
+        }
+    }
 }
 
 /// El ritmo de `sync`: cada 10 s con un chat abierto, cada 60 s si no.

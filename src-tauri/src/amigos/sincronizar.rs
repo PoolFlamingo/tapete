@@ -1,5 +1,6 @@
-//! **El bucle de `sync`** (plan D1): cada 60 s con la app abierta, cada 10 s con un chat
-//! abierto, nada en segundo plano en el móvil, y con espera creciente si el servidor falla.
+//! **El bucle de `sync`** (plan D1): al momento cuando llega un aviso por `/events` (`directo.rs`),
+//! cada 60 s con la app abierta, cada 10 s con un chat abierto si `/events` no está conectado,
+//! nada en segundo plano en el móvil, y con espera creciente si el servidor falla.
 //!
 //! Cada vuelta: `hello` si cambió el apodo, la versión o la clave; reintenta lo que se quedó sin
 //! mandar; pide `sync`, descifra y guarda los mensajes, los confirma (`ack`: el servidor los
@@ -174,6 +175,7 @@ pub(crate) fn procesar(
 /// El estado para la pantalla a partir de la última respuesta.
 pub(crate) fn vista(st: &AppState, clave: &SecretKey, s: &Sync) -> AppResult<EstadoAmigos> {
     let sin_leer = almacen::no_leidos(&st.db)?;
+    let personal = almacen::personal(&st.db)?;
     let yo = firma_hex(clave);
     let (mi_cifrado, _) = cifrado::clave_firmada(clave);
     let mut amigos = Vec::new();
@@ -189,6 +191,8 @@ pub(crate) fn vista(st: &AppState, clave: &SecretKey, s: &Sync) -> AppResult<Est
         amigos.push(AmigoVista {
             clave: f.key.clone(),
             apodo: f.nickname.clone(),
+            alias: personal.get(&f.key).and_then(|p| p.alias.clone()),
+            nota: personal.get(&f.key).and_then(|p| p.nota.clone()),
             en_linea: f.online,
             visto: f.last_seen.clone(),
             clave_valida: valida,
@@ -332,12 +336,16 @@ pub async fn otra_clave(app: &AppHandle) -> AppResult<()> {
         a.clear();
     }
     publicar(app, estado_inicial(&st));
+    // `/events` va firmada con la clave: se abre otra vez con la nueva.
+    st.amigos.cortar.notify_waiters();
     st.amigos.ya();
     Ok(())
 }
 
-/// Arranca el bucle si la persona aceptó usar el servidor y no está ya en marcha.
+/// Arranca el bucle (y la escucha en directo) si la persona aceptó usar el servidor y no está ya
+/// en marcha.
 pub fn arrancar(app: AppHandle) {
+    super::directo::arrancar(app.clone());
     let st = app.state::<AppState>();
     if !activo(&st) || st.amigos.en_marcha.swap(true, Ordering::SeqCst) {
         return;
@@ -370,7 +378,10 @@ pub fn arrancar(app: AppHandle) {
             match r {
                 Ok(_) => {
                     fallos = 0;
-                    espera = if st.amigos.chat_abierto.load(Ordering::SeqCst) {
+                    // Con `/events` conectado, lo nuevo llega al momento: no hace falta correr.
+                    espera = if st.amigos.chat_abierto.load(Ordering::SeqCst)
+                        && !st.amigos.en_directo.load(Ordering::SeqCst)
+                    {
                         CON_CHAT
                     } else {
                         NORMAL

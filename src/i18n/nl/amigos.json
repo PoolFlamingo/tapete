@@ -66,5 +66,13 @@
 	"Ocultar el QR": "QR-code verbergen",
 	"Código QR de tu código de amigo": "QR-code van je vriendcode",
 	"Visto {cuando}": "Gezien {cuando}",
-	"Aceptar solicitud": "Accepteren"
+	"Aceptar solicitud": "Accepteren",
+	"Escribiendo…": "Aan het typen…",
+	"Nombre y nota": "Naam en notitie",
+	"Nota": "Notitie",
+	"Tiene una nota": "Heeft een notitie",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Alleen jij ziet dit, op dit apparaat. {apodo} ziet nog steeds de eigen naam.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Wat je wilt onthouden: hoe je elkaar kent, welke decks die speelt…",
+	"Cambiar tu nombre": "Je naam wijzigen",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "Zo zien je vrienden en apparaten in de buurt je bij het doorgeven van decks. Leeg: de naam van het apparaat."
 }

@@ -66,5 +66,13 @@
 	"Ocultar el QR": "隐藏二维码",
 	"Código QR de tu código de amigo": "你的好友代码二维码",
 	"Visto {cuando}": "上次在线：{cuando}",
-	"Aceptar solicitud": "接受"
+	"Aceptar solicitud": "接受",
+	"Escribiendo…": "正在输入…",
+	"Nombre y nota": "名称和备注",
+	"Nota": "备注",
+	"Tiene una nota": "有备注",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "仅你在此设备上可见。{apodo} 看到的仍是自己的名称。",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "想记住的内容：怎么认识的、玩什么套牌……",
+	"Cambiar tu nombre": "修改你的名称",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "好友和传递套牌时附近的设备看到的就是这个名称。留空：使用设备名称。"
 }

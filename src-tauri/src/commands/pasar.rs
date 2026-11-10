@@ -53,6 +53,9 @@ pub async fn pasar_nombre_set(
     crate::red::identidad::guardar_apodo(&state.db, &nombre)?;
     let queda = pasar::nombre_equipo(&app);
     pasar::recibir::renombrar(&app, &queda);
+    // Es también el nombre para los amigos: el siguiente `sync` se presenta con él (`hello`) y el
+    // servidor se lo cuenta a todos al momento.
+    state.amigos.ya();
     Ok(queda)
 }
 

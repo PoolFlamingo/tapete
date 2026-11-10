@@ -12,6 +12,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { call } from "@/lib/ipc";
+import { nombreAmigo } from "@/stores/amigos-store";
 
 /**
  * **El número de seguridad** (plan D3): 12 cifras sacadas de las claves de los dos, iguales en
@@ -110,7 +111,7 @@ export function Denunciar({
 		<Dialog open={abierto} onOpenChange={(o) => !o && onCerrar()}>
 			<DialogoAdaptable compacto className="sm:max-w-sm">
 				<DialogHeader>
-					<DialogTitle>{t("Denunciar a {apodo}", { apodo: amigo.apodo })}</DialogTitle>
+					<DialogTitle>{t("Denunciar a {apodo}", { apodo: nombreAmigo(amigo) })}</DialogTitle>
 					<DialogDescription>
 						{t(
 							"Lo revisa quien lleva el servidor. Tus mensajes no se mandan: si quieres enseñar uno, pégalo en la nota.",

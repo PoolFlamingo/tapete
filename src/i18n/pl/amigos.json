@@ -66,5 +66,13 @@
 	"Ocultar el QR": "Ukryj kod QR",
 	"Código QR de tu código de amigo": "Kod QR twojego kodu znajomego",
 	"Visto {cuando}": "Widziany {cuando}",
-	"Aceptar solicitud": "Akceptuj"
+	"Aceptar solicitud": "Akceptuj",
+	"Escribiendo…": "Pisze…",
+	"Nombre y nota": "Nazwa i notatka",
+	"Nota": "Notatka",
+	"Tiene una nota": "Ma notatkę",
+	"Solo lo ves tú, en este equipo. {apodo} sigue viendo el suyo.": "Widzisz to tylko ty, na tym urządzeniu. {apodo} nadal widzi swoją nazwę.",
+	"Lo que quieras recordar: de qué le conoces, qué decks juega…": "Co chcesz zapamiętać: skąd się znacie, jakimi taliami gra…",
+	"Cambiar tu nombre": "Zmień swoją nazwę",
+	"Así te ven tus amigos y los equipos cerca al pasar decks. Vacío: el del dispositivo.": "Tak widzą cię znajomi i pobliskie urządzenia przy przekazywaniu talii. Puste: nazwa urządzenia."
 }

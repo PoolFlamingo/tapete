@@ -20,10 +20,14 @@ import { formatoActual, useFormato } from "@/lib/formato";
 import { localeDe } from "@/lib/idiomas";
 import { call, on } from "@/lib/ipc";
 import { cn } from "@/lib/utils";
-import { useAmigos } from "@/stores/amigos-store";
+import { nombreAmigo, useAmigos, useEscribiendo } from "@/stores/amigos-store";
 import { useRed } from "@/stores/red-store";
 import { useUi } from "@/stores/ui-store";
+import { NombreYNota } from "./nombres";
 import { Denunciar, Seguridad } from "./seguridad";
+
+/** Cada cuánto, como mucho, se avisa de que se está escribiendo (el otro lo enseña 6 s). */
+const AVISO_ESCRIBIENDO_MS = 3000;
 
 /** Lo más largo de un mensaje (Rust lo comprueba igual). */
 export const MAX_MENSAJE = 2000;
@@ -44,6 +48,17 @@ export function Conversacion({
 	const [texto, setTexto] = useState("");
 	const [seguridad, setSeguridad] = useState(false);
 	const [denuncia, setDenuncia] = useState(false);
+	const [renombrar, setRenombrar] = useState(false);
+	const escribe = useEscribiendo(amigo.clave);
+	const nombre = nombreAmigo(amigo);
+	const ultimoAviso = useRef(0);
+	// «Estoy escribiendo», como mucho cada 3 s y solo con algo escrito.
+	const avisarEscribiendo = (nuevo: string) => {
+		const ahora = Date.now();
+		if (!nuevo.trim() || ahora - ultimoAviso.current < AVISO_ESCRIBIENDO_MS) return;
+		ultimoAviso.current = ahora;
+		void call("amigos_escribiendo", { clave: amigo.clave }).catch(() => {});
+	};
 	const campo = useRef<HTMLInputElement>(null);
 	const cursor = useRef<{ inicio: number | null; fin: number | null } | null>(null);
 	const final = useRef<HTMLDivElement>(null);
@@ -87,6 +102,8 @@ export function Conversacion({
 			const r = await call("amigos_mandar", { clave: amigo.clave, texto: limpio });
 			setTexto("");
 			cursor.current = null;
+			// Lo siguiente que se escriba vuelve a avisar enseguida.
+			ultimoAviso.current = 0;
 			poner(r.mensaje);
 			if (r.error) onError(r.error);
 		} catch (e) {
@@ -166,10 +183,24 @@ export function Conversacion({
 					role="img"
 					aria-label={amigo.enLinea ? t("Conectado") : t("Desconectado")}
 				/>
-				<span className="min-w-0 flex-1 truncate text-sm font-semibold">{amigo.apodo}</span>
+				<span className="flex min-w-0 flex-1 flex-col">
+					<span className="truncate text-sm font-semibold">{nombre}</span>
+					{escribe ? (
+						<span className="truncate text-[11px] text-primary">{t("Escribiendo…")}</span>
+					) : (
+						amigo.alias && (
+							<span className="truncate text-[11px] text-muted-foreground">{amigo.apodo}</span>
+						)
+					)}
+				</span>
 				<MenuAmigo
-					titulo={amigo.apodo}
+					titulo={nombre}
 					acciones={[
+						{
+							icono: "lucide:pencil",
+							texto: t("Nombre y nota"),
+							onClick: () => setRenombrar(true),
+						},
 						{
 							icono: amigo.verificado ? "lucide:shield-check" : "lucide:shield",
 							texto: t("Número de seguridad"),
@@ -187,6 +218,16 @@ export function Conversacion({
 				/>
 			</div>
 
+			{amigo.nota && (
+				<button
+					type="button"
+					onClick={() => setRenombrar(true)}
+					className="flex items-start gap-2 rounded-lg border border-dashed p-2 text-left text-xs text-muted-foreground hover:bg-accent"
+				>
+					<Icono icon="lucide:sticky-note" className="mt-px size-4 shrink-0" />
+					<span className="line-clamp-3 break-words whitespace-pre-wrap">{amigo.nota}</span>
+				</button>
+			)}
 			{amigo.claveCambio && (
 				<button
 					type="button"
@@ -196,7 +237,7 @@ export function Conversacion({
 					<Icono icon="lucide:shield-alert" className="size-4 shrink-0 text-amber-500" />
 					{t(
 						"La clave de {apodo} ha cambiado (¿ha reinstalado la app?). Comprueba el número de seguridad.",
-						{ apodo: amigo.apodo },
+						{ apodo: nombre },
 					)}
 				</button>
 			)}
@@ -239,7 +280,10 @@ export function Conversacion({
 						placeholder={t("Escribe un mensaje…")}
 						aria-label={t("Escribe un mensaje…")}
 						disabled={!amigo.claveValida}
-						onChange={(e) => setTexto(e.target.value)}
+						onChange={(e) => {
+							setTexto(e.target.value);
+							avisarEscribiendo(e.target.value);
+						}}
 						onBlur={(e) => {
 							cursor.current = {
 								inicio: e.currentTarget.selectionStart,
@@ -265,6 +309,12 @@ export function Conversacion({
 				</div>
 			</div>
 			<Seguridad amigo={amigo} abierto={seguridad} onCerrar={() => setSeguridad(false)} />
+			<NombreYNota
+				amigo={amigo}
+				abierto={renombrar}
+				onCerrar={() => setRenombrar(false)}
+				onError={onError}
+			/>
 			<Denunciar
 				amigo={amigo}
 				abierto={denuncia}

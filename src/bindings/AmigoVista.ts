@@ -7,9 +7,21 @@ export type AmigoVista = {
 /**
  * Su identidad (clave ed25519 en hex).
  */
-clave: string, apodo: string, 
+clave: string, 
 /**
- * Visto hace menos de 2,5 minutos.
+ * El nombre con el que se presenta (el suyo, igual para todos).
+ */
+apodo: string, 
+/**
+ * El que le puse yo, solo para mí (`amigos_alias`). La pantalla lo enseña antes que `apodo`.
+ */
+alias: string | null, 
+/**
+ * Una nota mía sobre él (como en el LoL), solo para mí.
+ */
+nota: string | null, 
+/**
+ * Visto hace menos de 2,5 minutos, o con la app abierta ahora mismo.
  */
 enLinea: boolean, 
 /**

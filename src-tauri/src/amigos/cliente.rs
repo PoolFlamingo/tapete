@@ -171,7 +171,65 @@ struct ErrorServidor {
 
 pub struct Cliente {
     http: Client,
+    /// Para `/events`, que se queda abierta: sin tope total, pero con tope entre dos lecturas
+    /// (el servidor manda un latido cada 20 s; sin bytes en 60 s, la conexión está muerta).
+    directo: Client,
     base: String,
+}
+
+/// Lo que llega por `/events` (SSE).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum EventoDirecto {
+    /// Recién conectada: hay que ponerse al día.
+    Hola,
+    /// Algo mío cambió en el servidor: toca `sync`.
+    Cambio,
+    /// Un amigo me está escribiendo (su clave).
+    Escribiendo(String),
+}
+
+/// Va troceando el texto de un SSE en eventos. Los latidos (`: …`) y lo desconocido no cuentan.
+#[derive(Default)]
+pub struct LectorSse {
+    resto: String,
+}
+
+impl LectorSse {
+    pub fn leer(&mut self, trozo: &[u8]) -> Vec<EventoDirecto> {
+        self.resto.push_str(&String::from_utf8_lossy(trozo));
+        // Un `\r\n` del camino no debe romper el corte por líneas en blanco.
+        if self.resto.contains('\r') {
+            self.resto = self.resto.replace("\r\n", "\n");
+        }
+        let mut salida = Vec::new();
+        while let Some(fin) = self.resto.find("\n\n") {
+            let bloque: String = self.resto.drain(..fin + 2).collect();
+            let mut evento = None;
+            let mut datos = String::new();
+            for linea in bloque.lines() {
+                if let Some(v) = linea.strip_prefix("event:") {
+                    evento = Some(v.trim().to_string());
+                } else if let Some(v) = linea.strip_prefix("data:") {
+                    datos.push_str(v.trim());
+                }
+            }
+            match evento.as_deref() {
+                Some("hola") => salida.push(EventoDirecto::Hola),
+                Some("cambio") => salida.push(EventoDirecto::Cambio),
+                Some("escribiendo") => {
+                    #[derive(Deserialize)]
+                    struct De {
+                        from: String,
+                    }
+                    if let Ok(d) = serde_json::from_str::<De>(&datos) {
+                        salida.push(EventoDirecto::Escribiendo(d.from));
+                    }
+                }
+                _ => {}
+            }
+        }
+        salida
+    }
 }
 
 impl Cliente {
@@ -182,7 +240,17 @@ impl Cliente {
             .connect_timeout(Duration::from_secs(20))
             .build()
             .map_err(error::red)?;
-        Ok(Cliente { http, base })
+        let directo = crate::tls::reqwest(Client::builder())
+            .user_agent(crate::tls::AGENTE)
+            .read_timeout(Duration::from_secs(60))
+            .connect_timeout(Duration::from_secs(20))
+            .build()
+            .map_err(error::red)?;
+        Ok(Cliente {
+            http,
+            directo,
+            base,
+        })
     }
 
     async fn pedir<T: DeserializeOwned>(
@@ -397,6 +465,48 @@ impl Cliente {
         Ok(c.friend_code)
     }
 
+    /// Abre `/events` (SSE). Un servidor que no la tiene (404) da `NotFound`, `motivo: sin_directo`.
+    pub async fn abrir_directo(&self, clave: &SecretKey) -> AppResult<reqwest::Response> {
+        let ruta = "/api/v1/events";
+        let h = firma::firmar(clave, "GET", ruta, &[]);
+        let r = self
+            .directo
+            .get(format!("{}{ruta}", self.base))
+            .header("Accept", "text/event-stream")
+            .header("X-Tapete-Key", h.clave)
+            .header("X-Tapete-Timestamp", h.timestamp)
+            .header("X-Tapete-Nonce", h.nonce)
+            .header("X-Tapete-Signature", h.firma)
+            .send()
+            .await
+            .map_err(error::red)?;
+        let estado = r.status();
+        if estado.is_success() {
+            return Ok(r);
+        }
+        // Un 404 del propio API (`not_registered`: aún sin `hello`) no es «no hay `/events`».
+        let bytes = r.bytes().await.unwrap_or_default();
+        match serde_json::from_slice::<ErrorServidor>(&bytes) {
+            Ok(e) => Err(AppError::new(ErrorCode::Server).with("code", e.code)),
+            Err(_) if estado == reqwest::StatusCode::NOT_FOUND => {
+                Err(AppError::new(ErrorCode::NotFound).with("motivo", "sin_directo"))
+            }
+            Err(_) => Err(error::estado_http(estado)),
+        }
+    }
+
+    /// «Estoy escribiendo» a este amigo (el servidor se lo pasa si está conectado).
+    pub async fn escribiendo(&self, clave: &SecretKey, para: &str) -> AppResult<()> {
+        #[derive(Serialize)]
+        struct Para<'a> {
+            to: &'a str,
+        }
+        let _: serde_json::Value = self
+            .pedir(clave, Method::POST, "/typing", Some(&Para { to: para }))
+            .await?;
+        Ok(())
+    }
+
     pub async fn borrarme(&self, clave: &SecretKey) -> AppResult<()> {
         let _: serde_json::Value = self
             .pedir(clave, Method::DELETE, "/me", None::<&()>)
@@ -408,6 +518,23 @@ impl Cliente {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn el_sse_se_lee_aunque_llegue_a_trozos() {
+        let mut l = LectorSse::default();
+        assert!(l.leer(b"retry: 5000\nevent: hola\ndata: {}").is_empty());
+        assert_eq!(
+            l.leer(b"\n\n: latido\n\nevent: cam"),
+            vec![EventoDirecto::Hola]
+        );
+        assert_eq!(
+            l.leer(b"bio\r\ndata: {}\r\n\r\nevent: escribiendo\ndata: {\"from\":\"ab\"}\n\nevent: otro\ndata: x\n\n"),
+            vec![
+                EventoDirecto::Cambio,
+                EventoDirecto::Escribiendo("ab".into())
+            ]
+        );
+    }
 
     #[test]
     fn la_plataforma_es_una_de_las_del_api() {

@@ -208,6 +208,8 @@ pub fn run() {
             commands::amigos::amigos_leido,
             commands::amigos::amigos_verificar,
             commands::amigos::amigos_ritmo,
+            commands::amigos::amigos_personal,
+            commands::amigos::amigos_escribiendo,
             commands::amigos::amigos_textos,
             commands::amigos::amigos_privacidad,
             commands::carpetas::carpeta_recordar,

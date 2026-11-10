@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { create } from "zustand";
+import type { AmigoVista } from "@/bindings/AmigoVista";
 import type { EstadoAmigos } from "@/bindings/EstadoAmigos";
 import { call, on } from "@/lib/ipc";
 
@@ -17,6 +19,8 @@ type AmigosStore = {
 	unirse: string | null;
 	/** Un enlace de amigo: «Añadir con un código» sale con este código puesto. */
 	anadir: string | null;
+	/** Quién me está escribiendo: su clave → hasta cuándo se enseña (ms). */
+	escribiendo: Record<string, number>;
 	poner: (e: EstadoAmigos) => void;
 	abrir: (chat?: string | null) => void;
 	cerrar: () => void;
@@ -31,6 +35,7 @@ export const useAmigos = create<AmigosStore>((set) => ({
 	chat: null,
 	unirse: null,
 	anadir: null,
+	escribiendo: {},
 	poner: (estado) => set({ estado }),
 	abrir: (chat = null) => set({ abierto: true, chat }),
 	cerrar: () => set({ abierto: false, chat: null }),
@@ -38,6 +43,36 @@ export const useAmigos = create<AmigosStore>((set) => ({
 	pedirUnirse: (unirse) => set({ unirse }),
 	pedirAnadir: (anadir) => set({ anadir }),
 }));
+
+/** Cuánto dura «escribiendo…» desde el último aviso (la otra app lo manda cada 3 s). */
+export const ESCRIBIENDO_MS = 6000;
+
+/** El nombre con el que veo a un amigo: el que le puse yo o, si no, el suyo. */
+export function nombreAmigo(a: Pick<AmigoVista, "alias" | "apodo">): string {
+	return a.alias ?? a.apodo;
+}
+
+/** Si ese amigo me está escribiendo ahora (se apaga solo al pasar `ESCRIBIENDO_MS`). */
+export function useEscribiendo(clave: string): boolean {
+	const hasta = useAmigos((s) => s.escribiendo[clave] ?? 0);
+	const [, repintar] = useState(0);
+	useEffect(() => {
+		const queda = hasta - Date.now();
+		if (queda <= 0) return;
+		const t = setTimeout(() => repintar((n) => n + 1), queda + 50);
+		return () => clearTimeout(t);
+	}, [hasta]);
+	return hasta > Date.now();
+}
+
+function anotarEscribiendo(clave: string, hasta: number | null): void {
+	useAmigos.setState((s) => {
+		const escribiendo = { ...s.escribiendo };
+		if (hasta === null) delete escribiendo[clave];
+		else escribiendo[clave] = hasta;
+		return { escribiendo };
+	});
+}
 
 /** Lo que hay que mirar: mensajes sin leer y solicitudes recibidas. */
 export function pendientes(e: EstadoAmigos | null): number {
@@ -55,10 +90,22 @@ export function iniciarAmigos(): void {
 		.then((e) => useAmigos.getState().poner(e))
 		.catch(() => {});
 	void on("amigos://estado", (e) => useAmigos.getState().poner(e));
+	void on("amigos://escribiendo", (clave) => anotarEscribiendo(clave, Date.now() + ESCRIBIENDO_MS));
+	// Llegó lo que escribía: ya no está escribiendo.
+	void on("amigos://mensajes", (claves) => {
+		for (const c of claves) anotarEscribiendo(c, null);
+	});
 }
 
 /** Solo para los tests. */
 export function reiniciarAmigos(): void {
 	iniciado = false;
-	useAmigos.setState({ estado: null, abierto: false, chat: null, unirse: null, anadir: null });
+	useAmigos.setState({
+		estado: null,
+		abierto: false,
+		chat: null,
+		unirse: null,
+		anadir: null,
+		escribiendo: {},
+	});
 }
