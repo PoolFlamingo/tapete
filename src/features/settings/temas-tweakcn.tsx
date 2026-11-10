@@ -18,12 +18,13 @@ import { Input } from "@/components/ui/input";
 import { WithTooltip } from "@/components/ui/with-tooltip";
 import { esAppError } from "@/lib/errores";
 import { call } from "@/lib/ipc";
+import { TEMA_FABRICA } from "@/lib/tema-inicial";
 import { esTemaInstalado, useTemasInstalados } from "@/lib/temas-instalados";
 import { THEMES, type ThemeName } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
-/** El tema de fábrica cuando el elegido ya no está instalado. */
-const DE_FABRICA: ThemeName = "amber-minimal";
+/** El tema de fábrica cuando el elegido ya no está instalado (el verde de Tapete). */
+const DE_FABRICA: ThemeName = TEMA_FABRICA;
 
 /**
  * Pide a Rust los temas instalados al arrancar y, si el elegido ya no está

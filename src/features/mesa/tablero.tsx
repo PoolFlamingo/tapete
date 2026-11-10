@@ -968,9 +968,10 @@ function Zonas({ disp, alPulsar }: { disp: Disposicion; alPulsar: AlPulsar }) {
 	// en su botón de la lupa (tocar la biblioteca roba).
 	const leerArriba = useLeerEnGrande(arribaLib, false);
 	const { tactil } = useFormato();
-	// Con las zonas encogidas del móvil de pie el nombre no cabe: letra menor y puntos.
+	// Con las zonas encogidas (el móvil de pie, o un tablero pequeño de una rejilla de 4) el
+	// nombre no cabe: letra menor y puntos suspensivos; así los rótulos vecinos no se pisan.
 	const zona = (r: Rect, nombre: string, hijo: React.ReactNode, n: number, alVer?: () => void) => {
-		const estrecha = r.w < 41;
+		const estrecha = r.w < 64;
 		return (
 			<div
 				className="absolute flex flex-col items-center"
@@ -983,8 +984,8 @@ function Zonas({ disp, alPulsar }: { disp: Disposicion; alPulsar: AlPulsar }) {
 						type="button"
 						onClick={alVer}
 						className={cn(
-							"relative h-4 text-[10px] text-white/80 underline decoration-dotted before:absolute before:-inset-x-1 before:-inset-y-3 before:content-['']",
-							estrecha && "max-w-full truncate text-[9px]",
+							"relative h-4 max-w-full truncate text-[10px] text-white/80 underline decoration-dotted before:absolute before:-inset-x-1 before:-inset-y-3 before:content-['']",
+							estrecha && "text-[9px]",
 						)}
 					>
 						{nombre}
@@ -993,8 +994,8 @@ function Zonas({ disp, alPulsar }: { disp: Disposicion; alPulsar: AlPulsar }) {
 				) : (
 					<span
 						className={cn(
-							"h-4 text-[10px] text-white/80",
-							estrecha && "max-w-full truncate text-[9px]",
+							"h-4 max-w-full truncate text-[10px] text-white/80",
+							estrecha && "text-[9px]",
 						)}
 					>
 						{nombre}

@@ -1,4 +1,4 @@
-import { THEMES } from "@/lib/themes";
+import { THEMES, type ThemeName } from "@/lib/themes";
 
 /**
  * **El tema puesto antes de montar la pantalla.** El `ThemeProvider` pone el
@@ -9,9 +9,20 @@ import { THEMES } from "@/lib/themes";
  *
  * 🛑 Las claves y los valores de fábrica son los de
  * `components/theme-provider.tsx` (de solo lectura, heredado de judlex): si
- * cambian allí, aquí también.
+ * cambian allí, aquí también. Salvo el tema: el de fábrica de Tapete es verde,
+ * como el paño del logo (Pablo, 10/11/2026), y el provider (que trae
+ * `amber-minimal`) no se puede tocar; así que, sin tema elegido, se deja
+ * guardado este antes de montar y el provider lo lee como uno elegido.
  */
-const TEMA_FABRICA = "amber-minimal";
+export const TEMA_FABRICA: ThemeName = "nature";
+
+function guardar(clave: string, valor: string) {
+	try {
+		localStorage.setItem(clave, valor);
+	} catch {
+		// Sin almacenamiento, el provider pondrá el suyo.
+	}
+}
 
 function leer(clave: string): string | null {
 	try {
@@ -26,12 +37,13 @@ export function ponerTemaAntesDeMontar() {
 	const guardado = leer("proxybuilder.theme");
 	// Como el provider: solo un tema que esté en `THEMES` (los instalados ya
 	// entraron con `prepararTemasInstalados`).
-	const tema =
-		guardado && THEMES.some((t) => t.name === guardado)
-			? guardado
-			: THEMES.some((t) => t.name === TEMA_FABRICA)
-				? TEMA_FABRICA
-				: (THEMES[0]?.name ?? TEMA_FABRICA);
+	const valido = guardado !== null && THEMES.some((t) => t.name === guardado);
+	const tema = valido
+		? guardado
+		: THEMES.some((t) => t.name === TEMA_FABRICA)
+			? TEMA_FABRICA
+			: (THEMES[0]?.name ?? TEMA_FABRICA);
+	if (!valido) guardar("proxybuilder.theme", tema);
 	const modo = leer("proxybuilder.mode") || "dark";
 	const oscuro =
 		modo === "system"

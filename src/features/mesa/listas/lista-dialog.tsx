@@ -265,15 +265,32 @@ export function ListaDialog({
 		</button>
 	);
 
+	// Una rejilla de celdas del mismo tamaño (la carta y su nombre debajo): las variantes de una
+	// carta y las básicas con su contador ya no desordenan las filas.
+	const estiloRejilla = { gridTemplateColumns: `repeat(auto-fill, ${anchoCarta}px)` };
+	const celda = (
+		c: CartaDeLista,
+		elegida: boolean,
+		alPulsar: () => void,
+		corona = false,
+		contador?: React.ReactNode,
+	) => (
+		<div key={c.id} className="flex flex-col items-center gap-1" style={{ width: anchoCarta }}>
+			{miniatura(c, elegida, alPulsar, corona)}
+			<span className="w-full truncate text-center text-[10px]">{c.nombre}</span>
+			{contador}
+		</div>
+	);
+
 	const rejillaComandantes = (
-		<div className="flex flex-wrap gap-1.5 p-1">
+		<div className="grid content-start justify-center gap-x-1.5 gap-y-2 p-1" style={estiloRejilla}>
 			{candidatos.length === 0 && (
-				<p className="text-[11px] text-muted-foreground">
+				<p className="col-span-full text-[11px] text-muted-foreground">
 					{t("Ninguna carta del deck puede ser comandante.")}
 				</p>
 			)}
 			{candidatos.map((c) =>
-				miniatura(
+				celda(
 					c,
 					eleccion.comandantes.includes(c.id),
 					() => setEleccion((e) => alternarComandante(e, c, todas ?? [])),
@@ -283,20 +300,21 @@ export function ListaDialog({
 		</div>
 	);
 	const rejillaCartas = (
-		<div className="flex flex-wrap content-start gap-2.5 p-2">
-			{grupos.map(([nombreCarta, copias]) => {
+		<div className="grid content-start justify-center gap-x-2.5 gap-y-2 p-2" style={estiloRejilla}>
+			{grupos.flatMap(([nombreCarta, copias]) => {
 				const elegidas = copias.filter(
 					(c) => eleccion.cartas.includes(c.id) || eleccion.comandantes.includes(c.id),
 				).length;
 				const primera = copias[0];
-				// Las básicas (sin límite): una casilla y cuántas.
+				// Las básicas (sin límite): una celda con cuántas.
 				if (primera?.sinLimite && copias.length > 1)
-					return (
-						<div key={nombreCarta} className="flex flex-col items-center gap-1">
-							{miniatura(primera, elegidas > 0, () =>
-								setEleccion((e) => conCopias(e, copias, elegidas > 0 ? 0 : copias.length)),
-							)}
-							<div className="flex items-center gap-1 text-[11px]">
+					return [
+						celda(
+							primera,
+							elegidas > 0,
+							() => setEleccion((e) => conCopias(e, copias, elegidas > 0 ? 0 : copias.length)),
+							false,
+							<div key={`${nombreCarta}-n`} className="flex items-center gap-1 text-[11px]">
 								<Button
 									size="icon"
 									variant="outline"
@@ -306,7 +324,7 @@ export function ListaDialog({
 								>
 									−
 								</Button>
-								<span className="min-w-10 text-center tabular-nums">
+								<span className="min-w-8 text-center tabular-nums">
 									{elegidas}/{copias.length}
 								</span>
 								<Button
@@ -318,35 +336,22 @@ export function ListaDialog({
 								>
 									+
 								</Button>
-							</div>
-							<span className="truncate text-center text-[10px]" style={{ width: anchoCarta }}>
-								{nombreCarta}
-							</span>
-						</div>
-					);
-				return (
-					<div key={nombreCarta} className="flex max-w-full flex-col gap-1">
-						<div className="flex flex-wrap gap-1">
-							{copias.map((c) =>
-								miniatura(
-									c,
-									eleccion.cartas.includes(c.id) || eleccion.comandantes.includes(c.id),
-									() => setEleccion((e) => alternarCarta(e, c, todas ?? [], singleton)),
-									eleccion.comandantes.includes(c.id),
-								),
-							)}
-						</div>
-						<span
-							className="truncate text-[10px]"
-							style={{ maxWidth: `min(${copias.length * (anchoCarta + 4) - 4}px, 100%)` }}
-						>
-							{nombreCarta}
-						</span>
-					</div>
+							</div>,
+						),
+					];
+				return copias.map((c) =>
+					celda(
+						c,
+						eleccion.cartas.includes(c.id) || eleccion.comandantes.includes(c.id),
+						() => setEleccion((e) => alternarCarta(e, c, todas ?? [], singleton)),
+						eleccion.comandantes.includes(c.id),
+					),
 				);
 			})}
 			{grupos.length === 0 && (
-				<p className="p-4 text-xs text-muted-foreground">{t("Ninguna carta coincide.")}</p>
+				<p className="col-span-full p-4 text-xs text-muted-foreground">
+					{t("Ninguna carta coincide.")}
+				</p>
 			)}
 		</div>
 	);

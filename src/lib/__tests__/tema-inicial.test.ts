@@ -11,7 +11,10 @@ vi.stubGlobal("document", {
 		classList: { toggle: (c: string, si: boolean) => (si ? clases.add(c) : clases.delete(c)) },
 	},
 });
-vi.stubGlobal("localStorage", { getItem: (k: string) => guardado.get(k) ?? null });
+vi.stubGlobal("localStorage", {
+	getItem: (k: string) => guardado.get(k) ?? null,
+	setItem: (k: string, v: string) => guardado.set(k, v),
+});
 vi.stubGlobal("window", { matchMedia: () => ({ matches: sistemaOscuro }) });
 
 const { ponerTemaAntesDeMontar } = await import("@/lib/tema-inicial");
@@ -24,9 +27,11 @@ describe("el tema antes de montar", () => {
 		sistemaOscuro = false;
 	});
 
-	it("sin nada guardado, el de fábrica en oscuro y en mate", () => {
+	it("sin nada guardado, el de fábrica (verde) en oscuro y en mate, y queda guardado", () => {
 		ponerTemaAntesDeMontar();
-		expect(atributos.get("data-theme")).toBe("amber-minimal");
+		expect(atributos.get("data-theme")).toBe("nature");
+		// El `ThemeProvider` (de solo lectura, con su propio tema de fábrica) lo lee como elegido.
+		expect(guardado.get("proxybuilder.theme")).toBe("nature");
 		expect(clases.has("dark")).toBe(true);
 		expect(atributos.get("data-material")).toBe("matte");
 	});
@@ -53,7 +58,7 @@ describe("el tema antes de montar", () => {
 	it("un tema que ya no existe cae al de fábrica; el base va limpio", () => {
 		guardado.set("proxybuilder.theme", "no-existe");
 		ponerTemaAntesDeMontar();
-		expect(atributos.get("data-theme")).toBe("amber-minimal");
+		expect(atributos.get("data-theme")).toBe("nature");
 		atributos.clear();
 		guardado.set("proxybuilder.theme", "base");
 		guardado.set("proxybuilder.skin", "zeus");

@@ -95,11 +95,20 @@ export function engancharTeclado(): () => void {
 		raiz.style.setProperty("--alto-visible", `${e.altoVisible}px`);
 		if (e.abierto) raiz.dataset.teclado = "";
 		else delete raiz.dataset.teclado;
-		// Al abrirse el teclado, el campo que se escribe se trae a la vista.
+		// Al abrirse el teclado, el campo que se escribe se trae a la vista, y se sigue trayendo
+		// durante medio segundo: el alto de los diálogos lo pone React (`use-alto-visible.ts`) y
+		// encoge con una transición de ~200 ms; con solo la primera vez, un campo de un diálogo
+		// de lado (~150 dp a la vista) se quedaba debajo del teclado.
 		if (e.abierto && !abiertoAntes) {
 			const campo = document.activeElement;
 			if (campo instanceof HTMLElement && campo.matches(CAMPO)) {
-				campo.scrollIntoView({ block: "nearest" });
+				const hasta = performance.now() + 500;
+				const traer = () => {
+					if (document.activeElement !== campo) return;
+					campo.scrollIntoView({ block: "nearest" });
+					if (performance.now() < hasta) requestAnimationFrame(traer);
+				};
+				traer();
 			}
 		}
 		abiertoAntes = e.abierto;

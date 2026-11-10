@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 
 /**
- * Para los botones que lanzan algo que tarda (crear una sala, entrar,
+ * Para los botones que lanzan algo que tarda (pedir amistad, aceptar,
  * invitar…): `ocupado` mientras dura, y `envolver(f)` no deja empezarlo otra
  * vez hasta que acaba (un doble clic no lo hace dos veces).
  */
