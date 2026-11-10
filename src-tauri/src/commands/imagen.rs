@@ -75,6 +75,7 @@ fn generar(
     formato: FormatoImagen,
 ) -> AppResult<Vec<u8>> {
     let ppp = s.quality.dpi();
+    let diseno = matches!((&card.design, cara_diseno(card, dorso)), (Some(_), Some(_)));
     let mut imagen = match (&card.design, cara_diseno(card, dorso)) {
         (Some(d), Some(cara)) => {
             let e = efectivo_de(d, &colecciones_por_id(state)?);
@@ -120,9 +121,14 @@ fn generar(
         }
     };
     // El sello de Tapete va siempre en lo que se exporta (no se puede apagar).
-    proxy_core::sello::pintar(
+    proxy_core::sello::pintar_como(
         &mut imagen,
         proxy_core::sello::idioma_de_carta(card, s.design_lang),
+        if diseno {
+            proxy_core::sello::Origen::Diseno
+        } else {
+            proxy_core::sello::Origen::Propia
+        },
     );
     Ok(en_formato(&imagen, formato, s.encoding.jpeg_quality)?)
 }

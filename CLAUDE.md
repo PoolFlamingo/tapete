@@ -724,7 +724,7 @@ le falta una cadena le sale la inglesa.
   fijadas de `letras-cjk.json`), los glifos ya colocados (`linea`, sin kerning: una sola cuenta para pantalla y papel),
   `caja` (en fracciones de la carta) y `colocar`, que mira la carta: centrado en la franja de abajo, **por debajo** del
   artista y del copyright; prueba `SITIOS` (más abajo y hasta el 80 % si el pie de un marco propio baja más) y el primero
-  con fondo liso va solo, blanco o negro por contraste; si ninguno, pastilla oscura semitransparente. Dónde va: en el
+  con fondo liso va solo, blanco o negro por contraste; si ninguno, pastilla oscura semitransparente. Una carta **diseñada** (`Origen::Diseno`, `colocar_como`) prueba antes la primera línea del pie (`PIE_ALTO`, junto al número y la rareza) y cada sitio también pegado a la derecha, con una prueba de fondo más estricta (`TRAZOS_MAXIMOS`); una imagen propia, como siempre. Dónde va: en el
   PDF como **texto vectorial encima** (`pdf::sello`; el JPEG sigue pasando tal cual), con la colocación decidida al
   preparar cada imagen (`sello::colocaciones`, en `commands/export.rs`) y la línea del margen en el idioma de la app
   (`export_pdf` recibe `lang`); **pintado** en la miniatura de las hojas (solo si la pide `slot-view` con

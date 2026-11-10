@@ -139,7 +139,8 @@ pub fn render_desde_imagen(img: &RgbaImage, s: &RenderSpec) -> Result<Rendered, 
     let img = match s.sello {
         Some(lang) => {
             let mut con = img.clone();
-            crate::sello::pintar(&mut con, lang);
+            // Esta tubería solo recibe cartas diseñadas (ya a la medida del corte).
+            crate::sello::pintar_como(&mut con, lang, crate::sello::Origen::Diseno);
             bleed::extend(&con, b, s.bleed_mode)
         }
         None => bleed::extend(img, b, s.bleed_mode),

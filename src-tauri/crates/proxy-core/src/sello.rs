@@ -64,30 +64,71 @@ const TINTA_X: f64 = 0.10;
 pub struct Sitio {
     pub escala: f64,
     pub base: f64,
+    /// Pegado al margen derecho (en vez de centrado): para el pie alto de una carta diseñada
+    /// cuya primera línea lleva texto en el centro.
+    pub derecha: bool,
 }
+
+/// Hasta dónde llega por la derecha un sello pegado al margen (fracción del ancho): dentro de
+/// las esquinas redondeadas.
+const MARGEN_DERECHO: f64 = 0.875;
+
+/// De dónde viene la carta: de una imagen propia (o de Scryfall), cuyo pie no se conoce, o del
+/// editor de cartas, cuyo pie sí: la primera línea lleva solo el número y la rareza, a la
+/// izquierda.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Origen {
+    Propia,
+    Diseno,
+}
+
+/// En una carta diseñada, el sello va en la primera línea del pie, a la altura del número y la
+/// rareza («0016  R») y centrado: queda por encima del artista y del copyright (que van en la
+/// segunda línea) y sin tocar la línea del marco. Se prueba antes que los de abajo y solo se
+/// usa si ahí el fondo es liso (un pie propio con más texto lo descarta).
+pub const PIE_ALTO: Sitio = Sitio {
+    escala: 0.90,
+    base: 0.0505,
+    derecha: false,
+};
+
+/// El mismo sitio, pegado al margen derecho.
+pub const PIE_ALTO_DERECHA: Sitio = Sitio {
+    derecha: true,
+    ..PIE_ALTO
+};
 
 pub const SITIOS: [Sitio; 4] = [
     Sitio {
         escala: 1.0,
         base: 0.0135,
+        derecha: false,
     },
     Sitio {
         escala: 1.0,
         base: 0.0118,
+        derecha: false,
     },
     Sitio {
         escala: 0.88,
         base: 0.0108,
+        derecha: false,
     },
     Sitio {
         escala: 0.80,
         base: 0.0100,
+        derecha: false,
     },
 ];
 /// Opacidad de la pastilla oscura: con texto blanco da ≥ 4,5:1 sobre cualquier fondo.
 pub const OPACIDAD_PASTILLA: f32 = 0.62;
 /// Hasta esta desviación de la luminancia (0–255) el fondo cuenta como liso.
 const LISO: f64 = 14.0;
+/// Un píxel que se aparta tanto de la media (luminancia 0–255) es un trazo, no fondo.
+const TRAZO: f64 = 28.0;
+/// En una carta diseñada (de la que se espera un borde limpio) no se admite casi ningún trazo
+/// dentro de la caja: así el sello se aparta de las colas de las letras del pie.
+const TRAZOS_MAXIMOS: f64 = 0.0004;
 
 #[derive(Deserialize, Default)]
 struct Textos {
@@ -234,7 +275,11 @@ pub struct Caja {
 pub fn caja(l: &Linea, ancho: f64, alto: f64, sitio: Sitio) -> Caja {
     let em = TAM * sitio.escala * alto;
     let w = f64::from(l.ancho) * em;
-    let x = (ancho - w) / 2.0;
+    let x = if sitio.derecha {
+        ancho * MARGEN_DERECHO - w - RELLENO_X * em
+    } else {
+        (ancho - w) / 2.0
+    };
     let base = alto - sitio.base * alto;
     Caja {
         em,
@@ -289,14 +334,17 @@ fn lineal(c: u8) -> f64 {
     }
 }
 
-/// Desviación de la luminancia (0–255) y luminancia relativa media de un rectángulo.
-fn fondo(img: &RgbaImage, r: [f64; 4]) -> Option<(f64, f64)> {
+/// Desviación de la luminancia (0–255), luminancia relativa media y qué parte de los píxeles se
+/// aparta mucho de la media (un trazo fino, como la cola de una letra, casi no mueve la
+/// desviación pero sí aparece aquí) de un rectángulo.
+fn fondo(img: &RgbaImage, r: [f64; 4]) -> Option<(f64, f64, f64)> {
     let (w, h) = img.dimensions();
     let x0 = r[0].max(0.0).floor() as u32;
     let y0 = r[1].max(0.0).floor() as u32;
     let x1 = (r[2].ceil().max(0.0) as u32).min(w);
     let y1 = (r[3].ceil().max(0.0) as u32).min(h);
     let (mut n, mut suma, mut suma2, mut lum) = (0.0f64, 0.0f64, 0.0f64, 0.0f64);
+    let mut lumas: Vec<f64> = Vec::new();
     // Lo transparente (las esquinas redondeadas) se ve sobre el papel blanco.
     for y in y0..y1 {
         for x in x0..x1 {
@@ -305,6 +353,7 @@ fn fondo(img: &RgbaImage, r: [f64; 4]) -> Option<(f64, f64)> {
             let rgb = [0, 1, 2].map(|i| (f64::from(p[i]) * a + 255.0 * (1.0 - a)).round() as u8);
             let luma =
                 0.299 * f64::from(rgb[0]) + 0.587 * f64::from(rgb[1]) + 0.114 * f64::from(rgb[2]);
+            lumas.push(luma);
             suma += luma;
             suma2 += luma * luma;
             lum += 0.2126 * lineal(rgb[0]) + 0.7152 * lineal(rgb[1]) + 0.0722 * lineal(rgb[2]);
@@ -315,7 +364,12 @@ fn fondo(img: &RgbaImage, r: [f64; 4]) -> Option<(f64, f64)> {
         return None;
     }
     let media = suma / n;
-    Some(((suma2 / n - media * media).max(0.0).sqrt(), lum / n))
+    let lejos = lumas.iter().filter(|l| (**l - media).abs() > TRAZO).count();
+    Some((
+        (suma2 / n - media * media).max(0.0).sqrt(),
+        lum / n,
+        lejos as f64 / n,
+    ))
 }
 
 /// Mira el fondo de la carta ya recortada (sin sangrado) en cada sitio posible y decide: el
@@ -326,6 +380,11 @@ fn fondo(img: &RgbaImage, r: [f64; 4]) -> Option<(f64, f64)> {
 const ANCHO_MIRADA: u32 = 400;
 
 pub fn colocar(img: &RgbaImage, l: &Linea) -> Colocacion {
+    colocar_como(img, l, Origen::Propia)
+}
+
+/// Como [`colocar`], sabiendo de dónde viene la carta: una diseñada prueba antes [`PIE_ALTO`].
+pub fn colocar_como(img: &RgbaImage, l: &Linea, origen: Origen) -> Colocacion {
     let (w0, h0) = img.dimensions();
     let reducida;
     let img = if w0 == ANCHO_MIRADA || w0 == 0 {
@@ -337,12 +396,24 @@ pub fn colocar(img: &RgbaImage, l: &Linea) -> Colocacion {
     };
     let (w, h) = img.dimensions();
     let mut mejor: Option<(f64, Sitio)> = None;
-    for sitio in SITIOS {
+    // Una imagen propia: los sitios de siempre. Una diseñada: el pie alto y, para cada sitio,
+    // también pegado a la derecha (el artista suele ocupar el centro-izquierda del pie y la
+    // derecha queda libre).
+    let candidatos: Vec<Sitio> = match origen {
+        Origen::Propia => SITIOS.to_vec(),
+        Origen::Diseno => [PIE_ALTO]
+            .into_iter()
+            .chain(SITIOS)
+            .flat_map(|s| [s, Sitio { derecha: true, ..s }])
+            .collect(),
+    };
+    for sitio in candidatos {
         let c = caja(l, f64::from(w), f64::from(h), sitio);
-        let Some((desviacion, y)) = fondo(img, c.tinta) else {
+        let Some((desviacion, y, trazos)) = fondo(img, c.tinta) else {
             continue;
         };
-        if desviacion <= LISO {
+        let limpio = origen == Origen::Propia || trazos <= TRAZOS_MAXIMOS;
+        if desviacion <= LISO && limpio {
             // Con blanco o negro, el mejor de los dos da siempre ≥ 4,58:1 (WCAG AA pide 4,5)
             // sobre un fondo liso.
             let con_blanco = 1.05 / (y + 0.05);
@@ -354,7 +425,8 @@ pub fn colocar(img: &RgbaImage, l: &Linea) -> Colocacion {
                 },
             };
         }
-        if mejor.is_none_or(|(d, _)| desviacion < d) {
+        // Sobre la ilustración, la pastilla va donde ya iba: abajo y centrada.
+        if SITIOS.contains(&sitio) && mejor.is_none_or(|(d, _)| desviacion < d) {
             mejor = Some((desviacion, sitio));
         }
     }
@@ -371,6 +443,7 @@ pub fn colocaciones(
     ancho_mm: f64,
     sangrado_mm: f64,
     langs: &[DesignLang],
+    origen: Origen,
 ) -> Result<Vec<(DesignLang, Colocacion)>, crate::imaging::ImagingError> {
     let img = crate::imaging::decode::decode(bytes)?;
     let (w, h) = img.dimensions();
@@ -381,7 +454,7 @@ pub fn colocaciones(
     let carta = image::imageops::crop_imm(&img, b, b, w - 2 * b, h - 2 * b).to_image();
     Ok(langs
         .iter()
-        .map(|&lang| (lang, colocar(&carta, &linea_carta(lang))))
+        .map(|&lang| (lang, colocar_como(&carta, &linea_carta(lang), origen)))
         .collect())
 }
 
@@ -446,8 +519,13 @@ pub fn pastilla(x0: f32, y0: f32, x1: f32, y1: f32) -> Vec<Trazo> {
 
 /// Pinta el sello en una carta ya recortada a su medida (sin sangrado) y dice cómo lo puso.
 pub fn pintar(img: &mut RgbaImage, lang: DesignLang) -> Colocacion {
+    pintar_como(img, lang, Origen::Propia)
+}
+
+/// Como [`pintar`], sabiendo de dónde viene la carta (ver [`colocar_como`]).
+pub fn pintar_como(img: &mut RgbaImage, lang: DesignLang, origen: Origen) -> Colocacion {
     let l = linea_carta(lang);
-    let colocacion = colocar(img, &l);
+    let colocacion = colocar_como(img, &l, origen);
     let (w, h) = img.dimensions();
     let c = caja(&l, f64::from(w), f64::from(h), colocacion.sitio);
     // Solo se pinta la caja: un lienzo pequeño que luego se funde sobre la carta.
@@ -585,11 +663,143 @@ mod tests {
                     "{lang:?} {sitio:?}: {c:?}"
                 );
             }
+            for sitio in SITIOS {
+                let c = caja(
+                    &l,
+                    63.0,
+                    88.0,
+                    Sitio {
+                        derecha: true,
+                        ..sitio
+                    },
+                );
+                assert!(
+                    c.x0 > 63.0 * 0.12 && c.x1 < 63.0 * 0.88,
+                    "{lang:?} {sitio:?}: {c:?}"
+                );
+            }
             // El tamaño, nunca por debajo de ~4 pt (1,41 mm de cuadratín).
             for sitio in SITIOS {
                 assert!(caja(&l, 63.0, 88.0, sitio).em > 1.4);
             }
         }
+    }
+
+    #[test]
+    fn el_sitio_del_pie_alto_cabe_entre_el_marco_y_el_artista() {
+        for lang in DesignLang::TODOS {
+            let c = caja(&linea_carta(lang), 63.0, 88.0, PIE_ALTO);
+            assert!(c.x0 > 63.0 * 0.12 && c.x1 < 63.0 * 0.88, "{lang:?}: {c:?}");
+            assert!(c.em > 1.4, "{lang:?}: {c:?}");
+            let d = caja(&linea_carta(lang), 63.0, 88.0, PIE_ALTO_DERECHA);
+            assert!(d.x0 > 63.0 * 0.12 && d.x1 < 63.0 * 0.88, "{lang:?}: {d:?}");
+            // Por encima de la línea del artista y del copyright (3,3 % desde abajo) y por
+            // debajo de la línea del marco (~7,1 %).
+            assert!(88.0 - c.tinta[3] > 88.0 * 0.033, "{lang:?}: {c:?}");
+            assert!(88.0 - c.tinta[1] < 88.0 * 0.070, "{lang:?}: {c:?}");
+        }
+    }
+
+    #[test]
+    fn una_carta_disenada_lo_lleva_en_la_primera_linea_del_pie_y_una_propia_abajo() {
+        let l = linea_carta(DesignLang::Es);
+        let img = carta([10, 10, 12]);
+        assert_eq!(colocar_como(&img, &l, Origen::Diseno).sitio, PIE_ALTO);
+        // Sin saber de dónde viene, como siempre.
+        assert_eq!(colocar(&img, &l).sitio, SITIOS[0]);
+        assert_eq!(colocar_como(&img, &l, Origen::Propia).sitio, SITIOS[0]);
+    }
+
+    #[test]
+    fn si_el_centro_de_la_primera_linea_esta_ocupado_va_a_la_derecha() {
+        let l = linea_carta(DesignLang::Es);
+        let mut img = carta([0, 0, 0]);
+        let c = caja(&l, 630.0, 880.0, PIE_ALTO);
+        let y = ((c.tinta[1] + c.tinta[3]) / 2.0) as u32;
+        // Texto de la primera columna al centro-izquierda, como el artista del pie de fábrica.
+        for x in 150..330 {
+            img.put_pixel(x, y, image::Rgba([255, 255, 255, 255]));
+        }
+        let col = colocar_como(&img, &l, Origen::Diseno);
+        assert_eq!(col.sitio, PIE_ALTO_DERECHA);
+        assert_eq!(col.fondo, Fondo::Banda { claro: true });
+    }
+
+    #[test]
+    fn si_la_primera_linea_del_pie_lleva_texto_en_el_centro_baja_al_sitio_de_siempre() {
+        let l = linea_carta(DesignLang::Es);
+        let mut img = carta([0, 0, 0]);
+        let c = caja(&l, 630.0, 880.0, PIE_ALTO);
+        let y = ((c.tinta[1] + c.tinta[3]) / 2.0) as u32;
+        for x in 100..560 {
+            img.put_pixel(x, y, image::Rgba([255, 255, 255, 255]));
+        }
+        let col = colocar_como(&img, &l, Origen::Diseno);
+        assert_eq!(col.sitio, SITIOS[0]);
+        assert_eq!(col.fondo, Fondo::Banda { claro: true });
+    }
+
+    #[test]
+    fn con_el_artista_en_el_centro_de_las_dos_lineas_va_abajo_a_la_derecha() {
+        // Como el pie de fábrica del editor: texto en el centro-izquierda de las dos líneas y
+        // la derecha libre (menos la caja de fuerza/resistencia, que llega a la línea alta).
+        let l = linea_carta(DesignLang::Es);
+        let mut img = carta([0, 0, 0]);
+        let alto = caja(&l, 630.0, 880.0, PIE_ALTO);
+        let bajo = caja(&l, 630.0, 880.0, SITIOS[0]);
+        for c in [alto, bajo] {
+            let y = ((c.tinta[1] + c.tinta[3]) / 2.0) as u32;
+            for x in 120..300 {
+                img.put_pixel(x, y, image::Rgba([255, 255, 255, 255]));
+            }
+        }
+        for x in 400..560 {
+            img.put_pixel(x, alto.tinta[3] as u32, image::Rgba([255, 255, 255, 255]));
+        }
+        let col = colocar_como(&img, &l, Origen::Diseno);
+        assert_eq!(
+            col.sitio,
+            Sitio {
+                derecha: true,
+                ..SITIOS[0]
+            }
+        );
+        assert_eq!(col.fondo, Fondo::Banda { claro: true });
+    }
+
+    #[test]
+    fn una_carta_disenada_se_aparta_de_las_colas_de_las_letras_del_pie() {
+        // Una cola fina que entra en la caja de siempre por arriba: apenas mueve la desviación
+        // media (una imagen propia no la tiene en cuenta), pero en una diseñada cuenta.
+        let l = linea_carta(DesignLang::Es);
+        let mut img = carta([0, 0, 0]);
+        let c = caja(&l, 630.0, 880.0, SITIOS[0]);
+        let y = c.tinta[1].ceil() as u32 + 1;
+        for x in 250..256 {
+            img.put_pixel(x, y, image::Rgba([255, 255, 255, 255]));
+            img.put_pixel(x, y + 1, image::Rgba([255, 255, 255, 255]));
+        }
+        // Y el pie alto, ocupado, para que se llegue a los de abajo.
+        let alto = caja(&l, 630.0, 880.0, PIE_ALTO);
+        let ya = ((alto.tinta[1] + alto.tinta[3]) / 2.0) as u32;
+        for x in 100..560 {
+            img.put_pixel(x, ya, image::Rgba([255, 255, 255, 255]));
+        }
+        assert_eq!(colocar_como(&img, &l, Origen::Propia).sitio, SITIOS[0]);
+        let col = colocar_como(&img, &l, Origen::Diseno);
+        assert_ne!(col.sitio, SITIOS[0]);
+        assert_eq!(col.fondo, Fondo::Banda { claro: true });
+    }
+
+    #[test]
+    fn sobre_la_ilustracion_una_carta_disenada_no_pone_la_pastilla_en_el_pie_alto() {
+        let mut img = carta([20, 20, 20]);
+        for (x, y, p) in img.enumerate_pixels_mut() {
+            p.0 = [((x * 7) % 256) as u8, ((y * 13) % 256) as u8, 90, 255];
+        }
+        let col = colocar_como(&img, &linea_carta(DesignLang::En), Origen::Diseno);
+        assert_eq!(col.fondo, Fondo::Pastilla);
+        assert_ne!(col.sitio, PIE_ALTO);
     }
 
     #[test]
@@ -678,7 +888,14 @@ mod tests {
         image::imageops::overlay(&mut con, &carta_px, i64::from(b), i64::from(b));
         let png = crate::imaging::encode::png(&con).unwrap();
         // 630 px = 63 mm → 10 px/mm → 3 mm de sangrado.
-        let r = colocaciones(&png, 63.0, 3.0, &[DesignLang::Es, DesignLang::Ko]).unwrap();
+        let r = colocaciones(
+            &png,
+            63.0,
+            3.0,
+            &[DesignLang::Es, DesignLang::Ko],
+            Origen::Propia,
+        )
+        .unwrap();
         for (lang, c) in r {
             assert_eq!(c, colocar(&carta_px, &linea_carta(lang)), "{lang:?}");
         }

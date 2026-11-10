@@ -243,6 +243,12 @@ pub fn exportar(
                     spec.card.width_mm,
                     spec.bleed_mm,
                     &langs,
+                    // Una carta diseñada tiene el pie conocido; una imagen propia, no.
+                    if spec.diseno.is_some() {
+                        proxy_core::sello::Origen::Diseno
+                    } else {
+                        proxy_core::sello::Origen::Propia
+                    },
                 )?;
                 let n = hechas.fetch_add(1, Ordering::SeqCst) + 1;
                 progreso(ExportPhase::Prepare, n, total);

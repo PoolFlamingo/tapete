@@ -144,7 +144,7 @@ pub fn exportar(
         }
         // El sello de Tapete va siempre en lo que se exporta, en el idioma de la carta.
         let mut imagen = r.imagen;
-        proxy_core::sello::pintar(&mut imagen, t.lang);
+        proxy_core::sello::pintar_como(&mut imagen, t.lang, proxy_core::sello::Origen::Diseno);
         let bytes = proxy_core::imaging::encode::png(&imagen)
             .map_err(|e| AppError::new(ErrorCode::Internal).with("detalle", e))?;
         std::fs::write(destino.join(carpeta(t.lang)).join(fichero), bytes).map_err(io)?;
