@@ -1,24 +1,116 @@
-# Proxy Builder
+# Tapete
 
 [English](README.md) · **Español**
 
-**Pega tu lista de Magic y sal con un PDF listo para imprimir, recortar y jugar.**
+**Prepara, prueba y juega tus decks de Magic. Gratis, sin cuentas, en tu ordenador y en tu móvil.**
 
-Proxy Builder es una aplicación de escritorio para montar decks proxy de
-*Magic: The Gathering*. Busca cada carta en Scryfall, descarga la mejor imagen,
-la coloca en hojas a tamaño real y genera un PDF con sangrado, guías de corte y
-doble cara bien alineada. Todo el trabajo se hace en tu equipo, rápido y sin
-cuentas ni anuncios.
+[**Descargar Tapete**](https://tapete.zodhub.app) · [Releases](https://github.com/PoolFlamingo/tapete/releases) · [Wiki](https://github.com/PoolFlamingo/tapete/wiki)
 
-Para Linux, Windows y macOS, en español y en inglés.
+Tapete es una app gratuita para jugadores de *Magic: The Gathering*. Pegas tu
+lista (de Moxfield, Archidekt, Arena o MTGO) y tienes el deck con sus cartas,
+estadísticas y precio. Lo pruebas en solitario contra un rival fantasma que
+contrarresta tus hechizos, quita tus criaturas y barre el campo, o juegas con tus
+amigos a distancia con un código o un enlace, hasta diez jugadores, sin cuentas ni
+webcam. Cada partida queda guardada y se puede repetir. Y si quieres probar el
+deck en una mesa de verdad antes de comprarlo, saca un PDF listo para imprimir.
 
-![Proxy Builder con un deck cargado](docs/presentacion/vista-principal.jpg)
+Funciona en Linux, Windows, macOS y Android, en 15 idiomas, sin anuncios. Tus
+decks se quedan en tu equipo.
+
+> Tapete se llamó *Proxy Builder* hasta la versión 3.6. Tus decks, partidas e
+> identidad siguen igual.
+
+![Tapete con un deck cargado](docs/presentacion/vista-principal.jpg)
 
 <!-- Vídeo de presentación: sustituir esta línea por el enlace o el reproductor. -->
 
 ---
 
-## De la lista al papel en un minuto
+## Jugar con tu deck
+
+La pestaña **Jugar** pone tu deck en una mesa virtual para probarlo y jugarlo,
+en solitario o con amigos, con las mismas imágenes que imprimirías (proxies
+diseñadas incluidas):
+
+- **Partidas en solitario** con la mano inicial y la regla de mulligan que
+  elijas (Londres, Londres con el primero gratis, amistoso o libre), turnos,
+  vidas, venenos, daño de comandante y contadores de jugador.
+- **Todo con el ratón o el teclado:** arrastra cartas entre la mano, el campo y
+  las zonas; el menú de cada carta la gira, la transforma, le pone contadores,
+  le cambia la fuerza y la resistencia, la adjunta, señala objetivos o la manda
+  a cualquier sitio; y cada acción tiene su atajo (la lista, a un clic).
+- **Lo que hace falta con la biblioteca:** robar, moler, escrutar, vigilar,
+  mirar las de arriba o abajo, buscar (con filtros por tipo y color), revelar
+  hasta (cascada, descubrir…), fichas (las del deck, rápidas como Tesoro o
+  Comida, cualquiera de Scryfall o una libre), dados y monedas.
+- **La vista grande** de la carta bajo el ratón, con un panel de estado que
+  explica cada contador y cada bono.
+- **Deshacer todo lo que quieras**, y un registro de la partida escrito en tu
+  idioma.
+- **Decks con más cartas de las que se juegan** (variantes de diseño,
+  alternativas para probar otras sinergias): guarda **listas para jugar** con
+  el comandante (la variante de diseño que quieras) y 99 más, comprobadas
+  (tamaño, repetidas e identidad de color). El deck no cambia.
+- **Tu tapete**: una imagen tuya o la ilustración de una carta, por deck, con
+  un velo oscuro y desenfoque para que las cartas destaquen.
+- **No pierde ninguna partida:** se guarda mientras juegas y «Jugar» ofrece
+  seguirla al volver a abrir la app.
+
+![Una partida en marcha](docs/presentacion/mesa.jpg)
+
+### Sparring, dados y monedas
+
+- **Sparring:** en solitario puedes activar un rival fantasma que de vez en
+  cuando responde a tus jugadas, como lo haría una mesa de verdad: contrarresta
+  un hechizo, quita una criatura que acaba de entrar, barre el campo después de
+  un ataque. Tú eliges lo fuerte que juega y decides si cada respuesta ocurre.
+- **Más fantasmas:** añade hasta nueve, cada uno con su propia vida, para sentir una
+  mesa de varios jugando en solitario. No traen más respuestas; el Sparring es el mismo.
+- **Dados y monedas** en 3D de verdad, con física (o un 3D más ligero o un 2D
+  plano, en Ajustes), con tus colores, tu acabado o tu propia imagen. El
+  resultado se decide antes de la animación, así que siempre es justo.
+
+### Con otros jugadores
+
+- **Hasta 10 jugadores** en un mismo equipo («Partida local»: cada uno juega
+  su turno en la misma pantalla) o **en red**. La mesa puede enseñar un solo
+  tablero, uno grande y el resto en miniatura, dos a la vez o una rejilla.
+- **En red sin cuentas:** crea una partida y manda el código o el enlace
+  (`https://tapete.zodhub.app/join/…`, que abre la app o lleva a descargarla);
+  tus amigos entran con su propio deck, o solo a mirar. La conexión va directa
+  entre los equipos y solo usa un relé cuando no hay camino directo. El enlace
+  nunca lleva tu dirección IP.
+- **Amigos y mensajes (opcional):** añade amigos con un código, un enlace o un
+  QR, escríbeles e invítalos a tu partida con un toque. Los mensajes van
+  cifrados de punta a punta: el servidor de Tapete solo los pasa y no puede
+  leerlos. No se manda nada hasta que lo aceptas en «Amigos», y puedes dejarlo
+  y pedir que se borre todo del servidor cuando quieras.
+- **Formatos:** Commander (daño e impuesto de comandante), 60 cartas, Limitado
+  o libre; equipos con vida compartida o no, Dos Cabezas, Archienemigo y
+  Planechase; al mejor de 1, 3 o 5 con banquillo entre partidas.
+- **Las manos son privadas:** siempre ves cuántas cartas tienen los demás,
+  con su reverso (el del deck, también en las de doble cara). Los compañeros
+  de equipo se ven la mano, salvo que lo desactives.
+- **Chat, avisos rápidos** («Espera», «Respondo», «OK»…) y señales de
+  prioridad, con un bocadillo en el tablero de cada jugador, y sonidos de mesa.
+
+![Cuatro tableros en rejilla](docs/presentacion/mesa-rejilla.jpg)
+
+![El chat y los avisos rápidos](docs/presentacion/mesa-chat.jpg)
+
+### Después de la partida
+
+- Un **resumen** con quién ganó y cómo, el puesto de cada jugador, las rondas
+  y la duración.
+- La **repetición** de la partida entera: ve a cualquier momento, reprodúcela
+  a la velocidad que quieras y mírala como cualquier jugador.
+- El **historial** de todas tus partidas, con el deck y la lista para jugar de
+  cada asiento, filtros por resultado y formato, y lo de cada deck en sus
+  propiedades.
+
+---
+
+## De la lista al deck en un minuto
 
 1. **Pega la lista** como la tengas: `4 Lightning Bolt`, `1 Sol Ring (CMM) 410`…
    Vale el formato de Moxfield, Arena o MTGO, y la lista copiada como texto de
@@ -31,6 +123,96 @@ Para Linux, Windows y macOS, en español y en inglés.
 4. **Exporta el PDF.** Imprime al 100 %, recorta y a jugar.
 
 ![Las hojas del deck, tal cual saldrán en papel](docs/presentacion/hojas.jpg)
+
+---
+
+## Tu biblioteca de decks
+
+Todos tus decks en un sitio, con su portada. Se **guardan solos** mientras
+trabajas. Puedes duplicarlos, renombrarlos y **exportarlos como `.pbdeck`** con
+todas sus imágenes dentro para pasarlos a otro equipo o a un amigo. «Liberar
+espacio» borra las imágenes que ya no usa ningún deck.
+
+- **Etiquetas tuyas**, con nombre y color: Commander, Por imprimir, Viernes de
+  juego… Se ponen a un deck o a varios a la vez, y se filtra por una o por
+  varias (los que tengan alguna o los que tengan todas).
+- **Favoritos** arriba, **notas** en cada deck y la **portada** que elijas
+  entre sus cartas.
+- **Búsqueda** por el nombre del deck, por las cartas que lleva, por sus notas o
+  por sus etiquetas. **Filtros** por identidad de color (los incluye, exactos o
+  como mucho), por clase (Commander, construido, limitado), por los formatos en
+  los que es legal, por el idioma de sus cartas y por si lleva cartas diseñadas
+  o imágenes propias.
+  Si un deck está de verdad en otro idioma pero sus cartas están vinculadas a
+  impresiones en inglés, se le pone el **idioma a mano** desde su menú; de una
+  imagen propia también se puede decir en qué idioma está.
+- **Orden** por fecha de modificado, abierto o creado, nombre, cartas, precio,
+  coste medio o colores, y **grupos** por etiqueta, colores, clase o idioma.
+  Agrupados por etiqueta, un deck con varias sale en cada una.
+- Dos vistas: la **cuadrícula**, en tres tamaños, y la **lista**, con los datos
+  técnicos de cada deck: colores, clase y bracket, cartas y fichas, coste
+  medio, precio estimado, idioma, imágenes propias y fechas.
+- Varios decks a la vez (Ctrl + clic, Mayús + clic, Ctrl + A) para etiquetarlos,
+  marcarlos como favoritos o borrarlos juntos.
+
+![La biblioteca](docs/presentacion/biblioteca.jpg)
+
+![La biblioteca en lista, agrupada por etiqueta](docs/presentacion/biblioteca-lista.jpg)
+
+---
+
+## Estadísticas del deck
+
+Un panel completo con datos y precios de Scryfall:
+
+- **Resumen**: cartas, tierras recomendadas, coste medio, precio estimado y
+  probabilidad de una buena mano inicial.
+- **Curva de maná** por tipo, colores, identidad de color y fichas que usa el
+  deck.
+- **Funciones**: rampa, robo, eliminación, barridos, contrahechizos, tutores,
+  fichas… deducidas del texto de reglas de cada carta, con un botón para
+  seleccionarlas en el deck.
+- **Probabilidades**: calculadora de robo (hipergeométrica), tierras en la mano
+  inicial y probabilidad de llegar a cada tierra por turno, empezando tú o el
+  rival.
+- **Precios** en euros (Cardmarket) o dólares (TCGplayer) de la impresión
+  elegida, por tipo y de la más cara a la más barata.
+- **Legalidad** por formato y bracket estimado de Commander. El formato se
+  detecta solo o se elige a mano.
+
+![Resumen de estadísticas](docs/presentacion/estadisticas-resumen.jpg)
+
+![Calculadora de probabilidades](docs/presentacion/estadisticas-probabilidades.jpg)
+
+![Funciones de cada carta](docs/presentacion/estadisticas-funciones.jpg)
+
+![Precios del deck](docs/presentacion/estadisticas-precios.jpg)
+
+---
+
+## Consulta cualquier carta
+
+La pestaña **Buscar** encuentra cualquier carta de Magic sin deck de por medio: por
+nombre en cualquier idioma, con la sintaxis de Scryfall o con filtros (colores e
+identidad de color, tipo, rareza, formato, coste de maná, set, idioma), en el orden
+que quieras. Abre una carta para leer su texto, sus aclaraciones de reglas, su
+legalidad, su precio en euros y dólares y sus otras impresiones, y añádela al deck
+abierto si quieres.
+
+---
+
+## A tu gusto
+
+La interfaz en **15 idiomas**: inglés, español, francés, alemán, italiano,
+portugués de Brasil, rumano, polaco, neerlandés, ruso, ucraniano, japonés,
+coreano y chino simplificado y tradicional, elegidos en una lista con la
+bandera de cada uno. Las traducciones están hechas con cuidado pero sin
+revisión nativa: las correcciones son bienvenidas como issues en GitHub. Tema
+claro u oscuro, más de cuarenta temas de color, tres estilos de superficie
+(plano, relieve y cristal), materiales, efectos y tamaño de la interfaz. «Más temas…» instala cualquier tema de la comunidad de
+[tweakcn](https://tweakcn.com/community) por su enlace, con sus letras.
+
+![Ajustes](docs/presentacion/ajustes.jpg)
 
 ---
 
@@ -69,6 +251,77 @@ Y además:
   preguntar en línea.
 - **Avisos honestos**: carta no encontrada, imagen de baja resolución, carta que
   Scryfall aún no tiene escaneada… Cada casilla lo marca.
+
+---
+
+## Editor de cartas
+
+La pestaña **Diseñar** y la opción «Diseñar proxy» del menú de cada carta
+sirven para crear tu propia versión de una carta, con marco nuevo y los textos
+traducidos:
+
+- **Textos en cualquiera de los 15 idiomas** sacados de la impresión de la
+  carta real en ese idioma (nombre, línea de tipo y reglas), elegido por
+  deck; el inglés, siempre a un clic. El rumano, el polaco, el neerlandés y el
+  ucraniano no tienen cartas impresas: sus reglas salen en inglés y la línea
+  de tipo, traducida. Las letras del japonés, el coreano y el chino se bajan la
+  primera vez que se elige uno de esos idiomas. Para las cartas sin impresión
+  en el idioma elegido hay una traducción sugerida a partir de frases
+  oficiales.
+- **Arte** de Scryfall, subido, pegado o recortado de otra carta, con zoom,
+  encuadre y giro.
+- **Marcos y estilos** de un pack de marcos, con color, corona de legendaria
+  y caja de reglas automáticos o a mano. Además del pack de la casa están los
+  **marcos originales** de imagen (los M15 de Card Conjurer, normal y
+  despejado), que se descargan la primera vez que se eligen. La caja de
+  reglas puede ajustar su altura al texto (los tokens con poco texto quedan
+  más despejados) o quedarse fija, en cualquier marco.
+- **Letras libres** para descargar desde la app: de aire clásico, medieval o
+  de fantasía para el título (Cinzel, Almendra, Uncial Antiqua, Grenze
+  Gotisch…) y muy legibles para las reglas, además de una pixelada (Pixelify
+  Sans). La colección decide cuánto se estrechan el título y el tipo, siempre
+  y como mucho.
+- **Packs de marcos para descargar.** El primero es **Balatro**: marcos de
+  pixel art en siete estilos (Joker, Planeswalker, Espectral, Tarot, Planeta,
+  Vale y Tierra), con sus fichas de maná, etiquetas de rareza y palabras de
+  colores, y reversos, fichas y tierras ya hechos para añadir al deck.
+- **Colecciones** con su símbolo y numeración, para que todo el deck parezca de
+  la misma edición.
+- Casi todas las maquetaciones de Magic: planeswalkers, sagas, clases, casos,
+  niveles, aventuras, cartas partidas, flip, doble cara, batallas, meld,
+  mazmorras y cartas grandes.
+- **Diseñar el deck** entero de una vez (un borrador por carta, que luego se
+  revisa) y **exportar imágenes** PNG a 300, 600 o 900 PPP, en carpetas `es/` y
+  `en/`.
+
+Las cartas diseñadas se imprimen en el PDF desde el diseño, a la resolución de
+exportación.
+
+![El editor de cartas](docs/presentacion/editor-de-cartas.jpg)
+
+![La misma carta en inglés](docs/presentacion/editor-en-ingles.jpg)
+
+---
+
+## Retoca cada carta
+
+Giro, zoom, encuadre y **once ajustes de imagen**: brillo, exposición,
+contraste, saturación, calidez, intensidad, nitidez, claridad, reducción de
+ruido, viñeta y desvanecido. La vista se actualiza al instante y lo que ves es
+el mismo render que irá al PDF.
+
+![Editar una carta](docs/presentacion/editar-carta.jpg)
+
+Cuando termines, decide a qué llega el cambio:
+
+- **Aplicar**: solo a esta carta.
+- **Aplicar también a sus copias**: a todas las que llevan la misma imagen, con
+  giro, encuadre y retoques. Perfecto para las cuatro copias de una carta o
+  para todas las tierras básicas del mismo arte.
+- **Aplicar a todas las cartas**: los retoques de color a todo el deck (el giro
+  y el encuadre se quedan en la carta).
+
+![Las cuatro Islas retocadas de una vez](docs/presentacion/copias-retocadas.jpg)
 
 ---
 
@@ -156,28 +409,6 @@ El resultado: las mismas imágenes, ahora con su carta real detrás.
 
 ---
 
-## Retoca cada carta
-
-Giro, zoom, encuadre y **once ajustes de imagen**: brillo, exposición,
-contraste, saturación, calidez, intensidad, nitidez, claridad, reducción de
-ruido, viñeta y desvanecido. La vista se actualiza al instante y lo que ves es
-el mismo render que irá al PDF.
-
-![Editar una carta](docs/presentacion/editar-carta.jpg)
-
-Cuando termines, decide a qué llega el cambio:
-
-- **Aplicar**: solo a esta carta.
-- **Aplicar también a sus copias**: a todas las que llevan la misma imagen, con
-  giro, encuadre y retoques. Perfecto para las cuatro copias de una carta o
-  para todas las tierras básicas del mismo arte.
-- **Aplicar a todas las cartas**: los retoques de color a todo el deck (el giro
-  y el encuadre se quedan en la carta).
-
-![Las cuatro Islas retocadas de una vez](docs/presentacion/copias-retocadas.jpg)
-
----
-
 ## Un PDF hecho para imprenta casera
 
 ![Una hoja del PDF exportado, con guías de corte](docs/presentacion/pdf-resultado.jpg)
@@ -209,6 +440,16 @@ Cuando termines, decide a qué llega el cambio:
 
 ![Exportando](docs/presentacion/exportando.jpg)
 
+### El sello de Tapete
+
+Todo lo que Tapete imprime o exporta lleva el sello «Tapete · No a la venta», en el
+idioma de la carta, centrado bajo los créditos del artista y del copyright (sobre
+fondo liso, en blanco o negro según el contraste; sobre uno cargado, en una
+pastilla oscura semitransparente). En el PDF es texto vectorial encima de la
+imagen, y cada hoja lleva una línea en el margen. También sale en la vista previa
+de las hojas, al guardar una carta como imagen y en los PNG de tus diseños. No se
+puede apagar, y nunca se pinta en la mesa ni en el editor.
+
 ### Cartas de doble cara y cartas grandes
 
 Las cartas de doble cara se imprimen con su reverso real en dúplex o, si tu
@@ -217,232 +458,6 @@ casillas seguidas, listas para meter en la misma funda. Las cartas grandes
 (planos, planes, Vanguard) van en hojas propias al final, a su medida.
 
 ![Pares de doble cara intercalados y guías de corte](docs/presentacion/pares-dfc-y-guias.jpg)
-
----
-
-## Estadísticas del deck
-
-Un panel completo con datos y precios de Scryfall:
-
-- **Resumen**: cartas, tierras recomendadas, coste medio, precio estimado y
-  probabilidad de una buena mano inicial.
-- **Curva de maná** por tipo, colores, identidad de color y fichas que usa el
-  deck.
-- **Funciones**: rampa, robo, eliminación, barridos, contrahechizos, tutores,
-  fichas… deducidas del texto de reglas de cada carta, con un botón para
-  seleccionarlas en el deck.
-- **Probabilidades**: calculadora de robo (hipergeométrica), tierras en la mano
-  inicial y probabilidad de llegar a cada tierra por turno, empezando tú o el
-  rival.
-- **Precios** en euros (Cardmarket) o dólares (TCGplayer) de la impresión
-  elegida, por tipo y de la más cara a la más barata.
-- **Legalidad** por formato y bracket estimado de Commander. El formato se
-  detecta solo o se elige a mano.
-
-![Resumen de estadísticas](docs/presentacion/estadisticas-resumen.jpg)
-
-![Calculadora de probabilidades](docs/presentacion/estadisticas-probabilidades.jpg)
-
-![Funciones de cada carta](docs/presentacion/estadisticas-funciones.jpg)
-
-![Precios del deck](docs/presentacion/estadisticas-precios.jpg)
-
----
-
-## Tu biblioteca de decks
-
-Todos tus decks en un sitio, con su portada. Se **guardan solos** mientras
-trabajas. Puedes duplicarlos, renombrarlos y **exportarlos como `.pbdeck`** con
-todas sus imágenes dentro para pasarlos a otro equipo o a un amigo. «Liberar
-espacio» borra las imágenes que ya no usa ningún deck.
-
-- **Etiquetas tuyas**, con nombre y color: Commander, Por imprimir, Viernes de
-  juego… Se ponen a un deck o a varios a la vez, y se filtra por una o por
-  varias (los que tengan alguna o los que tengan todas).
-- **Favoritos** arriba, **notas** en cada deck y la **portada** que elijas
-  entre sus cartas.
-- **Búsqueda** por el nombre del deck, por las cartas que lleva, por sus notas o
-  por sus etiquetas. **Filtros** por identidad de color (los incluye, exactos o
-  como mucho), por clase (Commander, construido, limitado), por los formatos en
-  los que es legal, por el idioma de sus cartas y por si lleva cartas diseñadas
-  o imágenes propias.
-  Si un deck está de verdad en otro idioma pero sus cartas están vinculadas a
-  impresiones en inglés, se le pone el **idioma a mano** desde su menú; de una
-  imagen propia también se puede decir en qué idioma está.
-- **Orden** por fecha de modificado, abierto o creado, nombre, cartas, precio,
-  coste medio o colores, y **grupos** por etiqueta, colores, clase o idioma.
-  Agrupados por etiqueta, un deck con varias sale en cada una.
-- Dos vistas: la **cuadrícula**, en tres tamaños, y la **lista**, con los datos
-  técnicos de cada deck: colores, clase y bracket, cartas y fichas, coste
-  medio, precio estimado, idioma, imágenes propias y fechas.
-- Varios decks a la vez (Ctrl + clic, Mayús + clic, Ctrl + A) para etiquetarlos,
-  marcarlos como favoritos o borrarlos juntos.
-
-![La biblioteca](docs/presentacion/biblioteca.jpg)
-
-![La biblioteca en lista, agrupada por etiqueta](docs/presentacion/biblioteca-lista.jpg)
-
----
-
-## Consulta cualquier carta
-
-La pestaña **Buscar** encuentra cualquier carta de Magic sin deck de por medio: por
-nombre en cualquier idioma, con la sintaxis de Scryfall o con filtros (colores e
-identidad de color, tipo, rareza, formato, coste de maná, set, idioma), en el orden
-que quieras. Abre una carta para leer su texto, sus aclaraciones de reglas, su
-legalidad, su precio en euros y dólares y sus otras impresiones, y añádela al deck
-abierto si quieres.
-
-## A tu gusto
-
-La interfaz en **15 idiomas**: inglés, español, francés, alemán, italiano,
-portugués de Brasil, rumano, polaco, neerlandés, ruso, ucraniano, japonés,
-coreano y chino simplificado y tradicional, elegidos en una lista con la
-bandera de cada uno. Las traducciones están hechas con cuidado pero sin
-revisión nativa: las correcciones son bienvenidas como issues en GitHub. Tema
-claro u oscuro, más de cuarenta temas de color, tres estilos de superficie
-(plano, relieve y cristal), materiales, efectos y tamaño de la interfaz. «Más temas…» instala cualquier tema de la comunidad de
-[tweakcn](https://tweakcn.com/community) por su enlace, con sus letras.
-
-![Ajustes](docs/presentacion/ajustes.jpg)
-
----
-
-## Editor de cartas
-
-La pestaña **Diseñar** y la opción «Diseñar proxy» del menú de cada carta
-sirven para crear tu propia versión de una carta, con marco nuevo y los textos
-traducidos:
-
-- **Textos en cualquiera de los 15 idiomas** sacados de la impresión de la
-  carta real en ese idioma (nombre, línea de tipo y reglas), elegido por
-  deck; el inglés, siempre a un clic. El rumano, el polaco, el neerlandés y el
-  ucraniano no tienen cartas impresas: sus reglas salen en inglés y la línea
-  de tipo, traducida. Las letras del japonés, el coreano y el chino se bajan la
-  primera vez que se elige uno de esos idiomas. Para las cartas sin impresión
-  en el idioma elegido hay una traducción sugerida a partir de frases
-  oficiales.
-- **Arte** de Scryfall, subido, pegado o recortado de otra carta, con zoom,
-  encuadre y giro.
-- **Marcos y estilos** de un pack de marcos, con color, corona de legendaria
-  y caja de reglas automáticos o a mano. Además del pack de la casa están los
-  **marcos originales** de imagen (los M15 de Card Conjurer, normal y
-  despejado), que se descargan la primera vez que se eligen. La caja de
-  reglas puede ajustar su altura al texto (los tokens con poco texto quedan
-  más despejados) o quedarse fija, en cualquier marco.
-- **Letras libres** para descargar desde la app: de aire clásico, medieval o
-  de fantasía para el título (Cinzel, Almendra, Uncial Antiqua, Grenze
-  Gotisch…) y muy legibles para las reglas, además de una pixelada (Pixelify
-  Sans). La colección decide cuánto se estrechan el título y el tipo, siempre
-  y como mucho.
-- **Packs de marcos para descargar.** El primero es **Balatro**: marcos de
-  pixel art en siete estilos (Joker, Planeswalker, Espectral, Tarot, Planeta,
-  Vale y Tierra), con sus fichas de maná, etiquetas de rareza y palabras de
-  colores, y reversos, fichas y tierras ya hechos para añadir al deck.
-- **Colecciones** con su símbolo y numeración, para que todo el deck parezca de
-  la misma edición.
-- Casi todas las maquetaciones de Magic: planeswalkers, sagas, clases, casos,
-  niveles, aventuras, cartas partidas, flip, doble cara, batallas, meld,
-  mazmorras y cartas grandes.
-- **Diseñar el deck** entero de una vez (un borrador por carta, que luego se
-  revisa) y **exportar imágenes** PNG a 300, 600 o 900 PPP, en carpetas `es/` y
-  `en/`.
-
-Las cartas diseñadas se imprimen en el PDF desde el diseño, a la resolución de
-exportación.
-
-![El editor de cartas](docs/presentacion/editor-de-cartas.jpg)
-
-![La misma carta en inglés](docs/presentacion/editor-en-ingles.jpg)
-
----
-
-## Jugar con tu deck
-
-La pestaña **Jugar** pone tu deck en una mesa virtual para probarlo antes de
-imprimirlo, con las mismas imágenes que vas a imprimir (proxies diseñadas
-incluidas):
-
-- **Partidas en solitario** con la mano inicial y la regla de mulligan que
-  elijas (Londres, Londres con el primero gratis, amistoso o libre), turnos,
-  vidas, venenos, daño de comandante y contadores de jugador.
-- **Todo con el ratón o el teclado:** arrastra cartas entre la mano, el campo y
-  las zonas; el menú de cada carta la gira, la transforma, le pone contadores,
-  le cambia la fuerza y la resistencia, la adjunta, señala objetivos o la manda
-  a cualquier sitio; y cada acción tiene su atajo (la lista, a un clic).
-- **Lo que hace falta con la biblioteca:** robar, moler, escrutar, vigilar,
-  mirar las de arriba o abajo, buscar (con filtros por tipo y color), revelar
-  hasta (cascada, descubrir…), fichas (las del deck, rápidas como Tesoro o
-  Comida, cualquiera de Scryfall o una libre), dados y monedas.
-- **La vista grande** de la carta bajo el ratón, con un panel de estado que
-  explica cada contador y cada bono.
-- **Deshacer todo lo que quieras**, y un registro de la partida escrito en tu
-  idioma.
-- **Decks con más cartas de las que se juegan** (variantes de diseño,
-  alternativas para probar otras sinergias): guarda **listas para jugar** con
-  el comandante (la variante de diseño que quieras) y 99 más, comprobadas
-  (tamaño, repetidas e identidad de color). El deck no cambia.
-- **Tu tapete**: una imagen tuya o la ilustración de una carta, por deck, con
-  un velo oscuro y desenfoque para que las cartas destaquen.
-- **No pierde ninguna partida:** se guarda mientras juegas y «Jugar» ofrece
-  seguirla al volver a abrir la app.
-
-![Una partida en marcha](docs/presentacion/mesa.jpg)
-
-![El menú de cada carta en la mesa](docs/presentacion/mesa-menu.jpg)
-
-### Sparring, dados y monedas
-
-- **Sparring:** en solitario puedes activar un rival fantasma que de vez en
-  cuando responde a tus jugadas, como lo haría una mesa de verdad: contrarresta
-  un hechizo, quita una criatura que acaba de entrar, barre el campo después de
-  un ataque. Tú eliges lo fuerte que juega y decides si cada respuesta ocurre.
-- **Más fantasmas:** añade hasta nueve, cada uno con su propia vida, para sentir una
-  mesa de varios jugando en solitario. No traen más respuestas; el Sparring es el mismo.
-- **Dados y monedas** en 3D de verdad, con física (o un 3D más ligero o un 2D
-  plano, en Ajustes), con tus colores, tu acabado o tu propia imagen. El
-  resultado se decide antes de la animación, así que siempre es justo.
-
-### Con otros jugadores
-
-- **Hasta 10 jugadores** en un mismo equipo («Partida local»: cada uno juega
-  su turno en la misma pantalla) o **en red**. La mesa puede enseñar un solo
-  tablero, uno grande y el resto en miniatura, dos a la vez o una rejilla.
-- **En red sin cuentas:** crea una partida y manda el código o el enlace
-  (`proxybuilder://`); tus amigos entran con su propio deck, o solo a mirar.
-  La conexión va directa entre los equipos y solo usa un relé cuando no hay
-  camino directo. También vienen los playgroups y las salas con el servidor de
-  salas.
-- **Formatos:** Commander (daño e impuesto de comandante), 60 cartas, Limitado
-  o libre; equipos con vida compartida o no, Dos Cabezas, Archienemigo y
-  Planechase; al mejor de 1, 3 o 5 con banquillo entre partidas.
-- **Las manos son privadas:** siempre ves cuántas cartas tienen los demás,
-  con su reverso (el del deck, también en las de doble cara). Los compañeros
-  de equipo se ven la mano, salvo que lo desactives.
-- **Chat, avisos rápidos** («Espera», «Respondo», «OK»…) y señales de
-  prioridad, con un bocadillo en el tablero de cada jugador, y sonidos de mesa.
-
-![Cuatro tableros en rejilla](docs/presentacion/mesa-rejilla.jpg)
-
-![Miniaturas con la mano de cada jugador: la del compañero boca arriba, la de los rivales con el reverso](docs/presentacion/mesa-manos.jpg)
-
-![El chat y los avisos rápidos](docs/presentacion/mesa-chat.jpg)
-
-### Después de la partida
-
-- Un **resumen** con quién ganó y cómo, el puesto de cada jugador, las rondas
-  y la duración.
-- La **repetición** de la partida entera: ve a cualquier momento, reprodúcela
-  a la velocidad que quieras y mírala como cualquier jugador.
-- El **historial** de todas tus partidas, con el deck y la lista para jugar de
-  cada asiento, filtros por resultado y formato, y lo de cada deck en sus
-  propiedades.
-
-![El final de una partida](docs/presentacion/mesa-fin.jpg)
-
-![Viendo la repetición](docs/presentacion/mesa-repeticion.jpg)
-
-![El historial de tus partidas](docs/presentacion/mesa-historial.jpg)
 
 ---
 
@@ -498,7 +513,7 @@ Móviles y tabletas con Android 8 o superior y procesador ARM de 64 bits (casi
 todos los de los últimos años). No hay versión en la Play Store: el APK se
 instala desde la página de *Releases*.
 
-1. Baja `Proxy-Builder_<versión>_android-arm64.apk` de la última release,
+1. Baja `Tapete_<versión>_android-arm64.apk` de la última release,
    directamente desde el navegador del aparato o desde un ordenador (y cópialo).
 2. Android solo instala apps de «orígenes desconocidos» si lo permites. La primera
    vez te pedirá permitirlo a la app con la que abriste el fichero (el navegador
@@ -510,7 +525,7 @@ instala desde la página de *Releases*.
 Desde ahí la app se actualiza por dentro: busca como la de escritorio (Ajustes →
 Actualizaciones), baja el APK nuevo, comprueba su firma y abre el instalador de
 Android, que te pide confirmar. La primera vez Android pedirá también permitir
-al propio Proxy Builder instalar apps (te abre ese ajuste). Si algo falla ahí,
+a la propia Tapete instalar apps (te abre ese ajuste). Si algo falla ahí,
 *Bajar desde GitHub* abre la página de Releases. Todos los APK van firmados con
 la misma clave, así que las actualizaciones se instalan encima de la versión
 anterior y conservan tu biblioteca; un APK firmado con otra clave (por ejemplo,
@@ -566,7 +581,7 @@ publicarlo. Si se pierde la clave privada, las versiones instaladas no aceptará
 ninguna actualización nueva.
 
 La release incluye también el APK de Android (solo arm64, el trabajo `android`
-del mismo workflow, con el nombre `Proxy-Builder_<versión>_android-arm64.apk`).
+del mismo workflow, con el nombre `Tapete_<versión>_android-arm64.apk`).
 Va firmado dos veces: con la clave de Android (secretos del repositorio
 `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` y `ANDROID_KEY_BASE64`, el `.jks` en
 base64; en local, `src-tauri/gen/android/keystore.properties`, ignorado por git)
@@ -599,5 +614,6 @@ coreano y el chino de Noto Sans CJK en [Google Fonts](https://fonts.google.com)
 de [Kenney](https://kenney.nl) (CC0).
 El logo y el icono de la app (el icono «card-play») y los iconos de juego de la interfaz vienen de
 [game-icons.net](https://game-icons.net) (CC BY 3.0).
-Magic: The Gathering es una marca de Wizards of the Coast. Esta aplicación no está
-afiliada ni respaldada por ninguna de las dos.
+Tapete es un proyecto de fans, gratuito y no oficial. No está afiliado, respaldado ni patrocinado por Wizards
+of the Coast. Magic: The Gathering es una marca de Wizards of the Coast LLC. Los datos y las imágenes de las
+cartas vienen de Scryfall.

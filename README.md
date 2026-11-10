@@ -1,23 +1,115 @@
-# Proxy Builder
+# Tapete
 
-[**Español**](README.es.md) · **English**
+[Español](README.es.md) · **English**
 
-**Paste your Magic list and get a PDF ready to print, cut out and play.**
+**Prepare, test and play your Magic decks. Free, no account, on your computer and your phone.**
 
-Proxy Builder is a desktop app for building *Magic: The Gathering* proxy decks.
-It looks up each card on Scryfall, downloads the best image, places it on sheets
-at real size and generates a PDF with bleed, cut guides and well-aligned double
-faces. All the work is done on your computer, fast, with no accounts and no ads.
+[**Download Tapete**](https://tapete.zodhub.app) · [Releases](https://github.com/PoolFlamingo/tapete/releases) · [Wiki](https://github.com/PoolFlamingo/tapete/wiki)
 
-For Linux, Windows and macOS, in Spanish and in English.
+Tapete is a free app for *Magic: The Gathering* players. Paste your list
+(Moxfield, Archidekt, Arena or MTGO) and you have the deck with its cards, stats
+and price. Test it solo against a ghost opponent that counters your spells,
+removes your creatures and wipes the board, or play with friends anywhere with a
+code or a link, up to ten players, with no accounts and no webcam. Every game is
+saved and can be replayed. And if you want to try the deck on a real table before
+buying it, export a print-ready PDF.
 
-![Proxy Builder with a deck loaded](docs/presentacion/en/vista-principal.jpg)
+Runs on Linux, Windows, macOS and Android, in 15 languages, with no ads. Your
+decks stay on your device.
+
+> Tapete was called *Proxy Builder* until version 3.6. Your decks, games and
+> identity carry over unchanged.
+
+![Tapete with a deck loaded](docs/presentacion/en/vista-principal.jpg)
 
 <!-- Vídeo de presentación: sustituir esta línea por el enlace o el reproductor. -->
 
 ---
 
-## From list to paper in a minute
+## Play your deck
+
+The **Play** tab lays your deck out on a virtual table to test it and play it,
+alone or with friends, with the same images you would print (designed proxies
+included):
+
+- **Solo games** with the opening hand and the mulligan rule you choose
+  (London, London with the first one free, friendly or free), turns, life,
+  poison, commander damage and player counters.
+- **Everything with the mouse or the keyboard:** drag cards between the hand,
+  the battlefield and the zones; each card's menu taps, flips, adds counters,
+  changes power and toughness, attaches, targets or sends it anywhere; and every
+  action has a shortcut (the list is one click away).
+- **The library tools you need:** draw, mill, scry, surveil, look at the top or
+  bottom, search (with filters by type and colour), reveal until (cascade,
+  discover…), tokens (from the deck, quick ones like Treasure or Food, any from
+  Scryfall or a blank one), dice and coins.
+- **The large view** of the card under the mouse, with a status panel that
+  explains every counter and bonus.
+- **Undo as much as you like**, and a game log written in your language.
+- **Decks with more cards than you play** (design variants, alternatives to
+  try other synergies): save **game lists** with the commander (the design
+  variant you want) and 99 more, checked for size, duplicates and colour
+  identity. The deck itself doesn't change.
+- **Your playmat**: an image of yours or a card's art, per deck, with a dark
+  veil and blur so the cards stand out.
+- **It never loses a game:** it is saved as you play, and «Play» offers to
+  continue it after closing the app.
+
+![A game in progress](docs/presentacion/en/mesa.jpg)
+
+### Sparring, dice and coins
+
+- **Sparring:** in a solo game you can turn on a ghost opponent that answers
+  your plays now and then, the way a real table would: it counters a spell,
+  removes a creature that just came in, sweeps the board after an attack. You
+  choose how hard it plays, and you decide whether each answer happens.
+- **More ghosts:** add up to nine, each with its own life, to feel a multiplayer
+  table in a solo game. They don't bring more answers; the Sparring stays the same.
+- **Dice and coins** in real 3D with physics (or a lighter 3D or a flat 2D
+  version, in Settings), with your colours, finish or your own image. The
+  result is decided before the animation, so it is always fair.
+
+### With other players
+
+- **Up to 10 players** on one computer («Local game»: each takes their turn
+  on the same screen) or **online**. The table can show one board, one large
+  and the rest as thumbnails, two side by side, or a grid.
+- **Online without accounts:** create a game and send the code or the link
+  (`https://tapete.zodhub.app/join/…`, which opens the app or offers to
+  download it); your friends join with their own deck, or just to watch. The
+  connection goes straight between computers, and only uses a relay when there
+  is no direct path. The link never carries your IP address.
+- **Friends and messages (optional):** add friends with a code, a link or a QR,
+  chat with them and invite them to your game with one tap. Messages are
+  end-to-end encrypted: the Tapete server only passes them on and cannot read
+  them. Nothing is sent until you accept it in «Amigos», and you can leave and
+  have everything deleted from the server at any time.
+- **Formats:** Commander (commander damage and tax), 60 cards, Limited or free
+  play; teams with shared life or not, Two-Headed Giant, Archenemy and
+  Planechase; best of 1, 3 or 5 with sideboarding between games.
+- **Hands are private:** you always see how many cards the others hold, as
+  card backs (the deck's own back, also for double-faced cards). Teammates see
+  each other's hand unless you turn it off.
+- **Chat, quick notices** («Wait», «I respond», «OK»…) and priority signals,
+  with a speech bubble on each player's board, and table sounds.
+
+![Four boards in a grid](docs/presentacion/en/mesa-rejilla.jpg)
+
+![The chat and the quick notices](docs/presentacion/en/mesa-chat.jpg)
+
+### After the game
+
+- A **summary** with who won and how, each player's place, rounds and
+  duration.
+- A **replay** of the whole game: move to any moment, play it at the speed you
+  want, and see it as any player.
+- The **history** of all your games, with the deck and the game list each seat
+  used, filters by result and format, and each deck's own record in its
+  properties.
+
+---
+
+## From list to deck in a minute
 
 1. **Paste the list** however you have it: `4 Lightning Bolt`, `1 Sol Ring (CMM) 410`…
    The Moxfield, Arena or MTGO formats work, and so does a list copied as text from
@@ -31,6 +123,93 @@ For Linux, Windows and macOS, in Spanish and in English.
 4. **Export the PDF.** Print at 100 %, cut and play.
 
 ![The deck's sheets, exactly as they will come out on paper](docs/presentacion/en/hojas.jpg)
+
+---
+
+## Your deck library
+
+All your decks in one place, with their cover. They **save automatically** while
+you work. You can duplicate them, rename them and **export them as `.pbdeck`** with
+all their images inside to pass them to another computer or a friend. «Liberar
+espacio» (Free up space) deletes the images that no deck uses any more.
+
+- **Your own tags**, with a name and a colour: Commander, To print, Friday
+  night… Put them on one deck or on several at once, and filter by one or by
+  several (decks with any of them, or with all of them).
+- **Favourites** at the top, **notes** for each deck and the **cover** you pick
+  from its cards.
+- **Search** by deck name, by the cards it has, by its notes or by its tags.
+  **Filters** by colour identity (includes, exactly or at most), by class
+  (Commander, constructed, limited), by the formats it's legal in, by the
+  language of its cards, and by whether it has designed cards or custom images.
+  If a deck is really in another language but its cards are linked to English
+  printings, set its **language by hand** from its menu; for a custom image you
+  can also say which language it is in.
+- **Sort** by modified, opened or created date, name, cards, price, average cost
+  or colours, and **group** by tag, colours, class or language. Grouped by tag, a
+  deck with several tags shows up under each one.
+- Two views: the **grid**, in three sizes, and the **list**, with the technical
+  details of each deck: colours, class and bracket, cards and tokens, average
+  cost, estimated price, language, custom images and dates.
+- Select several decks (Ctrl + click, Shift + click, Ctrl + A) to tag them, mark
+  them as favourites or delete them together.
+
+![The library](docs/presentacion/en/biblioteca.jpg)
+
+![The library as a list, grouped by tag](docs/presentacion/en/biblioteca-lista.jpg)
+
+---
+
+## Deck statistics
+
+A full panel with data and prices from Scryfall:
+
+- **Summary**: cards, recommended lands, average cost, estimated price and the
+  probability of a good opening hand.
+- **Mana curve** by type, colours, colour identity and the tokens the deck uses.
+- **Functions**: ramp, card draw, removal, sweepers, counterspells, tutors,
+  tokens… deduced from each card's rules text, with a button to select them in the
+  deck.
+- **Probabilities**: draw calculator (hypergeometric), lands in the opening hand
+  and the probability of reaching each land drop, going first or second.
+- **Prices** in euros (Cardmarket) or dollars (TCGplayer) for the chosen printing,
+  by type and from most to least expensive.
+- **Legality** by format and estimated Commander bracket. The format is detected
+  automatically or chosen by hand.
+
+![Statistics summary](docs/presentacion/en/estadisticas-resumen.jpg)
+
+![Probability calculator](docs/presentacion/en/estadisticas-probabilidades.jpg)
+
+![Each card's functions](docs/presentacion/en/estadisticas-funciones.jpg)
+
+![Deck prices](docs/presentacion/en/estadisticas-precios.jpg)
+
+---
+
+## Look up any card
+
+The **Search** tab finds any Magic card with no deck involved: by name in any
+language, with Scryfall syntax or with filters (colours and colour identity, type,
+rarity, format, mana value, set, language), sorted as you like. Open a card to read
+its text, rulings, legality, price in euros and dollars and its other printings,
+and add it to the open deck if you want.
+
+---
+
+## To your taste
+
+The interface in **15 languages**: English, Spanish, French, German, Italian,
+Brazilian Portuguese, Romanian, Polish, Dutch, Russian, Ukrainian, Japanese,
+Korean and Simplified and Traditional Chinese, picked from a list with each
+one's flag. The translations were written with care but without native
+review: corrections are welcome as GitHub issues. Light or dark theme, more
+than forty colour themes, three surface styles (flat, embossed and glass),
+materials, effects and interface size.
+«Más temas…» (More themes…) installs any theme from the
+[tweakcn](https://tweakcn.com/community) community by its link, with its fonts.
+
+![Settings](docs/presentacion/en/ajustes.jpg)
 
 ---
 
@@ -68,6 +247,74 @@ And also:
   download an index of names in every language to do it without asking online.
 - **Honest warnings**: card not found, low-resolution image, card Scryfall
   doesn't have scanned yet… Each slot marks it.
+
+---
+
+## Card editor
+
+The **Design** tab and the «Diseñar proxy» (Design proxy) option in each card's
+menu let you create your own version of a card, with a new frame and translated
+text:
+
+- **Text in any of the 15 languages** taken from the real card's printing in
+  that language (name, type line and rules), chosen per deck; English is always
+  one click away. Romanian, Polish, Dutch and Ukrainian have no printed cards:
+  their rules stay in English and the type line is translated. Japanese, Korean
+  and Chinese fonts are downloaded the first time you pick one of those
+  languages. For cards with no printing in the chosen language there is a
+  suggested translation based on official phrases.
+- **Art** from Scryfall, uploaded, pasted or cropped from another card, with zoom,
+  framing and rotation.
+- **Frames and styles** from a frame pack, with colour, legendary crown and rules
+  box automatic or manual. Besides the house pack there are the **original image
+  frames** (the Card Conjurer M15s, normal and borderless), which are downloaded
+  the first time they are chosen.
+  The rules box can adapt its height to the text (tokens with little text look
+  less cluttered) or stay fixed, on any frame.
+- **Free fonts** to download from the app: classical, medieval or fantasy style
+  for the title (Cinzel, Almendra, Uncial Antiqua, Grenze Gotisch…) and very
+  legible ones for the rules text, plus a pixel font (Pixelify Sans). In
+  addition, the collection decides how much the title and the type line are
+  condensed, always and at most.
+- **Downloadable frame packs.** The first one is **Balatro**: pixel-art frames
+  in seven styles (Joker, Planeswalker, Spectral, Tarot, Planet, Voucher and
+  Land), with their mana chips, rarity labels and coloured keywords, plus
+  ready-made backs, tokens and lands to add to the deck.
+- **Collections** with their set symbol and numbering, so the whole deck looks like
+  it's from the same edition.
+- Almost all of Magic's layouts: planeswalkers, sagas, classes, cases, levels,
+  adventures, split cards, flip, double-faced, battles, meld, dungeons and large
+  cards.
+- **Design the whole deck** at once (a draft per card, to be reviewed afterwards)
+  and **export PNG images** at 300, 600 or 900 DPI, into `es/` and `en/` folders.
+
+Designed cards are printed to the PDF from their design, at the export resolution.
+
+![The card editor](docs/presentacion/en/editor-de-cartas.jpg)
+
+![The same card in English](docs/presentacion/en/editor-en-ingles.jpg)
+
+---
+
+## Retouch each card
+
+Rotation, zoom, framing and **eleven image adjustments**: brightness, exposure,
+contrast, saturation, warmth, intensity, sharpness, clarity, noise reduction,
+vignette and fade. The view updates instantly and what you see is the same render
+that will go into the PDF.
+
+![Editing a card](docs/presentacion/en/editar-carta.jpg)
+
+When you're done, decide where the change goes:
+
+- **Apply**: only to this card.
+- **Apply also to its copies**: to all the ones that use the same image, with
+  rotation, framing and adjustments. Perfect for the four copies of a card or for
+  all the basic lands with the same art.
+- **Apply to all cards**: the colour adjustments to the whole deck (rotation and
+  framing stay on the card).
+
+![The four Islands retouched at once](docs/presentacion/en/copias-retocadas.jpg)
 
 ---
 
@@ -154,28 +401,6 @@ The result: the same images, now with their real card behind them.
 
 ---
 
-## Retouch each card
-
-Rotation, zoom, framing and **eleven image adjustments**: brightness, exposure,
-contrast, saturation, warmth, intensity, sharpness, clarity, noise reduction,
-vignette and fade. The view updates instantly and what you see is the same render
-that will go into the PDF.
-
-![Editing a card](docs/presentacion/en/editar-carta.jpg)
-
-When you're done, decide where the change goes:
-
-- **Apply**: only to this card.
-- **Apply also to its copies**: to all the ones that use the same image, with
-  rotation, framing and adjustments. Perfect for the four copies of a card or for
-  all the basic lands with the same art.
-- **Apply to all cards**: the colour adjustments to the whole deck (rotation and
-  framing stay on the card).
-
-![The four Islands retouched at once](docs/presentacion/en/copias-retocadas.jpg)
-
----
-
 ## A PDF made for home printing
 
 ![A sheet from the exported PDF, with cut guides](docs/presentacion/en/pdf-resultado.jpg)
@@ -206,6 +431,16 @@ When you're done, decide where the change goes:
 
 ![Exporting](docs/presentacion/en/exportando.jpg)
 
+### The Tapete stamp
+
+Everything Tapete prints or exports carries the stamp «Tapete · Not for sale», in
+the card's language, centred below the artist and copyright credits (on a plain
+background, in white or black for contrast; on a busy one, over a dark translucent
+pill). In the PDF it is vector text on top of the image, and each sheet has one
+line in its margin. It also appears in the sheet preview, when you save a card as
+an image and in the exported PNGs of your designs. It can't be turned off, and it
+is never drawn on the game table or in the editor.
+
 ### Double-faced cards and large cards
 
 Double-faced cards are printed with their real back, duplex or, if your printer
@@ -214,224 +449,6 @@ to go in the same sleeve. Large cards (planes, schemes, Vanguard) go on their ow
 sheets at the end, at their size.
 
 ![Interleaved double-faced pairs and cut guides](docs/presentacion/en/pares-dfc-y-guias.jpg)
-
----
-
-## Deck statistics
-
-A full panel with data and prices from Scryfall:
-
-- **Summary**: cards, recommended lands, average cost, estimated price and the
-  probability of a good opening hand.
-- **Mana curve** by type, colours, colour identity and the tokens the deck uses.
-- **Functions**: ramp, card draw, removal, sweepers, counterspells, tutors,
-  tokens… deduced from each card's rules text, with a button to select them in the
-  deck.
-- **Probabilities**: draw calculator (hypergeometric), lands in the opening hand
-  and the probability of reaching each land drop, going first or second.
-- **Prices** in euros (Cardmarket) or dollars (TCGplayer) for the chosen printing,
-  by type and from most to least expensive.
-- **Legality** by format and estimated Commander bracket. The format is detected
-  automatically or chosen by hand.
-
-![Statistics summary](docs/presentacion/en/estadisticas-resumen.jpg)
-
-![Probability calculator](docs/presentacion/en/estadisticas-probabilidades.jpg)
-
-![Each card's functions](docs/presentacion/en/estadisticas-funciones.jpg)
-
-![Deck prices](docs/presentacion/en/estadisticas-precios.jpg)
-
----
-
-## Your deck library
-
-All your decks in one place, with their cover. They **save automatically** while
-you work. You can duplicate them, rename them and **export them as `.pbdeck`** with
-all their images inside to pass them to another computer or a friend. «Liberar
-espacio» (Free up space) deletes the images that no deck uses any more.
-
-- **Your own tags**, with a name and a colour: Commander, To print, Friday
-  night… Put them on one deck or on several at once, and filter by one or by
-  several (decks with any of them, or with all of them).
-- **Favourites** at the top, **notes** for each deck and the **cover** you pick
-  from its cards.
-- **Search** by deck name, by the cards it has, by its notes or by its tags.
-  **Filters** by colour identity (includes, exactly or at most), by class
-  (Commander, constructed, limited), by the formats it's legal in, by the
-  language of its cards, and by whether it has designed cards or custom images.
-  If a deck is really in another language but its cards are linked to English
-  printings, set its **language by hand** from its menu; for a custom image you
-  can also say which language it is in.
-- **Sort** by modified, opened or created date, name, cards, price, average cost
-  or colours, and **group** by tag, colours, class or language. Grouped by tag, a
-  deck with several tags shows up under each one.
-- Two views: the **grid**, in three sizes, and the **list**, with the technical
-  details of each deck: colours, class and bracket, cards and tokens, average
-  cost, estimated price, language, custom images and dates.
-- Select several decks (Ctrl + click, Shift + click, Ctrl + A) to tag them, mark
-  them as favourites or delete them together.
-
-![The library](docs/presentacion/en/biblioteca.jpg)
-
-![The library as a list, grouped by tag](docs/presentacion/en/biblioteca-lista.jpg)
-
----
-
-## Look up any card
-
-The **Search** tab finds any Magic card with no deck involved: by name in any
-language, with Scryfall syntax or with filters (colours and colour identity, type,
-rarity, format, mana value, set, language), sorted as you like. Open a card to read
-its text, rulings, legality, price in euros and dollars and its other printings,
-and add it to the open deck if you want.
-
-## To your taste
-
-The interface in **15 languages**: English, Spanish, French, German, Italian,
-Brazilian Portuguese, Romanian, Polish, Dutch, Russian, Ukrainian, Japanese,
-Korean and Simplified and Traditional Chinese, picked from a list with each
-one's flag. The translations were written with care but without native
-review: corrections are welcome as GitHub issues. Light or dark theme, more
-than forty colour themes, three surface styles (flat, embossed and glass),
-materials, effects and interface size.
-«Más temas…» (More themes…) installs any theme from the
-[tweakcn](https://tweakcn.com/community) community by its link, with its fonts.
-
-![Settings](docs/presentacion/en/ajustes.jpg)
-
----
-
-## Card editor
-
-The **Design** tab and the «Diseñar proxy» (Design proxy) option in each card's
-menu let you create your own version of a card, with a new frame and translated
-text:
-
-- **Text in any of the 15 languages** taken from the real card's printing in
-  that language (name, type line and rules), chosen per deck; English is always
-  one click away. Romanian, Polish, Dutch and Ukrainian have no printed cards:
-  their rules stay in English and the type line is translated. Japanese, Korean
-  and Chinese fonts are downloaded the first time you pick one of those
-  languages. For cards with no printing in the chosen language there is a
-  suggested translation based on official phrases.
-- **Art** from Scryfall, uploaded, pasted or cropped from another card, with zoom,
-  framing and rotation.
-- **Frames and styles** from a frame pack, with colour, legendary crown and rules
-  box automatic or manual. Besides the house pack there are the **original image
-  frames** (the Card Conjurer M15s, normal and borderless), which are downloaded
-  the first time they are chosen.
-  The rules box can adapt its height to the text (tokens with little text look
-  less cluttered) or stay fixed, on any frame.
-- **Free fonts** to download from the app: classical, medieval or fantasy style
-  for the title (Cinzel, Almendra, Uncial Antiqua, Grenze Gotisch…) and very
-  legible ones for the rules text, plus a pixel font (Pixelify Sans). In
-  addition, the collection decides how much the title and the type line are
-  condensed, always and at most.
-- **Downloadable frame packs.** The first one is **Balatro**: pixel-art frames
-  in seven styles (Joker, Planeswalker, Spectral, Tarot, Planet, Voucher and
-  Land), with their mana chips, rarity labels and coloured keywords, plus
-  ready-made backs, tokens and lands to add to the deck.
-- **Collections** with their set symbol and numbering, so the whole deck looks like
-  it's from the same edition.
-- Almost all of Magic's layouts: planeswalkers, sagas, classes, cases, levels,
-  adventures, split cards, flip, double-faced, battles, meld, dungeons and large
-  cards.
-- **Design the whole deck** at once (a draft per card, to be reviewed afterwards)
-  and **export PNG images** at 300, 600 or 900 DPI, into `es/` and `en/` folders.
-
-Designed cards are printed to the PDF from their design, at the export resolution.
-
-![The card editor](docs/presentacion/en/editor-de-cartas.jpg)
-
-![The same card in English](docs/presentacion/en/editor-en-ingles.jpg)
-
----
-
-## Play your deck
-
-The **Play** tab lays your deck out on a virtual table to try it before
-printing, with the same images you will print (designed proxies included):
-
-- **Solo games** with the opening hand and the mulligan rule you choose
-  (London, London with the first one free, friendly or free), turns, life,
-  poison, commander damage and player counters.
-- **Everything with the mouse or the keyboard:** drag cards between the hand,
-  the battlefield and the zones; each card's menu taps, flips, adds counters,
-  changes power and toughness, attaches, targets or sends it anywhere; and every
-  action has a shortcut (the list is one click away).
-- **The library tools you need:** draw, mill, scry, surveil, look at the top or
-  bottom, search (with filters by type and colour), reveal until (cascade,
-  discover…), tokens (from the deck, quick ones like Treasure or Food, any from
-  Scryfall or a blank one), dice and coins.
-- **The large view** of the card under the mouse, with a status panel that
-  explains every counter and bonus.
-- **Undo as much as you like**, and a game log written in your language.
-- **Decks with more cards than you play** (design variants, alternatives to
-  try other synergies): save **game lists** with the commander (the design
-  variant you want) and 99 more, checked for size, duplicates and colour
-  identity. The deck itself doesn't change.
-- **Your playmat**: an image of yours or a card's art, per deck, with a dark
-  veil and blur so the cards stand out.
-- **It never loses a game:** it is saved as you play, and «Play» offers to
-  continue it after closing the app.
-
-![A game in progress](docs/presentacion/en/mesa.jpg)
-
-![Each card's menu on the table](docs/presentacion/en/mesa-menu.jpg)
-
-### Sparring, dice and coins
-
-- **Sparring:** in a solo game you can turn on a ghost opponent that answers
-  your plays now and then, the way a real table would: it counters a spell,
-  removes a creature that just came in, sweeps the board after an attack. You
-  choose how hard it plays, and you decide whether each answer happens.
-- **More ghosts:** add up to nine, each with its own life, to feel a multiplayer
-  table in a solo game. They don't bring more answers; the Sparring stays the same.
-- **Dice and coins** in real 3D with physics (or a lighter 3D or a flat 2D
-  version, in Settings), with your colours, finish or your own image. The
-  result is decided before the animation, so it is always fair.
-
-### With other players
-
-- **Up to 10 players** on one computer («Local game»: each takes their turn
-  on the same screen) or **online**. The table can show one board, one large
-  and the rest as thumbnails, two side by side, or a grid.
-- **Online without accounts:** create a game and send the code or the link
-  (`proxybuilder://`); your friends join with their own deck, or just to watch.
-  The connection goes straight between computers, and only uses a relay when
-  there is no direct path. Playgroups and rooms through the room server are on
-  the way too.
-- **Formats:** Commander (commander damage and tax), 60 cards, Limited or free
-  play; teams with shared life or not, Two-Headed Giant, Archenemy and
-  Planechase; best of 1, 3 or 5 with sideboarding between games.
-- **Hands are private:** you always see how many cards the others hold, as
-  card backs (the deck's own back, also for double-faced cards). Teammates see
-  each other's hand unless you turn it off.
-- **Chat, quick notices** («Wait», «I respond», «OK»…) and priority signals,
-  with a speech bubble on each player's board, and table sounds.
-
-![Four boards in a grid](docs/presentacion/en/mesa-rejilla.jpg)
-
-![Thumbnails with each player's hand: the teammate's face up, the rivals' as backs](docs/presentacion/en/mesa-manos.jpg)
-
-![The chat and the quick notices](docs/presentacion/en/mesa-chat.jpg)
-
-### After the game
-
-- A **summary** with who won and how, each player's place, rounds and
-  duration.
-- A **replay** of the whole game: move to any moment, play it at the speed you
-  want, and see it as any player.
-- The **history** of all your games, with the deck and the game list each seat
-  used, filters by result and format, and each deck's own record in its
-  properties.
-
-![The end of a game](docs/presentacion/en/mesa-fin.jpg)
-
-![Watching the replay](docs/presentacion/en/mesa-repeticion.jpg)
-
-![The history of your games](docs/presentacion/en/mesa-historial.jpg)
 
 ---
 
@@ -484,7 +501,7 @@ Phones and tablets with Android 8 or later and a 64-bit ARM processor (nearly
 every device of the last years). There is no Play Store version: you install the
 APK from the *Releases* page.
 
-1. Download `Proxy-Builder_<version>_android-arm64.apk` from the latest release,
+1. Download `Tapete_<version>_android-arm64.apk` from the latest release,
    straight from the device's browser or from a computer (then copy it over).
 2. Android only installs apps from «unknown sources» if you allow it. The first
    time, it asks to allow it for the app you opened the file with (the browser or
@@ -495,7 +512,7 @@ APK from the *Releases* page.
 The app then updates itself from inside: it checks like the desktop one (Settings
 → Updates), downloads the new APK, verifies its signature and opens Android's
 installer, which asks you to confirm. The first time, Android also asks to allow
-Proxy Builder itself to install apps (it opens that setting for you). If anything
+Tapete itself to install apps (it opens that setting for you). If anything
 fails there, *Download from GitHub* opens the Releases page. Every APK is signed
 with the same key, so updates install over the previous version and keep your
 library; an APK signed with another key (for example a test build) can't be
@@ -550,7 +567,7 @@ entry per installer, and the installed apps see it once the draft is published.
 If the private key is lost, the installed versions won't accept any new update.
 
 The release also includes the Android APK (arm64 only, the `android` job of the
-same workflow, named `Proxy-Builder_<version>_android-arm64.apk`). It is signed
+same workflow, named `Tapete_<version>_android-arm64.apk`). It is signed
 twice: with the Android key (repository secrets `ANDROID_KEY_ALIAS`,
 `ANDROID_KEY_PASSWORD` and `ANDROID_KEY_BASE64`, the `.jks` in base64; locally,
 `src-tauri/gen/android/keystore.properties`, which is git-ignored) and, for the
@@ -582,5 +599,6 @@ dice sounds of the game table from [Casino Audio](https://kenney.nl/assets/casin
 [Kenney](https://kenney.nl) (CC0).
 The logo and app icon (the «card-play» icon) and the game icons of the interface come from
 [game-icons.net](https://game-icons.net) (CC BY 3.0).
-Magic: The Gathering is a trademark of Wizards of the Coast. This application is
-not affiliated with or endorsed by either.
+Tapete is a free, unofficial fan project. It is not affiliated with, endorsed or sponsored by Wizards of the
+Coast. Magic: The Gathering is a trademark of Wizards of the Coast LLC. Card data and images come from
+Scryfall.

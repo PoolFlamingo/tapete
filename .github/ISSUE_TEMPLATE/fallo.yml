@@ -1,0 +1,55 @@
+name: Bug report
+description: Something doesn't work as it should. · Algo no funciona como debería.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report it! You can write in English or in Spanish.
+        ¡Gracias por avisar! Puedes escribir en inglés o en español.
+  - type: textarea
+    id: que-pasa
+    attributes:
+      label: What happened? · ¿Qué ha pasado?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Steps to reproduce · Cómo reproducirlo
+      placeholder: |
+        1. Open «Jugar»…
+        2. …
+  - type: input
+    id: version
+    attributes:
+      label: Tapete version · Versión de Tapete
+      description: It is shown in Settings («Tapete v…»). · Sale en Ajustes («Tapete v…»).
+      placeholder: "4.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: sistema
+    attributes:
+      label: System · Sistema
+      options:
+        - Windows
+        - macOS
+        - Linux (.deb / .rpm)
+        - Linux (AppImage)
+        - Android
+    validations:
+      required: true
+  - type: input
+    id: version-sistema
+    attributes:
+      label: System version · Versión del sistema
+      placeholder: "Windows 11, Ubuntu 24.04, Android 15…"
+  - type: textarea
+    id: registro
+    attributes:
+      label: Log or screenshots · Registro o capturas
+      description: |
+        If it's a network or download problem, the log helps a lot: `proxy-builder.log` in the app's log folder.
+        Si es un fallo de red o de descarga, el registro ayuda mucho: `proxy-builder.log`, en la carpeta de registros de la app.

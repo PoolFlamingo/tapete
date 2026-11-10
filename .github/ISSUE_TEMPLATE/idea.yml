@@ -1,0 +1,19 @@
+name: Idea
+description: Something you'd like Tapete to do. · Algo que te gustaría que hiciera Tapete.
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        You can write in English or in Spanish. · Puedes escribir en inglés o en español.
+  - type: textarea
+    id: para-que
+    attributes:
+      label: What would you like to do? · ¿Qué te gustaría poder hacer?
+      description: Tell us what you are trying to do; the how can be worked out together.
+    validations:
+      required: true
+  - type: textarea
+    id: como-ahora
+    attributes:
+      label: How do you do it today? · ¿Cómo lo haces ahora?

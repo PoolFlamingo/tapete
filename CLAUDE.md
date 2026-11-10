@@ -1,8 +1,27 @@
-# Instrucciones del proyecto Proxy Builder
+# Instrucciones del proyecto Tapete
 
-App de escritorio (Tauri 2 + Rust + React/TypeScript) para montar decks proxy de
-Magic: The Gathering y exportarlos a un PDF listo para imprimir. Es un clon
-funcional de fabricard.net (MTG Proxy Tool) como aplicación.
+**Tapete** (antes Proxy Builder; el nombre cambió en la 4.0.0, plan `plans/20261109 - tapete/`) es una app
+de escritorio y Android (Tauri 2 + Rust + React/TypeScript) para preparar, probar y jugar decks de Magic: The
+Gathering: biblioteca, estadísticas, mesa de juego (en solitario, local o en red), amigos con mensajes
+cifrados, editor de cartas y PDF listo para imprimir. Empezó como un clon de fabricard.net (MTG Proxy Tool)
+como aplicación.
+
+🛑 **Lo que NO se renombra nunca** (invariantes del cambio de nombre, Pablo, 09/11/2026): no se ve y
+cambiarlo rompe algo a quien ya tiene la app, aunque lleve «proxy» en el nombre.
+
+| Qué | Dónde | Qué se rompería |
+|---|---|---|
+| Identificador `com.estigio.proxybuilder` y las carpetas de datos que salen de él | `tauri.conf.json`, Android | Android no instala encima (y desinstalar borra la biblioteca); en escritorio se «pierden» decks e identidad |
+| Claves de firma del actualizador y del APK | fuera del repo y secretos de GitHub | Nadie recibiría más actualizaciones |
+| ALPN `proxy-builder/mesa/1`, `proxy-builder/img/1`, `proxy-builder/deck/1` | `red/`, `pasar/` | Una 3.x y una 4.x no jugarían juntas ni se pasarían decks |
+| Códigos `PB1-` y `PBD1-` | `red/codigo.rs` | Los códigos de una versión no valdrían en la otra |
+| `.pbdeck` y su `FORMATO` `proxy-builder-deck` | `package.rs`, `intent-filter` | Los decks ya compartidos no se abrirían |
+| `TIPO_FICHERO` `proxy-builder-identidad` (dentro de la identidad exportada; el nombre del fichero sí cambió) | `red/identidad.rs` | Una identidad exportada con la 3.x no se importaría |
+| 🛑 `ALIAS_COFRE` `proxy-builder-identidad` (alias del Android Keystore) | `plugins/android-extra/…/AndroidExtraPlugin.kt` | La identidad sellada no se abriría y se perdería para siempre |
+| Esquema `proxybuilder://` (se **añadió** `tapete://` al lado) | `enlace.rs`, `tauri.conf.json`, AndroidManifest | Los enlaces ya enviados dejarían de abrir la app |
+| Claves `proxybuilder.*` de `localStorage` | `src/` | Cada persona perdería tema, idioma y preferencias |
+| Crates y paquete (`proxy-core`, `proxy_builder_lib`, `proxy-builder`), variables `PB_*` | Rust, pnpm, depuración | Nada visible; solo ruido |
+| La **ruta** de packs `PoolFlamingo/proxy-builder-packs` | `fuentes/mod.rs` (`PERMITIDOS`), manifiestos | Las versiones instaladas bajan por ella (ver «Wiki» abajo: nunca crear un repo con el nombre viejo) |
 
 **El plan que manda** está en `plans/20261012 - mtg-proxy-builder/` (fuera de
 git, solo en el disco local): el maestro y el sub-plan de la Fase 4 (motor de
@@ -41,8 +60,8 @@ imagen y PDF). Antes de tocar algo grande, leer el paso del plan que le toca.
   `reqwest::Client::builder()`, `with_platform_verifier` ni `CaTlsConfig::` fuera de él
   (lo vigila un test). En escritorio, el verificador del sistema; en móvil, los
   certificados de Mozilla incrustados, porque el del sistema entra en pánico en Android
-  sin su parte de Kotlin. Cubre los clientes HTTP, el actualizador, el WebSocket de
-  salas y el nodo de iroh.
+  sin su parte de Kotlin. Cubre los clientes HTTP (también el del servidor de amigos),
+  el actualizador y el nodo de iroh.
 - 🛑 **Todo comando que lea o escriba un fichero que elige la persona pasa por
   `src-tauri/src/fichero.rs`**, nunca `std::fs` sobre una ruta de diálogo: en Android es un
   `content://` (se copia a la caché al leer; se escribe en la caché y se copia al destino).
@@ -55,7 +74,7 @@ imagen y PDF). Antes de tocar algo grande, leer el paso del plan que le toca.
 
 ## Diseño (heredado de judlex)
 
-Sistema de temas de judlex tal cual: `src/themes.css` (tweakcn),
+El tema de fábrica es **Nature**, un verde como el logo (Pablo, 10/11/2026): `lib/tema-inicial.ts::TEMA_FABRICA` lo deja guardado antes de montar si no hay ninguno, porque `theme-provider.tsx` (de solo lectura) trae `amber-minimal`. Sistema de temas de judlex tal cual: `src/themes.css` (tweakcn),
 `src/lib/themes.ts`, `components/theme-provider.tsx`, skins Hera/Zeus,
 materiales. Radio 14 px, densidad 10 px (`p-2.5`/`gap-2.5`), texto base
 `text-xs`, scroll siempre con el `ScrollArea` compartido (nunca
@@ -222,14 +241,14 @@ le falta una cadena le sale la inglesa.
   (el recorrido guiado de cada pantalla: pasos con su ancla `data-tutorial`;
   sale solo la primera vez y con el botón de ayuda de la barra), `mesa`
   (la pestaña «Jugar»: entrada, tablero, menús, diálogos, atajos, `red/`
-  para el código directo), `salas` (playgroups y salas del servidor), `pasar` (enviar y recibir decks entre equipos).
+  para el código directo), `amigos` (amigos, mensajes cifrados e invitaciones), `pasar` (enviar y recibir decks entre equipos).
 - `src/stores/`: `deck-store` (deck, historial, autoguardado), `plan-store`
   (el `PagePlan` de Rust con 100 ms de espera), `ui-store` (zoom, selección,
   diálogos, preferencias, `mesa` = Ajustes > Mesa), `trabajo-store` (el
   trabajo largo en marcha), `mesa-store` (la vista del motor y sus parches;
   selectores con referencias estables: `NINGUNA` o `useShallow`),
   `chat-store` (silenciados, bocadillos, sin leer), `repeticion-store`,
-  `red-store` (código directo y estado de la red), `salas-store`,
+  `red-store` (código directo y estado de la red), `amigos-store`,
   `originales-store`, `vivo-store` (movimiento en vivo de los demás).
 - `src/lib/trabajos.ts`: lanzar un trabajo de Rust con eventos de progreso
   (escucha antes de lanzar). `src/lib/image-url.ts`: URLs de `pbimg://`.
@@ -249,16 +268,13 @@ le falta una cadena le sale la inglesa.
     `store/listas.rs`.
   - `src-tauri/src/red/`: el juego en red con iroh (`nodo`, `protocolo`,
     `anfitrion`, `invitado`, `mirada`, `latencia`, `imagenes`, `codigo`,
-    `identidad`, `perfil`) y `red/servidor/` (cliente del servidor de
-    salas); comandos en `commands/{red,salas}.rs`; enlaces en `enlace.rs`.
+    `identidad`, `perfil`, `sucesion`); comandos en `commands/red.rs`;
+    enlaces en `enlace.rs`.
   - `src/features/mesa/`: la pestaña «Jugar» (`entrada`, `mesa-screen`,
     `tablero`, `tablero-mini`, `disposicion`, `menus/`, `dialogos/`,
     `chat`, `registro-panel`, `fin-partida`, `repeticion`,
     `historial-general`, `dados/`, `sparring/`, `listas/`, `red/`; la
-    lógica pura en `cuentas-*.ts`); `src/features/salas/`.
-  - `server/`: el servidor de salas (repo aparte `proxy-builder-server`,
-    ignorado aquí): `src/{servidor,protocolo,salas,playgroups,invitaciones,
-    eleccion,identidad,db}.ts`, `docs/protocolo.md`, `docs/despliegue.md`.
+    lógica pura en `cuentas-*.ts`).
 - **Mesa de juego** (Pablo, 24/10/2026; plan `plans/20261024 - mesa-de-juego/`).
   Motor puro en `src-tauri/crates/mesa` (sin Tauri, red, base de datos, reloj
   ni azar de fuera; nunca `HashMap` en el modelo): `Intencion` → `resolver`
@@ -326,17 +342,9 @@ le falta una cadena le sale la inglesa.
   `PB_PERFIL` (debug) separa varias instancias en la misma máquina
   (`perfiles/<x>/`). Código directo: comandos `red_*`
   (`commands/red.rs`, `features/mesa/red/`, `stores/red-store.ts`).
-  Servidor de salas y playgroups: cliente en `red/servidor/` (WebSocket
-  con rustls y los certificados del sistema, nada de OpenSSL; reto firmado
-  con la clave del nodo; `sala.rs` hace la malla, mide RTT y cambia de host
-  cuando el servidor lo elige), comandos `salas_*`, pantalla en
-  `features/salas/` y `stores/salas-store.ts`. El servidor (Node ≥ 22.13,
-  `node:sqlite`, `ws`, `zod`) es un repo aparte, `proxy-builder-server`,
-  clonado en `server/` (ignorado por la app; su protocolo en
-  `server/docs/protocolo.md` y el despliegue con nginx e `iroh-relay`
-  1.4.1 en `server/docs/despliegue.md`). Mientras no haya dominio,
-  `PRODUCCION` (`red/servidor/mod.rs`) y `RELE_PROPIO` (`red/nodo.rs`) son
-  `None`; en debug, `PB_SERVIDOR` y `PB_RELAY` los cambian.
+  🛑 Las salas y playgroups del servidor se quitaron en la 4.0 (plan Tapete, D7): jugar con
+  amigos es siempre código directo, y la invitación llega por los mensajes de amigos. Mientras
+  no haya relé propio, `RELE_PROPIO` (`red/nodo.rs`) es `None`; en debug, `PB_RELAY` lo cambia.
   **Ajustes de sala, banquillo y salida del anfitrión** (Pablo, 27/10/2026):
   en la sala de espera el anfitrión elige asientos (él, siempre el primero;
   `config-sala.ts`, `ajustes-partida.tsx` compartido con la partida local),
@@ -362,8 +370,8 @@ le falta una cadena le sale la inglesa.
   `RELE_PROPIO` puesto se usan el propio **y** los de n0 (`Relay::PropioYN0`).
   Identidad exportable/importable (`red_identidad_exportar/importar`, `Busy`
   con partida o sala). Enlaces `proxybuilder://unirse/<código>` y, desde la
-  3.6.0, `tapete://unirse/<código>` (`enlace::ESQUEMAS`, los dos registrados; la app
-  sigue **generando** `proxybuilder://` hasta la 4.0.0) en
+  3.6.0, `tapete://unirse/<código>` (`enlace::ESQUEMAS`, los dos registrados; desde la 4.0 la
+  app **genera** los de la web, `https://tapete.zodhub.app/join/<código>`, sin IP) en
   `enlace.rs` (`tauri-plugin-deep-link` + single-instance, este solo sin
   `PB_PERFIL`; `rust-ini` fijado a 0.21.1 en `Cargo.lock`); el enlace solo
   rellena «Unirse con un código», unirse lo pulsa la persona.
@@ -380,7 +388,7 @@ le falta una cadena le sale la inglesa.
   banquillo (`mesa::encuentro`; vive en la sesión, `mesa/encuentro.rs`, no en
   la `Partida`: `Accion`/`Cambio` no cambian). Desconectados y expulsión:
   `Enlaces.ausentes`, `red/anfitrion.rs::{vigilar_ausentes, expulsar}`,
-  `Sesion::suplir`, `sala_expulsar` en el servidor; pantalla en
+  `Sesion::suplir`, `red_expulsar`; pantalla en
   `features/mesa/{muerte,dano-de-quien}.tsx` y `red/ausentes.tsx`.
   **Más fantasmas** (Pablo, 05/11/2026): en solitario, hasta 9 rivales imaginados
   (`Partida.fantasmas_extra`, catálogo v6, `PROTOCOLO` 7), cada uno con su vida, veneno y daño de
@@ -460,8 +468,7 @@ le falta una cadena le sale la inglesa.
   código directo solo deja jugar con más de la mitad de los jugadores
   conectados (`sin_mayoria`; se para antes de lo que tarda otro en activarse)
   y uno parado se une a otro (`ceder`, `solo_si_activo`): así nunca hay dos
-  partidas. Hooks `Mesa::ser_anfitrion`/`ser_invitado`. Con el servidor de
-  salas no se usa: elige él.
+  partidas. Hooks `Mesa::ser_anfitrion`/`ser_invitado`.
 - Rust: `commands/{cards,decklist,export,identify,layout,library,stats}.rs`,
   `package.rs` (.pbdeck), `render.rs` + `protocol.rs` (miniaturas),
   `ocr.rs` (OCR opcional de la carta entera con `ocrs`, a la resolución
@@ -621,7 +628,8 @@ le falta una cadena le sale la inglesa.
     libre a la letra del pack Balatro.
   - **Packs descargables** (Pablo, 19/10/2026): `diseno/descargables.rs` con
     el manifiesto `assets/packs-descargables.json` (commit fijo y SHA-256 por
-    fichero) del repo `PoolFlamingo/proxy-builder-packs` (lo sube Pablo; al
+    fichero) del repo `PoolFlamingo/tapete-packs` (antes `proxy-builder-packs`, la ruta que siguen usando el
+    manifiesto y `PERMITIDOS`: `raw.githubusercontent.com` la sirve sin redirigir; lo sube Pablo; al
     cambiar un pack, `python -I source/manifest.py . <commit>`, desde la carpeta del pack, da su
     entrada nueva). Al arrancar, `descargables::completar` pone al día un pack ya
     bajado con los ficheros del manifiesto de esta versión (uno nunca bajado no
@@ -709,6 +717,20 @@ le falta una cadena le sale la inglesa.
   (`components/logo.tsx`). El `User-Agent` de toda petición es `tls::AGENTE`. Al cambiar de
   nombre, el `.deb`/`.rpm` declaran que sustituyen a `proxy-builder` y el instalador de Windows
   desinstala en silencio el viejo (`src-tauri/windows/hooks.nsh`).
+- 🛑 **El sello de Tapete** (Pablo, 09/11/2026; plan Fase B): «Tapete · No a la venta» en el idioma de la
+  carta, en todo lo que se imprime o se exporta, y **no se puede apagar**. Todo en `proxy-core::sello`: los textos
+  (`assets/sello/textos.json`: el de la carta y la línea del margen de cada hoja), las letras (Montserrat a peso 600; para
+  ja/ko/zhs/zht, recortes de Noto CJK de 7 KB que saca `scripts/sello-letras.py` con fontTools, desde las fuentes
+  fijadas de `letras-cjk.json`), los glifos ya colocados (`linea`, sin kerning: una sola cuenta para pantalla y papel),
+  `caja` (en fracciones de la carta) y `colocar`, que mira la carta: centrado en la franja de abajo, **por debajo** del
+  artista y del copyright; prueba `SITIOS` (más abajo y hasta el 80 % si el pie de un marco propio baja más) y el primero
+  con fondo liso va solo, blanco o negro por contraste; si ninguno, pastilla oscura semitransparente. Dónde va: en el
+  PDF como **texto vectorial encima** (`pdf::sello`; el JPEG sigue pasando tal cual), con la colocación decidida al
+  preparar cada imagen (`sello::colocaciones`, en `commands/export.rs`) y la línea del margen en el idioma de la app
+  (`export_pdf` recibe `lang`); **pintado** en la miniatura de las hojas (solo si la pide `slot-view` con
+  `PreviewParams.sello` = `Slot.sello`, que decide `sello::idioma_de_carta`), al guardar una carta como imagen
+  (`commands/imagen.rs`) y en los PNG de diseños (`diseno/png.rs`). **Nunca** en la mesa, el editor ni las demás
+  miniaturas. Sin sello, `RenderSpec` no cambia de clave (las cachés de antes valen).
 - Valores de fábrica (Pablo, 13/10/2026): 2 mm de separación en blanco,
   sangrado 0, guías de corte apagadas y «Rellenar las esquinas» apagado (lo
   transparente sale del color del papel; `corners::fill` solo si se activa).
@@ -732,6 +754,23 @@ le falta una cadena le sale la inglesa.
   `ANDROID_KEY_ALIAS`/`ANDROID_KEY_PASSWORD`/`ANDROID_KEY_BASE64`; los comandos, en
   `plans/20261025 - version-movil/lista-de-pablo.md`) es tan insustituible como la del actualizador:
   un APK firmado con otra no se instala encima y desinstalar borra la biblioteca.
+- **Amigos y mensajes** (Pablo, 09/11/2026; plan `plans/20261109 - tapete/`, Fase D): el servidor de Tapete
+  (`/home/estigio/Projects/Nextjs/tapete`, Next.js + SurrealDB; su contrato en `docs/api.md`) solo guarda
+  claves públicas, amistades y mensajes **cifrados**: nunca ve el texto. Nada se llama sin aceptar antes
+  (`amigos.activo`, `features/amigos/consentimiento.tsx`). Rust en `src-tauri/src/amigos/`: `firma.rs` (cada
+  petición firmada con la clave ed25519 del nodo: `TAPETE-v1`, método, ruta, hora, nonce y SHA-256 del cuerpo),
+  `cifrado.rs` (X25519 sacada de la misma semilla con HKDF, `info` `tapete/cifrado/v1`; `crypto_box`, formato
+  `[1][nonce 24][caja]`; número de seguridad), `cliente.rs` (`PRODUCCION`; en debug, `PB_TAPETE`, también al compilar: la app de Android no ve las variables),
+  `sincronizar.rs` (cada 60 s, 10 s con un chat abierto, parado en segundo plano, con espera creciente),
+  `avisar.rs` (aviso del sistema solo sin foco y nunca con el texto del mensaje; Rust no escribe prosa: los
+  textos llegan de la pantalla con `amigos_textos`). 🛑 Los vectores de `amigos/vectores/*.json` son copia
+  exacta de los del servidor: si cambian, en los dos lados. Conversaciones en `store/amigos.rs` (migración
+  0010, `amigos_mensajes`, `amigos_claves`: una clave de cifrado que cambia se marca y quita lo verificado).
+  Comandos `amigos_*`, pantalla en `features/amigos/` y `stores/amigos-store.ts`. Una invitación a partida es
+  un mensaje con el código directo **sin IP** (`red::codigo::solo_rele`). Enlaces que se comparten: los de la web
+  (`enlace_invitacion` → `/join/<código>`, `enlace_amigo` → `/friend/<TAP-…>`); los que abren la app,
+  `tapete://unirse/…` y `tapete://amigo/…` (`enlace.rs`, evento `enlace://entrante`). Cambiar la identidad
+  (`red_identidad_importar`) es otra persona para el servidor: `amigos::sincronizar::otra_clave`.
 - **Pasar decks entre equipos** (Pablo, 02/11/2026): `src-tauri/src/pasar/` (ALPN
   `proxy-builder/deck/1` en **el mismo nodo** que la mesa; código `PBD1-` frente al `PB1-` de
   partida; «equipos cerca» por mDNS con `iroh-mdns-address-lookup`; QR en Rust; oferta ≤ 64 KiB; el
@@ -790,12 +829,15 @@ equipo. Los planes (`plans/`) no se versionan.
 ## Wiki (documentación)
 
 La documentación completa del proyecto vive en el wiki de GitHub
-(`https://github.com/PoolFlamingo/proxy-builder/wiki`), **en inglés (idioma de
+(`https://github.com/PoolFlamingo/tapete/wiki`), **en inglés (idioma de
 referencia) y en español**. Es un
-repo aparte (`PoolFlamingo/proxy-builder.wiki`) con su clon local en
+repo aparte (`PoolFlamingo/tapete.wiki`) con su clon local en
 `/home/estigio/Projects/Tauri/tapete.wiki/`, al lado de este y del de
-packs (`tapete-app-packs`). Las carpetas locales se renombraron; los repos de GitHub
-siguen con su nombre (`proxy-builder`, `proxy-builder.wiki`, `proxy-builder-packs`). No es lo mismo que `README.md`/`README.es.md` (la presentación) ni que
+packs (`tapete-app-packs`). Los repos de GitHub se renombraron (Pablo, 09/11/2026):
+`PoolFlamingo/tapete`, `tapete.wiki` y `tapete-packs`; GitHub redirige los nombres viejos (las
+copias instaladas actualizan y bajan packs por ellos: comprobado con `curl`). 🛑 **Nunca crear un
+repo `PoolFlamingo/proxy-builder` ni `proxy-builder-packs`**: GitHub quitaría la redirección y las
+copias viejas se quedarían sin actualizaciones ni packs. No es lo mismo que `README.md`/`README.es.md` (la presentación) ni que
 `docs/packs-de-marcos.md`: el wiki es la referencia para entender, ampliar y
 rehacer la app.
 
