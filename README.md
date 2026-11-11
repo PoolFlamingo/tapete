@@ -583,6 +583,17 @@ the installed app without uninstalling it, which deletes their library.
 
 ---
 
+## License
+
+Tapete's source code is free software under the
+[GNU General Public License v3.0 or later](LICENSE): you can use, study, share and
+modify it, and if you distribute a modified version you must publish its source
+under the same licence.
+
+The licence covers Tapete's own code and assets. Third-party resources keep their
+own licences (see Credits), and Magic: The Gathering names, card text, images and
+frames belong to Wizards of the Coast and are not covered by it.
+
 ## Credits
 
 The card data and images come from [Scryfall](https://scryfall.com).

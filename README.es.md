@@ -598,6 +598,17 @@ eso borra su biblioteca.
 
 ---
 
+## Licencia
+
+El código de Tapete es software libre con la
+[Licencia Pública General de GNU v3.0 o posterior](LICENSE): puedes usarlo,
+estudiarlo, compartirlo y modificarlo, y si distribuyes una versión modificada
+tienes que publicar su código con la misma licencia.
+
+La licencia cubre el código y los recursos propios de Tapete. Los recursos de
+terceros conservan sus licencias (ver Créditos), y los nombres, textos, imágenes y
+marcos de Magic: The Gathering son de Wizards of the Coast y no los cubre.
+
 ## Créditos
 
 Los datos y las imágenes de las cartas vienen de [Scryfall](https://scryfall.com).

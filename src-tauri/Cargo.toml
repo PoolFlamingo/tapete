@@ -4,6 +4,7 @@ version = "4.0.3"
 description = "Tapete — prepara, prueba y juega tus decks de Magic"
 authors = ["Pablo"]
 edition = "2021"
+license = "GPL-3.0-or-later"
 rust-version = "1.92"
 
 [lib]

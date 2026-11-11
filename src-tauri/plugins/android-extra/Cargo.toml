@@ -3,6 +3,7 @@ name = "tauri-plugin-android-extra"
 version = "0.1.0"
 description = "Lo que solo hace Android y Tauri no trae: compartir, instalar un APK, pantalla encendida y completa, MulticastLock y abrir ficheros desde otra app. Solo lo llama Rust (src/android.rs)."
 edition = "2021"
+license = "GPL-3.0-or-later"
 rust-version = "1.92"
 links = "tauri-plugin-android-extra"
 
