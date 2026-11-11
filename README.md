@@ -2,6 +2,10 @@
 
 [Español](README.es.md) · **English**
 
+### A place for every player.
+
+*Because the best part of Magic is playing together.*
+
 **Prepare, test and play your Magic decks. Free, no account, on your computer and your phone.**
 
 [**Download Tapete**](https://tapete.zodhub.app) · [Releases](https://github.com/PoolFlamingo/tapete/releases) · [Wiki](https://github.com/PoolFlamingo/tapete/wiki)
