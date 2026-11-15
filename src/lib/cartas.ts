@@ -107,7 +107,14 @@ function insigniasDeLaCarta(c: DeckCard): Insignia[] {
 						tono: "info",
 						ayuda: paraTraducir("Imagen propia vinculada a su carta de Scryfall"),
 					}
-				: { texto: "CUSTOM", tono: "info", ayuda: paraTraducir("Imagen propia") },
+				: c.source.externa
+					? {
+							// Una ficha que Scryfall no tiene (Cockatrice): también vinculada.
+							texto: "CUSTOM ↔",
+							tono: "info",
+							ayuda: paraTraducir("Imagen propia vinculada a una ficha de Cockatrice"),
+						}
+					: { texto: "CUSTOM", tono: "info", ayuda: paraTraducir("Imagen propia") },
 		);
 	if (c.meta.langFallback)
 		out.push({

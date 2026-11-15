@@ -57,5 +57,6 @@
 	"Exacta": "정확",
 	"Probable": "유력",
 	"Sin propuesta": "후보 없음",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "{carta}에 연결했어요. 이전 디자인은 지웠어요."
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "{carta}에 연결했어요. 이전 디자인은 지웠어요.",
+	"Imagen propia vinculada a una ficha de Cockatrice": "Cockatrice 토큰에 연결된 내 이미지"
 }

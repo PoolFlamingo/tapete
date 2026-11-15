@@ -57,5 +57,6 @@
 	"Exacta": "完全匹配",
 	"Probable": "可能匹配",
 	"Sin propuesta": "无匹配",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "已关联到 {carta}。其原有设计已移除。"
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "已关联到 {carta}。其原有设计已移除。",
+	"Imagen propia vinculada a una ficha de Cockatrice": "已关联 Cockatrice 衍生物的自定义图片"
 }

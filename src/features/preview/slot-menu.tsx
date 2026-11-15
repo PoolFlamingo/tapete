@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/context-menu";
 import { quitarDiseno, disenable as sePuedeDisenar } from "@/features/disenar/grupos";
 import { IDIOMAS } from "@/features/library/piezas";
+import { estaVinculada } from "@/features/variants/vincular";
 import { MARCAS } from "@/lib/cartas";
 import { useDeck } from "@/stores/deck-store";
 import { useUi } from "@/stores/ui-store";
@@ -132,7 +133,7 @@ export function SlotMenu({ id, children }: { id: string; children: ReactNode }) 
 						onSelect={() => useUi.getState().abrir({ tipo: "vincular", id })}
 					>
 						<Icono icon="lucide:link-2" />
-						{carta.source.scryfallId ? t("Cambiar el vínculo…") : t("Vincular con una carta…")}
+						{estaVinculada(carta) ? t("Cambiar el vínculo…") : t("Vincular con una carta…")}
 					</ContextMenuItem>
 				)}
 				{carta?.source.kind === "custom" && (

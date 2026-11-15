@@ -57,5 +57,6 @@
 	"Exacta": "完全符合",
 	"Probable": "可能符合",
 	"Sin propuesta": "沒有建議",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "已關聯到 {carta}。其原有設計已移除。"
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "已關聯到 {carta}。其原有設計已移除。",
+	"Imagen propia vinculada a una ficha de Cockatrice": "已關聯 Cockatrice 衍生物的自訂圖片"
 }

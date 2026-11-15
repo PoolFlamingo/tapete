@@ -69,5 +69,6 @@
 	"Exacta": "Exact",
 	"Probable": "Probable",
 	"Sin propuesta": "No match",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "Linked to {carta}. Its previous design was removed."
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "Linked to {carta}. Its previous design was removed.",
+	"Imagen propia vinculada a una ficha de Cockatrice": "Own image linked to a Cockatrice token"
 }

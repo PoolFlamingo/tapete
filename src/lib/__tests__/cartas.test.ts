@@ -61,6 +61,16 @@ describe("marcas y nombres", () => {
 		});
 		expect(insignias(c).map((i) => i.texto)).toEqual(["↩ EN", "LOWRES"]);
 		expect(insignias({ ...c, source: { kind: "custom" } }).map((i) => i.texto)[0]).toBe("CUSTOM");
+		// Vinculada: a Scryfall o a una ficha que Scryfall no tiene (Cockatrice).
+		expect(
+			insignias({ ...c, source: { kind: "custom", scryfallId: "sf" } }).map((i) => i.texto)[0],
+		).toBe("CUSTOM ↔");
+		expect(
+			insignias({
+				...c,
+				source: { kind: "custom", externa: { fuente: "cockatrice", id: "k1" } },
+			}).map((i) => i.texto)[0],
+		).toBe("CUSTOM ↔");
 	});
 
 	it("una carta diseñada solo lleva la marca de su diseño", () => {

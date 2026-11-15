@@ -77,5 +77,6 @@
 	"Exacta": "Точная",
 	"Probable": "Вероятная",
 	"Sin propuesta": "Без совпадения",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "Связана с {carta}. Прежний дизайн удалён."
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "Связана с {carta}. Прежний дизайн удалён.",
+	"Imagen propia vinculada a una ficha de Cockatrice": "Своё изображение, связанное с фишкой из Cockatrice"
 }

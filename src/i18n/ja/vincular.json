@@ -57,5 +57,6 @@
 	"Exacta": "一致",
 	"Probable": "候補",
 	"Sin propuesta": "候補なし",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "{carta} に紐づけました。以前のデザインは削除しました。"
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "{carta} に紐づけました。以前のデザインは削除しました。",
+	"Imagen propia vinculada a una ficha de Cockatrice": "Cockatrice のトークンに紐付けた独自画像"
 }

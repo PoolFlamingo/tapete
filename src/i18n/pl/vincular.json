@@ -77,5 +77,6 @@
 	"Exacta": "Dokładna",
 	"Probable": "Prawdopodobna",
 	"Sin propuesta": "Bez propozycji",
-	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "Powiązano z {carta}. Poprzedni projekt został usunięty."
+	"Vinculada con {carta}. Se ha quitado su diseño anterior.": "Powiązano z {carta}. Poprzedni projekt został usunięty.",
+	"Imagen propia vinculada a una ficha de Cockatrice": "Własny obraz powiązany z żetonem z Cockatrice"
 }
