@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { type Estilo, METALES } from "./aspecto";
 import { entre, generador } from "./azar";
 import type { PiezaTirada, Tirada } from "./cola";
@@ -29,18 +30,24 @@ function Pieza({
 	estilo,
 	fondo,
 	valor,
+	pequena = false,
 }: {
 	p: PiezaTirada;
 	estilo: Estilo;
 	fondo: string;
 	valor: React.ReactNode;
+	/** Más pequeña: la del cartel del resultado. */
+	pequena?: boolean;
 }) {
 	const id = useId();
 	if (p.forma === "moneda") {
 		const metal = METALES[estilo.moneda];
 		return (
 			<div
-				className="flex size-14 items-center justify-center rounded-full shadow-lg"
+				className={cn(
+					"flex items-center justify-center rounded-full shadow-lg",
+					pequena ? "size-11 [&_svg]:size-6" : "size-14",
+				)}
 				style={{
 					background: `radial-gradient(circle at 40% 35%, ${metal.claro}, ${metal.oscuro})`,
 					boxShadow: `inset 0 0 0 3px ${metal.borde}`,
@@ -52,7 +59,7 @@ function Pieza({
 	}
 	const lados = p.forma === "planar" ? 6 : p.tipo;
 	return (
-		<div className="relative size-16 drop-shadow-lg">
+		<div className={cn("relative drop-shadow-lg", pequena ? "size-12" : "size-16")}>
 			<svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
 				<defs>
 					<pattern id={id} patternUnits="userSpaceOnUse" width={100} height={100}>
@@ -68,7 +75,10 @@ function Pieza({
 				/>
 			</svg>
 			<div
-				className="absolute inset-0 flex items-center justify-center pt-1 text-lg font-bold"
+				className={cn(
+					"absolute inset-0 flex items-center justify-center pt-1 font-bold",
+					pequena ? "text-base [&_svg]:size-6" : "text-lg",
+				)}
 				style={{ color: estilo.numeros, textShadow: `0 0 3px ${estilo.contorno}` }}
 			>
 				{valor}
@@ -109,6 +119,24 @@ function cara(p: PiezaTirada, r: () => number, final: boolean, e: Estilo): React
 		? p.valor
 		: Math.floor(r() * (p.tipo === 10 ? 10 : p.tipo)) + (p.tipo === 10 ? 0 : 1);
 	return textoCara(p.tipo, v, p.decenas);
+}
+
+/**
+ * Una pieza quieta con su resultado: la misma que se tira en la mesa (en 2D),
+ * para el cartel del resultado y el diálogo de los dados.
+ */
+export function PiezaQuieta({
+	p,
+	estilo,
+	fondo,
+}: {
+	p: PiezaTirada;
+	estilo: Estilo;
+	fondo: string;
+}) {
+	return (
+		<Pieza p={p} estilo={estilo} fondo={fondo} valor={cara(p, Math.random, true, estilo)} pequena />
+	);
 }
 
 export function DadosPlanos({

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { Evento } from "@/bindings/Evento";
 import { CampoNumero, Selector } from "@/components/campos";
 import { DialogoAdaptable } from "@/components/dialogo-adaptable";
 import { Icono } from "@/components/icono";
@@ -8,6 +9,9 @@ import { Dialog, DialogDescription, DialogHeader, DialogTitle } from "@/componen
 import { Switch } from "@/components/ui/switch";
 import { useMesa } from "@/stores/mesa-store";
 import { hacer } from "../acciones";
+import { tiradaDe } from "../dados/cola";
+import { TiradaEnVivo } from "../dados/en-vivo";
+import { useEstiloDe } from "../dados/resultado";
 import { usePantalla } from "../pantalla";
 
 const DADOS = [4, 6, 8, 10, 12, 20] as const;
@@ -23,10 +27,12 @@ export function AzarDialog() {
 	const [caras, setCaras] = useState<number>(6);
 	const [pulgares, setPulgares] = useState(0);
 	const [hastaPerder, setHastaPerder] = useState(false);
+	// El último evento de azar (con quién tiró, para pintar sus dados).
 	const ultimo = useMesa((s) => {
 		for (let i = s.registro.length - 1; i >= 0; i--) {
-			const c = s.registro[i]?.cambio;
-			if (c && (c.tipo === "dados" || c.tipo === "monedas" || c.tipo === "dadoPlanar")) return c;
+			const ev = s.registro[i];
+			const c = ev?.cambio;
+			if (c && (c.tipo === "dados" || c.tipo === "monedas" || c.tipo === "dadoPlanar")) return ev;
 		}
 		return null;
 	});
@@ -43,7 +49,7 @@ export function AzarDialog() {
 						{t("El resultado sale también en el registro de la partida.")}
 					</DialogDescription>
 				</DialogHeader>
-				<ResultadoAzar cambio={ultimo} />
+				<UltimaTirada ultimo={ultimo} />
 				<section className="flex flex-col gap-1.5">
 					<h4 className="text-xs font-semibold">{t("Moneda")}</h4>
 					<div className="flex flex-wrap items-center gap-2.5 text-xs">
@@ -114,56 +120,39 @@ export function AzarDialog() {
 	);
 }
 
-type CambioAzar = Extract<
-	import("@/bindings/Cambio").Cambio,
-	{ tipo: "dados" } | { tipo: "monedas" } | { tipo: "dadoPlanar" }
->;
-
-/** El último resultado, en grande. */
-export function ResultadoAzar({ cambio }: { cambio: CambioAzar | null }) {
+/**
+ * La última tirada, como cae en la mesa (`TiradaEnVivo`: 3D con física y
+ * sombras, la misma caída que en la partida porque la física va por la
+ * semilla) y, debajo, lo que no se ve en las piezas: la suma o la cara del
+ * dado planar.
+ */
+function UltimaTirada({ ultimo }: { ultimo: Evento | null }) {
 	const { t } = useLang();
-	if (!cambio) return null;
-	if (cambio.tipo === "dados") {
-		const suma = cambio.tiradas.reduce((a, x) => a + x.valor, 0);
-		return (
-			<div className="flex flex-col items-center gap-1 rounded-lg bg-muted/50 p-2.5">
-				<div className="flex flex-wrap justify-center gap-1.5">
-					{cambio.tiradas.map((x, i) => (
-						<span
-							key={i}
-							className="flex size-10 items-center justify-center rounded-lg bg-background text-lg font-bold shadow"
-						>
-							{x.valor}
-						</span>
-					))}
-				</div>
-				{cambio.tiradas.length > 1 && (
-					<span className="text-xs text-muted-foreground">{t("Suma: {n}", { n: suma })}</span>
-				)}
-			</div>
-		);
-	}
-	if (cambio.tipo === "monedas") {
-		return (
-			<div className="flex flex-wrap justify-center gap-1.5 rounded-lg bg-muted/50 p-2.5 text-xs">
-				{cambio.lanzamientos.map((l, i) => (
-					<span key={i} className="rounded-md bg-background px-2 py-1 font-semibold shadow">
-						{l.map((x) => (x ? t("Cara") : t("Cruz"))).join(" / ")}
-					</span>
-				))}
-			</div>
-		);
-	}
+	const tirada = useMemo(() => (ultimo ? tiradaDe(ultimo) : null), [ultimo]);
+	const { estilo } = useEstiloDe(tirada?.actor ?? null);
+	if (!tirada) return null;
+	const c = tirada.cambio;
+	const suma = c.tipo === "dados" ? c.tiradas.reduce((a, x) => a + x.valor, 0) : 0;
 	return (
-		<div className="rounded-lg bg-muted/50 p-2.5 text-center text-sm font-semibold">
-			{cambio.cara === "planeswalk"
-				? t("Planeswalk")
-				: cambio.cara === "caos"
-					? t("Caos")
-					: t("Nada")}
-			<span className="ml-2 text-xs font-normal text-muted-foreground">
-				{t("Esta tirada costaba {n}", { n: cambio.coste })}
-			</span>
+		<div className="flex flex-col items-center gap-1 rounded-lg bg-muted/50">
+			<TiradaEnVivo tirada={tirada} estilo={estilo} sonido={false} className="h-40 w-full" />
+			{c.tipo === "dados" && (
+				<span className="pb-2 text-xs text-muted-foreground">
+					{c.tiradas.length > 1 || c.tiradas.some((x) => x.caras === 100)
+						? `${c.tiradas.map((x) => x.valor).join(" · ")} — ${t("Suma: {n}", { n: suma })}`
+						: c.tiradas.map((x) => x.valor).join(" · ")}
+				</span>
+			)}
+			{c.tipo === "dadoPlanar" && (
+				<span className="pb-2 text-xs">
+					<span className="font-semibold">
+						{c.cara === "planeswalk" ? t("Planeswalk") : c.cara === "caos" ? t("Caos") : t("Nada")}
+					</span>
+					<span className="ml-2 text-muted-foreground">
+						{t("Esta tirada costaba {n}", { n: c.coste })}
+					</span>
+				</span>
+			)}
 		</div>
 	);
 }

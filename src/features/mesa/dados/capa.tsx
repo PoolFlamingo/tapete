@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useMesa } from "@/stores/mesa-store";
-import { type NivelDados, useUi } from "@/stores/ui-store";
-import { ResultadoAzar } from "../dialogos/azar";
+import { useUi } from "@/stores/ui-store";
 import { useSinAnimaciones } from "../fps";
 import { claveEstilo, estiloDe, useAspectoDados } from "./aspecto";
 import { type Tirada, useDados } from "./cola";
 import { DadosCss } from "./css3d";
 import type { EscenaDados } from "./escena3d";
+import { nivelReal } from "./nivel";
 import { DadosPlanos } from "./plano";
+import { ResultadoAzar } from "./resultado";
 import { golpeDado, golpeMoneda, lanzarMoneda } from "./sonidos";
 import { lienzoFondo, urlFondo } from "./texturas";
 
@@ -22,26 +23,6 @@ const RESULTADO_MS = 2200;
  * la cola parada y sin dados el resto de la partida.
  */
 const TOPE_TIRADA_MS = 8000;
-
-/** Si hay WebGL2 (sin él, los dados van en CSS 3D). Se mira una vez. */
-let webgl2: boolean | null = null;
-function hayWebGL2(): boolean {
-	if (webgl2 === null) {
-		try {
-			webgl2 = !!document.createElement("canvas").getContext("webgl2");
-		} catch {
-			webgl2 = false;
-		}
-	}
-	return webgl2;
-}
-
-/** El nivel que se usa: el de Ajustes, o el mejor que aguante el equipo. */
-function nivelReal(pedido: NivelDados, fallo3d: boolean): Exclude<NivelDados, "auto"> {
-	if (pedido === "auto") return hayWebGL2() && !fallo3d ? "3d" : "css";
-	if (pedido === "3d" && fallo3d) return "css";
-	return pedido;
-}
 
 /**
  * **La capa de los dados**, encima del tablero: enseña cada tirada que llega
@@ -210,7 +191,7 @@ export function CapaDados() {
 					}}
 					className="pointer-events-auto absolute -bottom-2 left-1/2 w-72 -translate-x-1/2 animate-in rounded-xl border bg-background/95 p-1 shadow-2xl fade-in zoom-in-95"
 				>
-					<ResultadoAzar cambio={tirada.cambio} />
+					<ResultadoAzar cambio={tirada.cambio} actor={tirada.actor} />
 				</button>
 			)}
 		</div>

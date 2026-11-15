@@ -5,15 +5,9 @@ import { Fila, FilaInterruptor, Selector } from "@/components/campos";
 import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
-import {
-	ASPECTO_DE_FABRICA,
-	claveEstilo,
-	estiloDe,
-	useAspectoDados,
-} from "@/features/mesa/dados/aspecto";
+import { ASPECTO_DE_FABRICA, estiloDe, useAspectoDados } from "@/features/mesa/dados/aspecto";
 import type { Tirada } from "@/features/mesa/dados/cola";
-import { DadosCss } from "@/features/mesa/dados/css3d";
-import { lienzoFondo, urlFondo } from "@/features/mesa/dados/texturas";
+import { TiradaEnVivo } from "@/features/mesa/dados/en-vivo";
 import { abrirParaImportar } from "@/lib/dialogos";
 
 /** El color de muestra cuando el dado lleva el del jugador. */
@@ -36,7 +30,8 @@ function muestra(semilla: number): Tirada {
 
 /**
  * **Ajustes > Mesa > Dados y monedas**: el aspecto de tus dados y tu moneda
- * (`mesa/dados.rs`) con una muestra en CSS 3D que se tira con «Probar», y el
+ * (`mesa/dados.rs`) con una muestra que se tira con «Probar» como en la mesa
+ * (`TiradaEnVivo`: 3D con física y sombras, o el nivel de Ajustes), y el
  * sonido. Los colores se guardan al soltar (un momento después de cambiar).
  */
 export function AjustesDados() {
@@ -98,17 +93,6 @@ export function AjustesDados() {
 		[local, vista],
 	);
 	const tirada = useMemo(() => muestra(semilla), [semilla]);
-	const clave = claveEstilo(estilo);
-	const [fondo, setFondo] = useState<{ clave: string; url: string } | null>(null);
-	useEffect(() => {
-		let vivo = true;
-		void lienzoFondo(estilo).then((c) => {
-			if (vivo) setFondo({ clave, url: urlFondo(c) });
-		});
-		return () => {
-			vivo = false;
-		};
-	}, [estilo, clave]);
 
 	return (
 		<>
@@ -116,16 +100,8 @@ export function AjustesDados() {
 				{t("Dados y monedas")}
 			</h4>
 			<div className="relative h-52 overflow-hidden rounded-xl border bg-muted/30">
-				{fondo && (
-					<DadosCss
-						key={semilla}
-						tirada={tirada}
-						estilo={estilo}
-						fondo={fondo.url}
-						alAcabar={() => {}}
-						sonido={sonar}
-					/>
-				)}
+				{/* Como en la mesa: 3D con física y sombras (o el nivel de Ajustes). */}
+				<TiradaEnVivo tirada={tirada} estilo={estilo} sonido={sonar} className="absolute inset-0" />
 				<Button
 					size="sm"
 					variant="outline"
