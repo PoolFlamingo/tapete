@@ -248,10 +248,7 @@ fn colores_marco_en(
     pack: &Pack,
     de_imagen: bool,
 ) -> (Tonos, Option<Tonos>) {
-    if de_imagen
-        && matches!(e.frame.color, FrameColor::Auto)
-        && matches!(eleccion_marco(e, cara), Eleccion::Dos(..))
-    {
+    if de_imagen && dos_colores_auto(e, cara) {
         return (paleta(pack, Palette::Gold), None);
     }
     colores_marco(e, cara, pack)
@@ -287,6 +284,12 @@ pub(super) fn extra_marco(e: &DisenoEfectivo) -> ExtraMarco {
         FrameColor::Custom { hex } => ExtraMarco::Tinte(rgba(hex).unwrap_or([128, 128, 128, 255])),
         _ => ExtraMarco::Nada,
     }
+}
+
+/// ¿Una carta de dos colores con el color del marco en automático?
+pub(super) fn dos_colores_auto(e: &DisenoEfectivo, cara: usize) -> bool {
+    matches!(e.frame.color, FrameColor::Auto)
+        && matches!(eleccion_marco(e, cara), Eleccion::Dos(..))
 }
 
 fn eleccion_marco(e: &DisenoEfectivo, cara: usize) -> Eleccion {

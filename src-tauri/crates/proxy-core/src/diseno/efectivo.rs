@@ -341,6 +341,12 @@ pub fn huella(e: &DisenoEfectivo, lang: DesignLang, cara: usize, recursos: &str)
     if e.design.card.es_ficha() {
         h.update("|ficha-estilo-del-pack");
     }
+    // En los marcos de imagen, una carta de dos colores en automático lleva
+    // también en oro las piezas dibujadas (la cinta del nombre original):
+    // solo ellas se vuelven a pintar (sin esto, la caché daba la vieja).
+    if super::render::dos_colores_auto(e, cara) {
+        h.update("|piezas-en-oro");
+    }
     // Una MDFC de dos Tierras ya no lleva la pestaña «▶ Tierra»: solo ellas se
     // vuelven a pintar.
     let card = &e.design.card;
