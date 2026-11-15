@@ -68,7 +68,7 @@ export function TiradaEnVivo({
 				if (!escena.current) {
 					const { EscenaDados } = await import("./escena3d");
 					if (!vivo) return;
-					escena.current = new EscenaDados(canvas);
+					escena.current = new EscenaDados(canvas, "piezas");
 				}
 				if (sonar.current && tirada.piezas.some((p) => p.forma === "moneda")) lanzarMoneda();
 				await escena.current.tirar(tirada, estilo, fondoListo.lienzo, (moneda, fuerza) => {

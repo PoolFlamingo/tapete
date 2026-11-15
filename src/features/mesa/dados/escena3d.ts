@@ -250,14 +250,46 @@ function mallaMoneda(cara: boolean, ladoAArriba: boolean, e: Estilo): THREE.Mesh
 	return m;
 }
 
+/**
+ * Qué encuadra la cámara: la mesa entera de la física (la capa de la
+ * partida) o solo donde quedan las piezas de cada tirada (una caja pequeña:
+ * la muestra de Ajustes y el diálogo de los dados), para que se vean grandes.
+ */
+export type Encuadre = "mesa" | "piezas";
+
+/** Lo que se ve alrededor de las piezas paradas, y lo mínimo que se ve (en unidades de la física). */
+const MARGEN_PIEZAS = 1.6;
+const MINIMO_PIEZAS = 4.5;
+
+type Zona = { cx: number; cz: number; ancho: number; fondo: number };
+
+/** Donde quedan paradas las piezas, con margen y un mínimo (una sola no sale enorme). */
+function zonaDePiezas(g: Grabacion): Zona {
+	const k = g.cuadros - 1;
+	const xs = g.piezas.map((p) => p.pos[k * 3]);
+	const zs = g.piezas.map((p) => p.pos[k * 3 + 2]);
+	if (xs.length === 0) return { cx: 0, cz: 0, ancho: ANCHO, fondo: FONDO };
+	const [x0, x1, z0, z1] = [Math.min(...xs), Math.max(...xs), Math.min(...zs), Math.max(...zs)];
+	return {
+		cx: (x0 + x1) / 2,
+		cz: (z0 + z1) / 2,
+		ancho: Math.min(ANCHO, Math.max(MINIMO_PIEZAS, x1 - x0 + 2 * MARGEN_PIEZAS)),
+		fondo: Math.min(FONDO, Math.max(MINIMO_PIEZAS, z1 - z0 + 2 * MARGEN_PIEZAS)),
+	};
+}
+
 export class EscenaDados {
 	private renderer: THREE.WebGLRenderer;
 	private escena = new THREE.Scene();
 	private camara = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
 	private piezas: THREE.Mesh[] = [];
 	private pedido = 0;
+	private zona: Zona = { cx: 0, cz: 0, ancho: ANCHO, fondo: FONDO };
 
-	constructor(private lienzo: HTMLCanvasElement) {
+	constructor(
+		private lienzo: HTMLCanvasElement,
+		private encuadre: Encuadre = "mesa",
+	) {
 		this.renderer = new THREE.WebGLRenderer({ canvas: lienzo, alpha: true, antialias: true });
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 		this.renderer.shadowMap.enabled = true;
@@ -281,8 +313,6 @@ export class EscenaDados {
 		suelo.rotation.x = -Math.PI / 2;
 		suelo.receiveShadow = true;
 		this.escena.add(suelo);
-		this.camara.position.set(0, 14, 8);
-		this.camara.lookAt(0, 0, 0.3);
 		this.medir();
 	}
 
@@ -292,9 +322,13 @@ export class EscenaDados {
 		const h = this.lienzo.clientHeight || 1;
 		this.renderer.setSize(w, h, false);
 		const aspecto = w / h;
-		// Lo que ocupa la mesa vista desde la cámara inclinada.
+		const z = this.zona;
+		// La cámara, inclinada como siempre, mirando al centro de la zona.
+		this.camara.position.set(z.cx, 14, 8 + z.cz);
+		this.camara.lookAt(z.cx, 0, 0.3 + z.cz);
+		// Lo que ocupa la zona vista desde la cámara inclinada.
 		const inclinacion = Math.cos(Math.atan2(8, 14));
-		const medioAlto = Math.max((FONDO * inclinacion) / 2 + 0.6, (ANCHO / 2 + 0.6) / aspecto);
+		const medioAlto = Math.max((z.fondo * inclinacion) / 2 + 0.6, (z.ancho / 2 + 0.6) / aspecto);
 		const medioAncho = medioAlto * aspecto;
 		Object.assign(this.camara, {
 			left: -medioAncho,
@@ -333,6 +367,7 @@ export class EscenaDados {
 		);
 		if (pedido !== this.pedido) return;
 		this.limpiar();
+		if (this.encuadre === "piezas") this.zona = zonaDePiezas(grabacion);
 		this.piezas = t.piezas.map((p, i) => {
 			const f = grabacion.finales[i];
 			const m =
