@@ -526,3 +526,79 @@ fn mas_fantasmas_no_cambian_las_reacciones() {
     }
     assert!(hubo > 0, "sin reacciones no se ha comprobado nada");
 }
+
+#[test]
+fn los_barridos_no_pierden_cartas_y_los_de_dano_miran_la_resistencia() {
+    let (mut barridos, mut de_dano) = (0, 0);
+    for s in 0..300 {
+        let mut j = Juego::nuevo(s, Intensidad::Despiadado);
+        for _ in 0..RONDAS {
+            let ya = j.reacciones.len();
+            j.ronda();
+            for re in &j.reacciones[ya..] {
+                if re.tipo != TipoReaccion::Barrer {
+                    continue;
+                }
+                barridos += 1;
+                let f = por_nombre(&re.carta.nombre).unwrap();
+                assert_eq!(
+                    re.por_que.params.get("dano").cloned(),
+                    f.dano.map(|n| n.to_string())
+                );
+                for id in &re.objetivo {
+                    // Resuelto, cada carta sigue en la mesa (en el cementerio o el exilio).
+                    let (z, _) = j.p().donde(*id).expect("la carta sigue en la partida");
+                    assert_eq!(
+                        z,
+                        RefZona::de(
+                            J,
+                            if re.exilia {
+                                Zona::Exilio
+                            } else {
+                                Zona::Cementerio
+                            }
+                        )
+                    );
+                    if let Some(n) = f.dano {
+                        de_dano += 1;
+                        let r: i32 = j.info(*id).resistencia.as_deref().unwrap().parse().unwrap();
+                        assert!(r <= n, "{} no mata una de resistencia {r}", f.nombre);
+                    }
+                }
+            }
+        }
+    }
+    assert!(
+        barridos > 0 && de_dano > 0,
+        "{barridos} barridos, {de_dano} de daño"
+    );
+}
+
+#[test]
+fn la_resistencia_de_una_carta_del_campo() {
+    use mesa::sparring::amenaza::resistencia;
+    let p = partida(1);
+    let mut c = p
+        .cartas
+        .values()
+        .find(|c| c.origen.info.es_criatura)
+        .unwrap()
+        .clone();
+    assert_eq!(resistencia(&c), Some(2));
+    c.contadores.insert("+1/+1".into(), 2);
+    c.contadores.insert("~-0/-1".into(), 1);
+    c.contadores.insert("carga".into(), 7);
+    c.pt.hasta_fin_de_turno = (0, 3);
+    assert_eq!(resistencia(&c), Some(2 + 2 - 1 + 3));
+    c.pt.fijo = Some((1, 1));
+    assert_eq!(resistencia(&c), Some(1));
+    c.pt.fijo = None;
+    c.contadores.clear();
+    c.pt.hasta_fin_de_turno = (0, 0);
+    c.origen.info.resistencia = Some("*".into());
+    assert_eq!(resistencia(&c), None, "una resistencia * no se sabe");
+    c.origen.info.resistencia = Some("1+*".into());
+    assert_eq!(resistencia(&c), None);
+    c.boca_abajo = true;
+    assert_eq!(resistencia(&c), Some(2), "boca abajo, 2/2");
+}

@@ -1277,5 +1277,7 @@
 	"Invitar": "Invitar",
 	"Invitado": "Invitado",
 	"Elige un deck en la lista para unirte a la partida.": "Elige un deck en la lista para unirte a la partida.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Elige un deck en la lista para crear la partida e invitar a {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Elige un deck en la lista para crear la partida e invitar a {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": "{dano} de daño a cada criatura: caen {n}",
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": "{n} criaturas con resistencia desconocida: decide tú si caen."
 }

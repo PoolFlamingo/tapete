@@ -1279,5 +1279,7 @@
 	"Invitar": "招待",
 	"Invitado": "招待済み",
 	"Elige un deck en la lista para unirte a la partida.": "対戦に参加するには一覧からデッキを選んでください。",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "一覧からデッキを選ぶと、対戦を作成して {apodo} を招待します。"
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "一覧からデッキを選ぶと、対戦を作成して {apodo} を招待します。",
+	"{dano} de daño a cada criatura: caen {n}": "各クリーチャーに {dano} 点のダメージ：{n} 体が死亡",
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": "タフネス不明のクリーチャー {n} 体：死亡するかはあなたが決めてください。"
 }

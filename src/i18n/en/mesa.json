@@ -1334,5 +1334,13 @@
 	"Invitar": "Invite",
 	"Invitado": "Invited",
 	"Elige un deck en la lista para unirte a la partida.": "Choose a deck in the list to join the game.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Choose a deck in the list to create the game and invite {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Choose a deck in the list to create the game and invite {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} damage to each creature: {n} dies",
+		"other": "{dano} damage to each creature: {n} die"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} creature with unknown toughness: you decide whether it dies.",
+		"other": "{n} creatures with unknown toughness: you decide whether they die."
+	}
 }

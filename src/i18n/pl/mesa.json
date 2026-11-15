@@ -1372,5 +1372,17 @@
 	"Invitar": "Zaproś",
 	"Invitado": "Zaproszono",
 	"Elige un deck en la lista para unirte a la partida.": "Wybierz talię z listy, aby dołączyć do gry.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Wybierz talię z listy, aby utworzyć grę i zaprosić {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Wybierz talię z listy, aby utworzyć grę i zaprosić {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} obrażeń każdemu stworzeniu: ginie {n}",
+		"few": "{dano} obrażeń każdemu stworzeniu: giną {n}",
+		"many": "{dano} obrażeń każdemu stworzeniu: ginie {n}",
+		"other": "{dano} obrażeń każdemu stworzeniu: ginie {n}"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} stworzenie o nieznanej wytrzymałości: ty decydujesz, czy ginie.",
+		"few": "{n} stworzenia o nieznanej wytrzymałości: ty decydujesz, czy giną.",
+		"many": "{n} stworzeń o nieznanej wytrzymałości: ty decydujesz, czy giną.",
+		"other": "{n} stworzenia o nieznanej wytrzymałości: ty decydujesz, czy giną."
+	}
 }

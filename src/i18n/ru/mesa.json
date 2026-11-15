@@ -1372,5 +1372,17 @@
 	"Invitar": "Пригласить",
 	"Invitado": "Приглашён",
 	"Elige un deck en la lista para unirte a la partida.": "Выберите колоду в списке, чтобы присоединиться к партии.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Выберите колоду в списке, чтобы создать партию и пригласить {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Выберите колоду в списке, чтобы создать партию и пригласить {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} урона каждому существу: погибает {n}",
+		"few": "{dano} урона каждому существу: погибают {n}",
+		"many": "{dano} урона каждому существу: погибают {n}",
+		"other": "{dano} урона каждому существу: погибают {n}"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} существо с неизвестной выносливостью: решите сами, погибает ли оно.",
+		"few": "{n} существа с неизвестной выносливостью: решите сами, погибают ли они.",
+		"many": "{n} существ с неизвестной выносливостью: решите сами, погибают ли они.",
+		"other": "{n} существа с неизвестной выносливостью: решите сами, погибают ли они."
+	}
 }

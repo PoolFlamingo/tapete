@@ -82,6 +82,11 @@ pub struct CartaDelFantasma {
     /// Lo que de verdad paga si se abarata sola (Blasphemous Act).
     #[serde(default)]
     pub paga: Option<u16>,
+    /// Un barrido de daño (Anger of the Gods, Blasphemous Act): cuánto hace a
+    /// cada criatura. Solo caen las de resistencia conocida que no lo
+    /// aguantan; las demás (resistencia `*`) las resuelve el jugador.
+    #[serde(default)]
+    pub dano: Option<i32>,
 }
 
 impl CartaDelFantasma {

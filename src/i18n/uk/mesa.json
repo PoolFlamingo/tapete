@@ -1377,5 +1377,17 @@
 	"Invitar": "Запросити",
 	"Invitado": "Запрошено",
 	"Elige un deck en la lista para unirte a la partida.": "Виберіть колоду в списку, щоб приєднатися до партії.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Виберіть колоду в списку, щоб створити партію й запросити {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Виберіть колоду в списку, щоб створити партію й запросити {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} шкоди кожній істоті: гине {n}",
+		"few": "{dano} шкоди кожній істоті: гинуть {n}",
+		"many": "{dano} шкоди кожній істоті: гинуть {n}",
+		"other": "{dano} шкоди кожній істоті: гинуть {n}"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} істота з невідомою витривалістю: вирішіть самі, чи гине вона.",
+		"few": "{n} істоти з невідомою витривалістю: вирішіть самі, чи гинуть вони.",
+		"many": "{n} істот з невідомою витривалістю: вирішіть самі, чи гинуть вони.",
+		"other": "{n} істоти з невідомою витривалістю: вирішіть самі, чи гинуть вони."
+	}
 }

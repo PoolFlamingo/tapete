@@ -29,7 +29,7 @@
 
 use std::collections::BTreeMap;
 
-use super::amenaza::{indestructible, peso, protegida, tipos};
+use super::amenaza::{indestructible, peso, protegida, resistencia, tipos};
 use super::cartas::{todas, CartaDelFantasma};
 use super::{CartaFantasma, Explicacion, Intensidad, ReaccionSparring, TipoReaccion};
 use crate::accion::{Accion, Actor, Cambio, Evento};
@@ -467,23 +467,37 @@ impl Contexto<'_> {
         }
         let pagables = self.pagables(TipoReaccion::Barrer);
         let f = *una(self.azar, &pagables)?;
-        // Lo indestructible se queda si el barrido destruye (no si exilia).
+        // Lo indestructible se queda si el barrido destruye (no si exilia;
+        // el daño tampoco lo mata, aunque luego exilie lo que muere).
+        let mut a_mano = 0usize;
         let objetivo: Vec<IdCarta> = todas
             .iter()
             .copied()
             .filter(|id| {
-                f.exilia
-                    || self
-                        .p
-                        .cartas
-                        .get(id)
-                        .is_some_and(|c| !indestructible(&c.origen.info, Some(c)))
+                let Some(c) = self.p.cartas.get(id) else {
+                    return false;
+                };
+                if (!f.exilia || f.dano.is_some()) && indestructible(&c.origen.info, Some(c)) {
+                    return false;
+                }
+                match f.dano {
+                    None => true,
+                    // Un barrido de daño: solo lo que no lo aguanta. Sin
+                    // resistencia que se sepa, no se toca: lo resuelve el jugador.
+                    Some(n) => match resistencia(c) {
+                        Some(r) => r <= n,
+                        None => {
+                            a_mano += 1;
+                            false
+                        }
+                    },
+                }
             })
             .collect();
-        if objetivo.is_empty() {
+        if objetivo.is_empty() && a_mano == 0 {
             return None;
         }
-        Some(self.reaccion(
+        let mut r = self.reaccion(
             TipoReaccion::Barrer,
             objetivo,
             f,
@@ -491,6 +505,11 @@ impl Contexto<'_> {
             prob,
             None,
             Some((todas.len(), mult)),
-        ))
+        );
+        if let Some(n) = f.dano {
+            r.por_que.params.insert("dano".into(), n.to_string());
+            r.por_que.params.insert("aMano".into(), a_mano.to_string());
+        }
+        Some(r)
     }
 }

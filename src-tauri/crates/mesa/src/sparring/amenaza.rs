@@ -148,6 +148,42 @@ pub fn peso(info: &InfoCarta, nombre: &str, es_ficha: bool) -> f64 {
     p.min(2.5)
 }
 
+/// La resistencia de una carta del campo ahora: la impresa (un número; `*`
+/// o `1+*` no se saben), con los contadores `+X/+Y`/`-X/-Y` y los cambios
+/// de F/R; la fija lo tapa todo. Boca abajo, 2/2. `None` si no se sabe.
+pub fn resistencia(c: &Carta) -> Option<i32> {
+    if let Some((_, r)) = c.pt.fijo {
+        return Some(r);
+    }
+    let base = if c.boca_abajo {
+        2
+    } else {
+        c.origen
+            .info
+            .resistencia
+            .as_deref()?
+            .trim()
+            .parse::<i32>()
+            .ok()?
+    };
+    let contadores: i32 = c
+        .contadores
+        .iter()
+        .filter_map(|(tipo, n)| {
+            let t = tipo.strip_prefix('~').unwrap_or(tipo);
+            let (_, r) = t.split_once('/')?;
+            let signo = match r.chars().next()? {
+                '+' => 1,
+                '-' => -1,
+                _ => return None,
+            };
+            let v: i32 = r.get(1..)?.parse().ok()?;
+            t.starts_with(['+', '-']).then_some(signo * v * n)
+        })
+        .sum();
+    Some(base + contadores + c.pt.otros.1 + c.pt.hasta_fin_de_turno.1)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

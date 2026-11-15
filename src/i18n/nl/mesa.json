@@ -1334,5 +1334,13 @@
 	"Invitar": "Uitnodigen",
 	"Invitado": "Uitgenodigd",
 	"Elige un deck en la lista para unirte a la partida.": "Kies een deck in de lijst om mee te doen.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Kies een deck in de lijst om het potje te maken en {apodo} uit te nodigen."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Kies een deck in de lijst om het potje te maken en {apodo} uit te nodigen.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} schade aan elk wezen: {n} sterft",
+		"other": "{dano} schade aan elk wezen: {n} sterven"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} wezen met onbekende verdediging: jij beslist of het sterft.",
+		"other": "{n} wezens met onbekende verdediging: jij beslist of ze sterven."
+	}
 }

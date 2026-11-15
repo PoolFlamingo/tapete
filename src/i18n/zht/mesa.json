@@ -1279,5 +1279,7 @@
 	"Invitar": "邀請",
 	"Invitado": "已邀請",
 	"Elige un deck en la lista para unirte a la partida.": "在列表中選擇一副套牌即可加入對局。",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "在列表中選擇一副套牌，即可建立對局並邀請 {apodo}。"
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "在列表中選擇一副套牌，即可建立對局並邀請 {apodo}。",
+	"{dano} de daño a cada criatura: caen {n}": "對每個生物造成 {dano} 點傷害：{n} 個死去",
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": "{n} 個防禦力未知的生物：由你決定它們是否死去。"
 }

@@ -38,6 +38,10 @@ export function titulo(r: ReaccionSparring, objetivo: string, t: T): string {
 		case "sacrificio":
 			return t("Te obliga a sacrificar una criatura");
 		case "barrer":
+			// Un barrido de daño: solo caen las que no lo aguantan.
+			if (r.porQue.params.dano !== undefined) {
+				return t("{dano} de daño a cada criatura: caen {n}", { dano: r.porQue.params.dano, n });
+			}
 			return r.exilia
 				? t("Exilia tus {n} criaturas", { n })
 				: t("Destruye tus {n} criaturas", { n });
@@ -53,11 +57,17 @@ export function porQue(e: Explicacion, t: T): string {
 				"La ronda {ronda} está en el {ritmo} % del pico de la interacción, y {carta} pesa {peso}× como amenaza.",
 				p,
 			);
-		case "barrer":
-			return t(
+		case "barrer": {
+			const base = t(
 				"La ronda {ronda} está en el {ritmo} % del pico de los barridos, y tienes {n} criaturas en el campo.",
 				{ ...p, n: Number(p.criaturas ?? 0) },
 			);
+			// Las de resistencia `*` no las toca: las resuelve el jugador.
+			const aMano = Number(p.aMano ?? 0);
+			return aMano > 0
+				? `${base} ${t("{n} criaturas con resistencia desconocida: decide tú si caen.", { n: aMano })}`
+				: base;
+		}
 		default:
 			return t(
 				"La ronda {ronda} está en el {ritmo} % del pico de las eliminaciones, y {carta} pesa {peso}× como amenaza.",

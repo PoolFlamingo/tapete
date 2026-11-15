@@ -1353,5 +1353,15 @@
 	"Invitar": "Inviter",
 	"Invitado": "Invité",
 	"Elige un deck en la lista para unirte a la partida.": "Choisissez un deck dans la liste pour rejoindre la partie.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Choisissez un deck dans la liste pour créer la partie et inviter {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Choisissez un deck dans la liste pour créer la partie et inviter {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} blessures à chaque créature : {n} meurt",
+		"many": "{dano} blessures à chaque créature : {n} meurent",
+		"other": "{dano} blessures à chaque créature : {n} meurent"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} créature d'endurance inconnue : à vous de décider si elle meurt.",
+		"many": "{n} créatures d'endurance inconnue : à vous de décider si elles meurent.",
+		"other": "{n} créatures d'endurance inconnue : à vous de décider si elles meurent."
+	}
 }

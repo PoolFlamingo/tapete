@@ -134,6 +134,11 @@
 		"many": "{c}: {n} cartas, {p} símbolos de maná",
 		"other": "{c}: {n} cartas, {p} símbolos de maná"
 	},
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} de daño a cada criatura: cae {n}",
+		"many": "{dano} de daño a cada criatura: caen {n}",
+		"other": "{dano} de daño a cada criatura: caen {n}"
+	},
 	"{f} ({n} cartas)": {
 		"one": "{f} ({n} carta)",
 		"many": "{f} ({n} cartas)",
@@ -233,6 +238,11 @@
 		"one": "{n} carta · {p} hojas",
 		"many": "{n} cartas · {p} hojas",
 		"other": "{n} cartas · {p} hojas"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} criatura con resistencia desconocida: decide tú si cae.",
+		"many": "{n} criaturas con resistencia desconocida: decide tú si caen.",
+		"other": "{n} criaturas con resistencia desconocida: decide tú si caen."
 	},
 	"{n} criaturas de fuerza {f}": {
 		"one": "{n} criatura de fuerza {f}",

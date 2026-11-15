@@ -1349,5 +1349,15 @@
 	"Invitar": "Invită",
 	"Invitado": "Invitat",
 	"Elige un deck en la lista para unirte a la partida.": "Alege un pachet din listă ca să intri în partidă.",
-	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Alege un pachet din listă ca să creezi partida și să-l inviți pe {apodo}."
+	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "Alege un pachet din listă ca să creezi partida și să-l inviți pe {apodo}.",
+	"{dano} de daño a cada criatura: caen {n}": {
+		"one": "{dano} daune fiecărei creaturi: moare {n}",
+		"few": "{dano} daune fiecărei creaturi: mor {n}",
+		"other": "{dano} daune fiecărei creaturi: mor {n}"
+	},
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
+		"one": "{n} creatură cu rezistență necunoscută: tu decizi dacă moare.",
+		"few": "{n} creaturi cu rezistență necunoscută: tu decizi dacă mor.",
+		"other": "{n} de creaturi cu rezistență necunoscută: tu decizi dacă mor."
+	}
 }

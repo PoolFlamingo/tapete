@@ -820,7 +820,8 @@
 		"mv": 9,
 		"tipo": "barrer",
 		"responde": ["criatura"],
-		"paga": 3
+		"paga": 3,
+		"dano": 13
 	},
 	{
 		"nombre": "Austere Command",
@@ -895,7 +896,8 @@
 		"mv": 3,
 		"tipo": "barrer",
 		"responde": ["criatura"],
-		"exilia": true
+		"exilia": true,
+		"dano": 3
 	},
 	{
 		"nombre": "Rout",
