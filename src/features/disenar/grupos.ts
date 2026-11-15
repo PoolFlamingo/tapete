@@ -5,13 +5,16 @@ import { duplicar } from "@/lib/deck-ops";
 
 /**
  * Las cartas del deck agrupadas como se diseñan: todas las copias de la misma
- * carta de Scryfall juntas (un diseño se aplica a todas, salvo «solo esta
- * copia»). Las propias sin vincular van sueltas y no se pueden diseñar.
+ * carta de Scryfall (o de la misma ficha de Cockatrice) juntas (un diseño se
+ * aplica a todas, salvo «solo esta copia»). Las propias sin vincular van
+ * sueltas y no se pueden diseñar.
  */
 export type Grupo = {
 	clave: string;
-	/** La carta de Scryfall (`null` = propia sin vincular). */
+	/** La carta de Scryfall (`null` = propia sin vincular o vinculada a otra fuente). */
 	scryfallId: string | null;
+	/** Vinculada con una carta (de Scryfall o de otra fuente): se puede diseñar. */
+	vinculada: boolean;
 	cartas: DeckCard[];
 };
 
@@ -27,15 +30,28 @@ export function scryfallDe(c: DeckCard): string | null {
 	}
 }
 
+/**
+ * La carta de otra fuente (`cockatrice:<id>`) de una propia vinculada a una
+ * ficha que Scryfall no tiene.
+ */
+export function externaDe(c: DeckCard): string | null {
+	if (c.source.kind !== "custom" || c.source.scryfallId || !c.source.externa) return null;
+	return `${c.source.externa.fuente}:${c.source.externa.id}`;
+}
+
+/** ¿Se puede diseñar? Vinculada con una carta de Scryfall o de otra fuente. */
+export const disenable = (c: DeckCard) => scryfallDe(c) !== null || externaDe(c) !== null;
+
 export function agrupar(cartas: DeckCard[]): Grupo[] {
 	const grupos = new Map<string, Grupo>();
 	for (const c of cartas) {
 		if (c.source.kind === "blank") continue;
 		const id = scryfallDe(c);
-		const clave = id ? `s:${id}` : `c:${c.id}`;
+		const externa = id ? null : externaDe(c);
+		const clave = id ? `s:${id}` : externa ? `e:${externa}` : `c:${c.id}`;
 		const g = grupos.get(clave);
 		if (g) g.cartas.push(c);
-		else grupos.set(clave, { clave, scryfallId: id, cartas: [c] });
+		else grupos.set(clave, { clave, scryfallId: id, vinculada: !!(id || externa), cartas: [c] });
 	}
 	return [...grupos.values()];
 }
@@ -66,7 +82,7 @@ export function vecina(
 export type EstadoDiseno = "sinVincular" | "sinDiseno" | "borrador" | "listo";
 
 export function estadoDe(g: Grupo): EstadoDiseno {
-	if (!g.scryfallId) return "sinVincular";
+	if (!g.vinculada) return "sinVincular";
 	const d = g.cartas[0]?.design;
 	if (!d) return "sinDiseno";
 	return d.status === "ready" ? "listo" : "borrador";

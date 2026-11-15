@@ -11,7 +11,7 @@
 use proxy_core::diseno::borrador::{siguiente_numero, tipo_traducido};
 use proxy_core::diseno::estructura::limpiar;
 use proxy_core::diseno::modelo::*;
-use proxy_core::model::{CardSource, DeckCard};
+use proxy_core::model::{CardSource, DeckCard, FuenteCarta, RefExterna};
 
 use crate::error::{AppError, AppResult, ErrorCode};
 use crate::scryfall::cache;
@@ -47,6 +47,68 @@ pub fn id_scryfall(c: &DeckCard) -> Option<&str> {
         CardSource::Custom { scryfall_id, .. } => scryfall_id.as_deref(),
         CardSource::Blank => None,
     }
+}
+
+/// La carta de otra fuente vinculada a una propia del deck que no tiene una
+/// de Scryfall (una ficha de Cockatrice).
+pub fn ref_externa(c: &DeckCard) -> Option<&RefExterna> {
+    match &c.source {
+        CardSource::Custom {
+            scryfall_id: None,
+            externa,
+        } => externa.as_ref(),
+        _ => None,
+    }
+}
+
+/// La instantánea de una ficha de Cockatrice (Scryfall no la tiene): su
+/// nombre, tipo, texto y F/R en inglés, con el español y los demás idiomas
+/// marcados como sin texto oficial (avisa y se escriben a mano).
+pub fn datos_cockatrice(
+    f: &crate::fuentes::cockatrice::FichaCockatrice,
+    lang: DesignLang,
+    ahora: i64,
+) -> CardData {
+    let (power, toughness) = match f.fr.as_deref().and_then(|fr| fr.split_once('/')) {
+        Some((p, t)) => (Some(p.trim().to_string()), Some(t.trim().to_string())),
+        None => (None, None),
+    };
+    let colores: Vec<String> = f
+        .colores
+        .chars()
+        .filter(|c| "WUBRG".contains(*c))
+        .map(String::from)
+        .collect();
+    let en = ScryCard {
+        name: f.nombre.clone(),
+        lang: "en".into(),
+        set: f
+            .imagenes
+            .first()
+            .map(|(s, _)| s.to_lowercase())
+            .unwrap_or_default(),
+        layout: "token".into(),
+        type_line: Some(f.linea_de_tipo()),
+        oracle_text: Some(f.texto.clone()),
+        rarity: Some("common".into()),
+        colors: colores.clone(),
+        color_identity: colores,
+        power,
+        toughness,
+        ..ScryCard::default()
+    };
+    let mut d = datos(&en, None, ahora);
+    // Sin texto, tampoco le falta el español.
+    d.sin_texto_es = !f.texto.trim().is_empty();
+    if !matches!(lang, DesignLang::Es | DesignLang::En) {
+        anadir_idioma(&mut d, &en, lang, None);
+    }
+    d.scryfall_id = String::new();
+    d.externa = Some(RefExterna {
+        fuente: FuenteCarta::Cockatrice,
+        id: f.id.clone(),
+    });
+    d
 }
 
 /// La carta con los campos del editor: de la caché si los tiene; si no, se
@@ -276,6 +338,7 @@ pub fn datos(en: &ScryCard, es: Option<&ScryCard>, ahora: i64) -> CardData {
         hand_modifier: en.hand_modifier.clone(),
         life_modifier: en.life_modifier.clone(),
         meld_arriba: None,
+        externa: None,
         fetched_at: ahora,
     }
 }
@@ -533,6 +596,38 @@ mod tests {
 
     fn dusk_es() -> ScryCard {
         serde_json::from_str(include_str!("../scryfall/fixtures/dusk-dawn-es.json")).unwrap()
+    }
+
+    #[test]
+    fn una_ficha_de_cockatrice_da_datos_para_disenar() {
+        let f = crate::fuentes::cockatrice::FichaCockatrice {
+            id: "ba15".into(),
+            nombre: "Kelp".into(),
+            tipo: "Creature — Plant Wall".into(),
+            texto: "Defender".into(),
+            fr: Some("0/1".into()),
+            colores: "U".into(),
+            imagenes: vec![("ME2".into(), "https://x/kelp.jpg".into())],
+            creadores: vec!["Wall of Kelp".into()],
+        };
+        let d = datos_cockatrice(&f, DesignLang::Fr, 1);
+        assert!(d.scryfall_id.is_empty());
+        assert_eq!(d.clave(), "cockatrice:ba15");
+        assert!(d.es_ficha());
+        assert_eq!(
+            (d.colors.clone(), d.set.as_str()),
+            (vec!["U".to_string()], "me2")
+        );
+        let cara = &d.faces[0];
+        assert_eq!(cara.type_line.en, "Token Creature — Plant Wall");
+        assert_eq!(cara.rules.en, "Defender");
+        assert_eq!(
+            (cara.power.as_deref(), cara.toughness.as_deref()),
+            (Some("0"), Some("1"))
+        );
+        // Sin impresiones en otros idiomas: avisa y se escriben a mano.
+        assert!(d.sin_texto_es && d.sin_texto_en(DesignLang::Fr));
+        assert!(d.tiene_idioma(DesignLang::Fr));
     }
 
     #[test]

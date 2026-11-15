@@ -31,7 +31,7 @@ export function TraduccionSugerida({
 	const lang = useDeck((st) => st.deck?.settings.designLang ?? "es");
 	const [s, setS] = useState<Sugerencia | null>(null);
 	const [buscando, setBuscando] = useState(false);
-	const clave = `${design.card.scryfallId}:${cara}:${lang}`;
+	const clave = `${design.card.scryfallId || design.card.externa?.id}:${cara}:${lang}`;
 	const claveActual = useRef(clave);
 	// Al cambiar de carta o de cara, la sugerencia de antes ya no vale.
 	useEffect(() => {

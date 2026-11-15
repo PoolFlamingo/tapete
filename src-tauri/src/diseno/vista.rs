@@ -334,9 +334,16 @@ pub fn aplicar(
         }
     };
     let mut nueva = card.clone();
-    nueva.source = CardSource::Custom {
-        scryfall_id: Some(d.card.scryfall_id.clone()),
-        externa: None,
+    // Una ficha de otra fuente sigue vinculada a ella (sin id de Scryfall).
+    nueva.source = match &d.card.externa {
+        Some(r) if d.card.scryfall_id.is_empty() => CardSource::Custom {
+            scryfall_id: None,
+            externa: Some(r.clone()),
+        },
+        _ => CardSource::Custom {
+            scryfall_id: Some(d.card.scryfall_id.clone()),
+            externa: None,
+        },
     };
     nueva.front = Some(front);
     nueva.back = back;
@@ -389,7 +396,7 @@ pub fn renumerar(
         if d.footer.number_manual {
             continue;
         }
-        let clave = d.card.scryfall_id.clone();
+        let clave = d.card.clave();
         let num = match asignados.get(&clave) {
             Some(x) => x.clone(),
             None => {

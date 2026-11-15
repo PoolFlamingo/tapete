@@ -139,7 +139,7 @@ export function DisenarScreen() {
 		setSoloEsta(useUi.getState().disenarCopias);
 	}, [grupo?.clave]);
 
-	const elegibles = useMemo(() => grupos.filter((g) => g.scryfallId), [grupos]);
+	const elegibles = useMemo(() => grupos.filter((g) => g.vinculada), [grupos]);
 	// Sin carta elegida (se entra por la barra), la primera que se puede diseñar.
 	useEffect(() => {
 		if (!grupo && elegibles[0]?.cartas[0]) useUi.getState().disenar(elegibles[0].cartas[0].id);

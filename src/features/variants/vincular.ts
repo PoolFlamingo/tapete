@@ -1,7 +1,7 @@
 import type { CardSource } from "@/bindings/CardSource";
 import type { DeckCard } from "@/bindings/DeckCard";
 import type { FuenteCarta } from "@/bindings/FuenteCarta";
-import { quitarDiseno, scryfallDe } from "@/features/disenar/grupos";
+import { externaDe, quitarDiseno, scryfallDe } from "@/features/disenar/grupos";
 import { call } from "@/lib/ipc";
 import { useDeck } from "@/stores/deck-store";
 
@@ -23,7 +23,7 @@ export type Destino = string | { id: string; fuente?: FuenteCarta | null };
  */
 export function cambiaDeCarta(c: DeckCard, destino: Destino): boolean {
 	const d = typeof destino === "string" ? { id: destino, fuente: null } : destino;
-	return !!d.fuente || scryfallDe(c) !== d.id;
+	return d.fuente ? externaDe(c) !== `${d.fuente}:${d.id}` : scryfallDe(c) !== d.id;
 }
 
 /**

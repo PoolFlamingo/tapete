@@ -102,6 +102,20 @@ describe("agrupar", () => {
 		expect(agrupar([])).toEqual([]);
 	});
 
+	it("las fichas de Cockatrice vinculadas se juntan por ficha y se pueden diseñar", () => {
+		const kelp = { kind: "custom", externa: { fuente: "cockatrice", id: "k1" } } as const;
+		const gs = agrupar([
+			carta("a", null, { source: kelp }),
+			carta("b", null, { source: kelp }),
+			carta("c", null, { source: { kind: "custom", externa: { fuente: "cockatrice", id: "k2" } } }),
+		]);
+		expect(gs.map((g) => [g.clave, g.scryfallId, g.vinculada, g.cartas.length])).toEqual([
+			["e:cockatrice:k1", null, true, 2],
+			["e:cockatrice:k2", null, true, 1],
+		]);
+		expect(estadoDe(gs[0])).toBe("sinDiseno");
+	});
+
 	it("un token y una carta con el mismo id de Scryfall van juntos", () => {
 		const gs = agrupar([
 			carta("a", "s1"),
@@ -129,7 +143,9 @@ describe("estadoDe", () => {
 	});
 
 	it("un grupo sin cartas (no debería pasar) no revienta", () => {
-		expect(estadoDe({ clave: "s:x", scryfallId: "x", cartas: [] })).toBe("sinDiseno");
+		expect(estadoDe({ clave: "s:x", scryfallId: "x", vinculada: true, cartas: [] })).toBe(
+			"sinDiseno",
+		);
 	});
 });
 

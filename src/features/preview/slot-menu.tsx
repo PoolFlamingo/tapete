@@ -16,7 +16,7 @@ import {
 	ContextMenuSubTrigger,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { quitarDiseno, scryfallDe } from "@/features/disenar/grupos";
+import { quitarDiseno, disenable as sePuedeDisenar } from "@/features/disenar/grupos";
 import { IDIOMAS } from "@/features/library/piezas";
 import { MARCAS } from "@/lib/cartas";
 import { useDeck } from "@/stores/deck-store";
@@ -58,7 +58,7 @@ export function SlotMenu({ id, children }: { id: string; children: ReactNode }) 
 	const varias = useUi((s) => s.seleccion.length > 1 && s.seleccion.includes(id));
 	const esScryfall = carta?.source.kind === "scryfall" || carta?.source.kind === "token";
 	const fijada = carta?.locked ?? false;
-	const disenable = !!carta && scryfallDe(carta) !== null;
+	const disenable = !!carta && sePuedeDisenar(carta);
 	const quitarDisenos = () => {
 		const quitar = new Set(ids());
 		useDeck.getState().setCartas((cs) => quitarDiseno(cs, quitar));

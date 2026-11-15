@@ -72,7 +72,7 @@ export function useBorrador(
 		const mio = ++turno.current;
 		setHuella(null);
 		setAvisos([]);
-		if (!grupo || !principal || !grupo.scryfallId) {
+		if (!grupo || !principal || !grupo.vinculada) {
 			setDesign(null);
 			setOriginal(null);
 			return;

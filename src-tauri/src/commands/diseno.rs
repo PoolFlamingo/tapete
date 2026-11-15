@@ -25,13 +25,26 @@ pub async fn design_draft(
     collection: Option<String>,
     lang: Option<DesignLang>,
 ) -> AppResult<DesignDraft> {
-    let id = borrador::id_scryfall(&card)
-        .ok_or_else(|| AppError::new(ErrorCode::InvalidInput).with("motivo", "sin_vincular"))?
-        .to_string();
     let lang = lang.unwrap_or_default();
-    let api = state.scryfall.clone();
-    let en = borrador::carta_completa(&state.db, api.as_ref(), &id).await?;
-    let datos = borrador::datos_de(&state.db, api.as_ref(), &en, lang).await?;
+    let datos = if let Some(id) = borrador::id_scryfall(&card) {
+        let api = state.scryfall.clone();
+        let en = borrador::carta_completa(&state.db, api.as_ref(), id).await?;
+        borrador::datos_de(&state.db, api.as_ref(), &en, lang).await?
+    } else if let Some(r) = borrador::ref_externa(&card) {
+        // Una ficha que Scryfall no tiene: los datos, de su fuente.
+        match r.fuente {
+            proxy_core::model::FuenteCarta::Cockatrice => {
+                let c = crate::fuentes::cockatrice::catalogo(&state.externo, &state.paths.cache)
+                    .await?;
+                let f = c
+                    .por_id(&r.id)
+                    .ok_or_else(|| AppError::new(ErrorCode::NotFound).with("ficha", &r.id))?;
+                borrador::datos_cockatrice(f, lang, crate::store::ahora_ms())
+            }
+        }
+    } else {
+        return Err(AppError::new(ErrorCode::InvalidInput).with("motivo", "sin_vincular"));
+    };
     let coleccion = match &collection {
         Some(c) => colecciones::get(&state.db, c)?,
         None => None,

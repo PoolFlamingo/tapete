@@ -25,7 +25,15 @@ pub fn le_falta(d: &CardDesign, lang: DesignLang) -> bool {
 /// El diseño con `lang` completo.
 async fn completar(estado: &AppState, d: &CardDesign, lang: DesignLang) -> AppResult<CardDesign> {
     let mut d = d.clone();
-    if !d.card.tiene_idioma(lang) {
+    if !d.card.tiene_idioma(lang) && d.card.externa.is_some() {
+        // Una ficha que Scryfall no tiene: no hay impresión que bajar; el
+        // idioma queda sin texto oficial (y el tipo, de las tablas).
+        let sola = crate::scryfall::models::ScryCard {
+            layout: d.card.layout.clone(),
+            ..Default::default()
+        };
+        borrador::anadir_idioma(&mut d.card, &sola, lang, None);
+    } else if !d.card.tiene_idioma(lang) {
         let api = estado.scryfall.clone();
         let en = borrador::carta_completa(&estado.db, api.as_ref(), &d.card.scryfall_id).await?;
         let p = borrador::impresion(&estado.db, api.as_ref(), &en, lang).await?;

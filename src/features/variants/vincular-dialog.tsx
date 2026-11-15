@@ -22,7 +22,7 @@ import { call } from "@/lib/ipc";
 import { useDeck } from "@/stores/deck-store";
 import { useUi } from "@/stores/ui-store";
 import { RejillaCartas } from "./rejilla-cartas";
-import { cambiaDeCarta, desvincular, vincular } from "./vincular";
+import { cambiaDeCarta, desvincular, estaVinculada, vincular } from "./vincular";
 
 /**
  * «Vincular con Scryfall»: decir qué carta real es una imagen propia. Se
@@ -42,7 +42,7 @@ export function VincularDialog() {
 function Contenido({ carta }: { carta: DeckCard }) {
 	const { t, mensaje } = useLang();
 	const ajustes = useDeck((s) => s.deck?.settings);
-	const vinculada = carta.source.kind === "custom" ? carta.source.scryfallId : undefined;
+	const vinculada = estaVinculada(carta);
 	const [q, setQ] = useState(carta.meta.name);
 	const [resultados, setResultados] = useState<CardSummary[] | null>(null);
 	const [leido, setLeido] = useState<string[]>([]);

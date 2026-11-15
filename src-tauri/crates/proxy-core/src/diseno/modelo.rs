@@ -535,6 +535,12 @@ pub struct CardData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub meld_arriba: Option<bool>,
+    /// Una carta que Scryfall no tiene (una ficha de Cockatrice): de dónde
+    /// salen los datos. Entonces `scryfall_id` va vacío. Sin ella no se
+    /// escribe, así los diseños de siempre no cambian de huella.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub externa: Option<crate::model::RefExterna>,
     /// Cuándo se tomó la instantánea (ms desde 1970).
     #[ts(type = "number")]
     pub fetched_at: i64,
@@ -567,6 +573,15 @@ impl FaceData {
 }
 
 impl CardData {
+    /// La carta que es, para juntar las copias: el id de Scryfall o, si no
+    /// lo tiene, el de su fuente (`cockatrice:<id>`).
+    pub fn clave(&self) -> String {
+        match &self.externa {
+            Some(r) if self.scryfall_id.is_empty() => format!("{}:{}", r.fuente.codigo(), r.id),
+            _ => self.scryfall_id.clone(),
+        }
+    }
+
     /// Si el texto de `lang` es el Oracle en inglés porque no hay impresión
     /// en ese idioma (o aún no se ha bajado).
     pub fn sin_texto_en(&self, lang: DesignLang) -> bool {

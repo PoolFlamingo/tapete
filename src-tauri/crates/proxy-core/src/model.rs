@@ -100,6 +100,15 @@ pub enum FuenteCarta {
     Cockatrice,
 }
 
+impl FuenteCarta {
+    /// Como se escribe en el JSON (`cockatrice`).
+    pub fn codigo(self) -> &'static str {
+        match self {
+            FuenteCarta::Cockatrice => "cockatrice",
+        }
+    }
+}
+
 /// Una carta de otra fuente: la fuente y su id allí.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]

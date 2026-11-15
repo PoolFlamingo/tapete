@@ -737,7 +737,13 @@ function PestanaArte({
 					<Icono icon="lucide:clipboard" />
 					{t("Pegar")}
 				</Button>
-				<Button size="sm" variant="outline" onClick={scryfall} disabled={ocupado}>
+				<Button
+					size="sm"
+					variant="outline"
+					onClick={scryfall}
+					// Una ficha que Scryfall no tiene no tiene arte allí.
+					disabled={ocupado || !design.card.scryfallId}
+				>
 					<Icono icon="lucide:sparkles" />
 					{t("Arte de Scryfall")}
 				</Button>
