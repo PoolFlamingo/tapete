@@ -600,9 +600,11 @@ The card data and images come from [Scryfall](https://scryfall.com).
 The editor's original frames come from
 [Card Conjurer](https://github.com/Investigamer/cardconjurer): the app downloads
 them when they are used and does not distribute them.
-The Balatro pack's templates are by the author of the «Balatro Balatrez» deck,
-who shares them publicly; its font is m6x11plus by Daniel Linssen. Balatro is a
-game by LocalThunk. Token data not in Scryfall comes from
+The Balatro pack's original templates and sample cards are by **u/Poke_Hybrids**
+([original post](https://www.reddit.com/r/mtg/comments/1fglapq/balatrothemed_mtg_proxy_deck/)):
+PoolFlamingo integrated them into Tapete but is not their original creator, and
+express permission to redistribute them within Tapete is pending confirmation.
+The pack's font is m6x11plus by Daniel Linssen. Balatro is a game by LocalThunk. Token data not in Scryfall comes from
 [Cockatrice](https://github.com/Cockatrice/Magic-Token), names in other
 languages from [MTGJSON](https://mtgjson.com) and
 [magicthegathering.io](https://magicthegathering.io), the extra colour

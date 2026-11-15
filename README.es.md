@@ -615,9 +615,12 @@ Los datos y las imágenes de las cartas vienen de [Scryfall](https://scryfall.co
 Los marcos originales del editor vienen de
 [Card Conjurer](https://github.com/Investigamer/cardconjurer): la app los
 descarga al usarlos y no los distribuye.
-Las plantillas del pack Balatro son del autor del mazo «Balatro Balatrez», que
-las comparte públicamente; su letra es m6x11plus, de Daniel Linssen. Balatro es
-un juego de LocalThunk. Las fichas que no están en Scryfall vienen de
+Las plantillas y las cartas de ejemplo originales del pack Balatro son de
+**u/Poke_Hybrids** ([publicación original](https://www.reddit.com/r/mtg/comments/1fglapq/balatrothemed_mtg_proxy_deck/)):
+PoolFlamingo las ha integrado en Tapete, pero no es su creador original, y la
+autorización expresa para redistribuirlas dentro de Tapete está pendiente de
+confirmación. La letra del pack es m6x11plus, de Daniel Linssen. Balatro es un
+juego de LocalThunk. Las fichas que no están en Scryfall vienen de
 [Cockatrice](https://github.com/Cockatrice/Magic-Token), los nombres en otros
 idiomas de [MTGJSON](https://mtgjson.com) y
 [magicthegathering.io](https://magicthegathering.io), los temas de color de
