@@ -183,14 +183,6 @@ export function AjustesFinos({
 				sufijo=" mm"
 				onChange={(v) => poner({ rulesBoxHeight: v === 0 ? undefined : v })}
 			/>
-			<FilaDeslizador
-				etiqueta={t("Fondo de la caja de reglas más opaco")}
-				valor={Math.round(valor.rulesBoxOpacity * 100)}
-				min={0}
-				max={100}
-				sufijo="%"
-				onChange={(v) => poner({ rulesBoxOpacity: v / 100 })}
-			/>
 			<FilaInterruptor
 				etiqueta={t("Radio propio de la ilustración")}
 				ayuda={t(
