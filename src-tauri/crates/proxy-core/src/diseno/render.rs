@@ -229,6 +229,34 @@ fn colores_marco(e: &DisenoEfectivo, cara: usize, pack: &Pack) -> (Tonos, Option
     }
 }
 
+/// ¿El marco del estilo es una imagen por paleta (`{color}` en una capa PNG,
+/// como los Original)? Entonces sus piezas dibujadas (la cinta del nombre
+/// original, la corona…) siguen a la imagen y no al degradado automático.
+fn marco_de_imagen(estilo: &EstiloDef) -> bool {
+    estilo
+        .capas
+        .iter()
+        .any(|c| c.png.as_deref().is_some_and(|p| p.contains("{color}")))
+}
+
+/// Como `colores_marco`, sabiendo si el marco es de imagen: ahí una carta de
+/// dos colores en automático va en oro (`clave_marco`), y las piezas SVG
+/// también, para que todo vaya a juego.
+fn colores_marco_en(
+    e: &DisenoEfectivo,
+    cara: usize,
+    pack: &Pack,
+    de_imagen: bool,
+) -> (Tonos, Option<Tonos>) {
+    if de_imagen
+        && matches!(e.frame.color, FrameColor::Auto)
+        && matches!(eleccion_marco(e, cara), Eleccion::Dos(..))
+    {
+        return (paleta(pack, Palette::Gold), None);
+    }
+    colores_marco(e, cara, pack)
+}
+
 /// La paleta de los marcos de imagen (`{color}` de las capas PNG). Las
 /// cartas de dos colores van en oro, como las multicolor de verdad.
 pub(super) fn clave_marco(e: &DisenoEfectivo, cara: usize) -> &'static str {
@@ -2525,7 +2553,7 @@ pub(super) fn pintar_cara(
     }
 
     let datos = d.card.faces.get(cara).cloned().unwrap_or_default();
-    let (a, b) = colores_marco(e, cara, rec.pack);
+    let (a, b) = colores_marco_en(e, cara, rec.pack, marco_de_imagen(&estilo));
     let mezcla = b.as_ref().map_or(a, |b| Tonos::mezcla(&a, b));
 
     // La caja de reglas: la del estilo, o la que pida el diseño.
@@ -3909,6 +3937,27 @@ mod tests {
         };
         assert_eq!(clave_marco(&e, 0), "R");
         assert_eq!(extra_marco(&e), ExtraMarco::Degradado("U"));
+    }
+
+    #[test]
+    fn en_los_marcos_de_imagen_las_piezas_dibujadas_van_a_juego() {
+        let p = casa();
+        // Dos colores en automático: el marco de imagen va en oro, y la cinta
+        // y lo demás dibujado también (no el degradado).
+        let e = carta(&["W", "U"], "Creature — Wall");
+        let (a, b) = colores_marco_en(&e, 0, &p, true);
+        assert_eq!((a.medio, b.is_none()), (medio(&p, "gold"), true));
+        // En los marcos dibujados, el degradado de siempre.
+        let (_, b) = colores_marco_en(&e, 0, &p, false);
+        assert!(b.is_some());
+        // Un degradado elegido a mano se respeta (la imagen se funde igual).
+        let mut e = e;
+        e.frame.color = FrameColor::Gradient {
+            a: Palette::W,
+            b: Palette::U,
+        };
+        let (_, b) = colores_marco_en(&e, 0, &p, true);
+        assert!(b.is_some());
     }
 
     #[test]
