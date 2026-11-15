@@ -12,6 +12,7 @@ import { cargarDiccionario } from "@/i18n/cargar";
 import { enlazarAtras } from "@/lib/atras";
 import { engancharCicloDeVida } from "@/lib/ciclo-de-vida";
 import { formatoActual } from "@/lib/formato";
+import { iniciarIconoVivo } from "@/lib/icono-vivo";
 import { call } from "@/lib/ipc";
 import { ponerTemaAntesDeMontar } from "@/lib/tema-inicial";
 import { prepararTemasInstalados } from "@/lib/temas-instalados";
@@ -55,7 +56,11 @@ formatoActual();
 call("app_plataforma")
 	.then((p) => {
 		// Escritorio: F11 y los controles de la ventana a pantalla completa.
-		if (p === "escritorio") iniciarVentana();
+		if (p === "escritorio") {
+			iniciarVentana();
+			// El icono de la barra de tareas, del color del tema.
+			iniciarIconoVivo();
+		}
 		if (p !== "android" && p !== "ios") return;
 		engancharCicloDeVida();
 		if (p === "android") return enlazarAtras();

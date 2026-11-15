@@ -98,3 +98,18 @@ mod tests {
         assert_eq!(fallo.map_err(|e| e.code), Err(ErrorCode::Internal));
     }
 }
+
+/// El icono de la app con los colores del tema (`icono.rs`): lo manda la
+/// pantalla cada vez que cambia el tema (`lib/icono-vivo.ts`).
+#[tauri::command]
+pub async fn app_icono(
+    app: tauri::AppHandle,
+    colores: crate::icono::ColoresIconoHex,
+) -> AppResult<()> {
+    tauri::async_runtime::spawn_blocking(move || {
+        use tauri::Manager;
+        crate::icono::aplicar(&app, &app.state::<crate::state::AppState>(), &colores)
+    })
+    .await
+    .map_err(|e| AppError::new(ErrorCode::Internal).with("detalle", e))?
+}

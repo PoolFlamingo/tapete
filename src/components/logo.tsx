@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
  * primario del tema elegido (Pablo, 10/11/2026): con el tema verde de fábrica es el verde
  * del icono y con uno naranja, naranja, para que el logo no desentone con el resto. El
  * degradado oscurece el primario hacia abajo, como el del icono, y la carta es casi
- * blanca con un toque del primario. El icono de la app instalada (el de la tienda, el
- * del escritorio) es una imagen y se queda verde.
+ * blanca con un toque del primario. El icono de la barra de tareas (y, en Linux, el del
+ * menú y el escritorio) sigue estos mismos colores: `lib/icono-vivo.ts`.
  */
 export function Logo({ className }: { className?: string }) {
 	return (

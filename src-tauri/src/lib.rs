@@ -20,6 +20,7 @@ pub mod enlace;
 pub mod error;
 pub mod fichero;
 pub mod fuentes;
+pub mod icono;
 pub mod iconos;
 pub mod jobs;
 pub mod mesa;
@@ -148,6 +149,8 @@ pub fn run() {
             let cofre = android::cofre(app.handle());
             let estado =
                 state::AppState::open_con(paths, cofre.as_deref()).map_err(|e| e.to_string())?;
+            // El icono de la ventana con el color del tema que había al cerrar.
+            icono::al_arrancar(app.handle(), &estado);
             app.manage(estado);
             // Amigos y mensajes: solo si la persona aceptó usar el servidor (D0).
             amigos::sincronizar::arrancar(app.handle().clone());
@@ -190,6 +193,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::sistema::ping,
+            commands::sistema::app_icono,
             commands::amigos::amigos_estado,
             commands::amigos::amigos_qr,
             commands::amigos::amigos_activar,

@@ -19,6 +19,7 @@ import type { CardSummary } from "@/bindings/CardSummary";
 import type { CartaDeLista } from "@/bindings/CartaDeLista";
 import type { ColeccionIconos } from "@/bindings/ColeccionIconos";
 import type { Collection } from "@/bindings/Collection";
+import type { ColoresIconoHex } from "@/bindings/ColoresIconoHex";
 import type { ConfigMesa } from "@/bindings/ConfigMesa";
 import type { DatosIcono } from "@/bindings/DatosIcono";
 import type { DecisionPasar } from "@/bindings/DecisionPasar";
@@ -116,6 +117,7 @@ export interface Commands {
 	ping_error: { args: Record<string, never>; result: null };
 	app_plataforma: { args: Record<string, never>; result: Plataforma };
 	app_salir: { args: Record<string, never>; result: null };
+	app_icono: { args: { colores: ColoresIconoHex }; result: null };
 	app_pantalla_completa: { args: { si: boolean }; result: null };
 	app_compartir_texto: { args: { texto: string }; result: null };
 	update_status: { args: Record<string, never>; result: ActualizacionEstado };
