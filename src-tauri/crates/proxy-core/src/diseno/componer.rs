@@ -109,17 +109,20 @@ fn lienzo_compuesto(ancho: u32, alto: u32, capa: Option<usize>) -> Result<Pixmap
 fn estilo(
     rec: &Recursos<'_>,
     e: &DisenoEfectivo,
+    lang: DesignLang,
     layout: Option<&str>,
     avisos: &mut Vec<Aviso>,
 ) -> Result<EstiloDef, DisenoError> {
-    estilo_de_cara(rec, e, 0, layout, avisos)
+    estilo_de_cara(rec, e, 0, lang, layout, avisos)
 }
 
-/// El estilo de una cara (las condiciones del pack miran esa cara).
+/// El estilo de una cara (las condiciones del pack miran esa cara, en el
+/// idioma que se pinta).
 fn estilo_de_cara(
     rec: &Recursos<'_>,
     e: &DisenoEfectivo,
     cara: usize,
+    lang: DesignLang,
     layout: Option<&str>,
     avisos: &mut Vec<Aviso>,
 ) -> Result<EstiloDef, DisenoError> {
@@ -128,7 +131,7 @@ fn estilo_de_cara(
         e.design.style,
         e.design.estilo_pack.as_deref(),
         layout,
-        Some(&super::render::hechos_de(e, cara)),
+        Some(&super::render::hechos_de(e, cara, lang)),
         avisos,
     )
 }
@@ -192,7 +195,14 @@ fn cara_simple(
     let d = &e.design;
     let cu = cuerpo(&d.card, cara);
     let mut avisos = Vec::new();
-    let est = estilo_de_cara(rec, e, cara, layout_de_cara(e, cara, cu, maq), &mut avisos)?;
+    let est = estilo_de_cara(
+        rec,
+        e,
+        cara,
+        lang,
+        layout_de_cara(e, cara, cu, maq),
+        &mut avisos,
+    )?;
     let mut o = Opciones::de(cara, cu, ancho, alto);
     // La capa: todo menos la ilustración, sobre transparente.
     o.transparente = capa;
@@ -294,7 +304,7 @@ fn partida(
         }
         let mut av = Vec::new();
         let cu = cuerpo(&e.design.card, cara);
-        let est = estilo(rec, e, None, &mut av)?;
+        let est = estilo(rec, e, lang, None, &mut av)?;
         let mut o = Opciones::de(cara, cu, pw.round() as u32, ph.round() as u32);
         let quitar = capa == Some(cara);
         o.transparente = quitar;
@@ -421,7 +431,7 @@ fn secuela(
     let mut faltan = Vec::new();
     // Arriba: un lienzo de 63 × 51.
     let mut av = Vec::new();
-    let arriba = estilo(rec, e, Some("secuelaArriba"), &mut av)?;
+    let arriba = estilo(rec, e, lang, Some("secuelaArriba"), &mut av)?;
     let [wa, ha] = arriba.tamano.unwrap_or([63.0, 51.0]);
     let alto_a = (aw * ha / wa).round() as u32;
     let mut o = Opciones::de(0, cuerpo(&e.design.card, 0), ancho, alto_a);
@@ -440,7 +450,7 @@ fn secuela(
     faltan.extend(p.faltan);
     // Abajo: un lienzo vertical que se gira.
     let mut av = Vec::new();
-    let abajo = estilo(rec, e, Some("secuelaAbajo"), &mut av)?;
+    let abajo = estilo(rec, e, lang, Some("secuelaAbajo"), &mut av)?;
     let [wb, hb] = abajo.tamano.unwrap_or([33.0, 63.0]);
     let y0 = alto_a as f32;
     let region_h = ah - y0 - 4.6 * k;
@@ -533,7 +543,7 @@ fn flip(
     let mut hueco = None;
     for cara in [0usize, 1] {
         let mut av = Vec::new();
-        let est = estilo(rec, e, Some("flip"), &mut av)?;
+        let est = estilo(rec, e, lang, Some("flip"), &mut av)?;
         let mut o = Opciones::de(cara, Cuerpo::Texto, ancho, alto);
         let quitar = cara == 0 && capa == Some(0);
         o.sin_pie = true;
@@ -577,7 +587,7 @@ fn apaisada(
     capa: Option<usize>,
 ) -> Result<Pieza, DisenoError> {
     let mut av = Vec::new();
-    let est = estilo(rec, e, Some(layout), &mut av)?;
+    let est = estilo(rec, e, lang, Some(layout), &mut av)?;
     // Apaisada: su ancho es el alto de la carta.
     let mut o = Opciones::de(cara, cuerpo(&e.design.card, cara), alto, ancho);
     o.indicador = indicador;
@@ -620,7 +630,7 @@ fn meld_dorso(
     alto: u32,
 ) -> Result<Pieza, DisenoError> {
     let mut av = Vec::new();
-    let est = estilo(rec, e, None, &mut av)?;
+    let est = estilo(rec, e, lang, None, &mut av)?;
     // La fundida: tan ancha como alta es la carta y el doble de alta que ancha.
     let (fw, fh) = (alto, ancho * 2);
     let mut o = Opciones::de(1, cuerpo(&e.design.card, 1), fw, fh);
@@ -844,7 +854,7 @@ fn componer_pieza(
                 "vanguard"
             };
             let mut av = Vec::new();
-            let est = estilo(rec, e, Some(nombre), &mut av)?;
+            let est = estilo(rec, e, lang, Some(nombre), &mut av)?;
             let mut o = Opciones::de(0, Cuerpo::Texto, ancho, alto);
             o.transparente = capa == Some(0);
             o.sin_arte = capa == Some(0);

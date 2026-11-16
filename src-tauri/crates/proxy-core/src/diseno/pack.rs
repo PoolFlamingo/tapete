@@ -163,6 +163,10 @@ pub struct Condicion {
     /// dejando ver la ilustración.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub caja: Option<Vec<String>>,
+    /// La cara lleva texto en la caja (reglas o sabor, en el idioma que se
+    /// pinta): la ficha del Original sin texto se queda sin caja.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reglas: Option<bool>,
 }
 
 /// Lo que se sabe de la carta que se pinta, para las condiciones (`si`).
@@ -181,6 +185,8 @@ pub struct Hechos {
     pub variante: Option<String>,
     /// La caja de reglas del diseño (`auto`, `dark`, `light` o `tint`).
     pub caja: String,
+    /// Hay reglas o sabor que pintar.
+    pub reglas: bool,
 }
 
 impl Condicion {
@@ -194,6 +200,7 @@ impl Condicion {
             && igual(self.emblema, h.emblema)
             && igual(self.basica, h.basica)
             && igual(self.legendaria, h.legendaria)
+            && igual(self.reglas, h.reglas)
             && rango(self.colores, h.colores)
             && rango(self.simbolos, h.simbolos)
             && self.tipo.as_ref().is_none_or(|t| {
@@ -1307,6 +1314,12 @@ pub(crate) mod tests {
             caja: "tint".into(),
             ..Hechos::default()
         }));
+        let sin_texto: Condicion = serde_json::from_str(r#"{"reglas": false}"#).unwrap();
+        assert!(sin_texto.cumple(&Hechos::default()));
+        assert!(!sin_texto.cumple(&Hechos {
+            reglas: true,
+            ..Hechos::default()
+        }));
         let variante: Condicion = serde_json::from_str(r#"{"variante": "sinDados"}"#).unwrap();
         assert!(!variante.cumple(&Hechos::default()));
         assert!(variante.cumple(&Hechos {
@@ -1441,9 +1454,35 @@ pub(crate) mod tests {
             .collect();
         let p = Pack::cargar_con_imagenes(ficheros.clone(), im.clone()).unwrap();
         assert_eq!(p.def.id, "original");
-        for e in ["borderless", "extended", "classic", "fullArt"] {
+        for e in ["borderless", "extended", "classic", "fullArt", "ficha"] {
             p.estilo(e).unwrap();
         }
+        // La ficha es un estilo propio que hereda del despejado.
+        let ficha = p.estilo("ficha").unwrap();
+        assert_eq!(ficha.base.as_deref(), Some("borderless"));
+        assert_eq!(ficha.nombre.len(), 15);
+        // En el despejado, la barra del tipo y la caja van después del
+        // repintado de la ventana: un radio propio repinta los lados también
+        // junto a la barra del tipo (si no, queda la curva de la imagen como
+        // una cuña negra) sin comerse sus extremos.
+        let despejado = p.estilo("borderless").unwrap();
+        let tras = despejado
+            .ventana_arte
+            .as_ref()
+            .and_then(|v| v.repintar_tras)
+            .unwrap();
+        let movidas: Vec<usize> = despejado
+            .capas
+            .iter()
+            .enumerate()
+            .filter(|(_, c)| {
+                c.en.as_ref()
+                    .is_some_and(|h| matches!(&h.y, Valor::Expr(y) if y.contains("yTipo")))
+            })
+            .map(|(i, _)| i)
+            .collect();
+        assert!(!movidas.is_empty());
+        assert!(movidas.iter().all(|i| *i >= tras), "{movidas:?} < {tras}");
         // Las tierras básicas (paisaje) llevan el marco del pack, no el de la
         // casa: la barra de mármol, sin la franja oscura.
         let paisaje = p.estilo("fullArt").unwrap();

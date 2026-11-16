@@ -146,7 +146,11 @@ Los estilos que la app conoce son `borderless` (despejado), `extended`,
   dibujada en una capa de imagen (los marcos Original), `repintar` lleva las
   zonas (`[x, y, ancho, alto]` en mm) donde, con un radio en los ajustes
   finos, se vuelve a pintar la ilustración o el negro encima de esa capa;
-  `repintarTras` dice tras cuántas capas (para no tapar las de encima).
+  `repintarTras` dice tras cuántas capas (para no tapar las de encima). Las
+  zonas se repintan enteras, también junto a la barra del tipo cuando la caja
+  que crece la baja hasta ellas: por eso todo lo que se mueve con `yTipo` (la
+  barra del tipo, la caja) va en las capas de después de `repintarTras`, y
+  sus extremos quedan encima.
 
 Los ajustes finos de una colección o una carta mueven en vertical los huecos
 `titulo`, `coste`, `tipo`, `emblema`, `fr` y `pie`, y el texto de `reglas`;
@@ -197,8 +201,16 @@ tres estilos con el mismo mármol y pergamino:
   con la oscura o la de tinte queda la caja translúcida del marco, con el
   tinte encima, y se sigue viendo la ilustración. El borde de la caja es
   siempre el del marco.
+- **Ficha** (estilo propio `ficha`, `base: "borderless"`): el despejado para
+  las fichas. Las esquinas de abajo de la ventana las pinta el motor
+  (`ventanaArte` con `radio` 3, sin `repintar`), no la imagen, así que en vez
+  de las tiras de las esquinas y la franja de abajo del PNG lleva solo el filo
+  de abajo de la caja. Sin reglas ni sabor (`layoutSi` con `"reglas": false`)
+  usa el layout `sinReglas`: sin caja, con la barra del tipo abajo (a 72,7 mm,
+  como la del paisaje) y la caja de F/R en su sitio, como una tierra básica
+  pero con el título arriba.
 
-Los tres estilos del pack `original` llevan `caja` con `fijaDeSerie`: la caja
+Los estilos de serie del pack `original` llevan `caja` con `fijaDeSerie`: la caja
 mide `altoMax` de serie y solo se adapta a la altura del texto, como en el
 despejado de la casa, si el usuario activa «Altura según el texto». Como la caja
 viene pintada en el PNG con un alto fijo, el pack la rehace en tres trozos con
@@ -368,6 +380,10 @@ Además de `corona`, `fr`, `cinta` y `emblema`:
 | `simbolos` | su coste tiene entre `[min, max]` símbolos. |
 | `variante` | el usuario eligió esa variante. |
 | `caja` | (versión 3) la caja de reglas elegida en el diseño es una de estas: `auto`, `dark`, `light`, `tint`. |
+| `reglas` | la cara lleva (o no) texto en la caja: reglas o, si se enseña, sabor, en el idioma que se pinta. Con `layoutSi`, una carta sin texto se queda sin caja (la ficha del Original). |
+
+`layoutSi` vale también en las fichas cuyo estilo no trae layout `ficha`: se
+pintan con el estilo tal cual, y antes se miran sus reglas.
 
 ### Capas
 

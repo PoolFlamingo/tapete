@@ -800,22 +800,18 @@ fn repintar_ventana(
     radio: f32,
     arte: Option<&ArtePintado>,
     capa: bool,
-    desde_y: f32,
 ) {
     let (w, h) = (l.px.width(), l.px.height());
     let r = radio.clamp(0.0, v.w.min(v.h) / 2.0);
     let (Some(mut zonas), Some(mut dentro)) = (Mask::new(w, h), Mask::new(w, h)) else {
         return;
     };
+    // Las zonas enteras, también junto a la barra del tipo cuando la caja que
+    // crece la baja hasta ellas: la curva de la imagen sigue ahí y saldría
+    // como una cuña negra. Por eso la barra del tipo va en las capas de
+    // después de `repintarTras`, y sus extremos quedan encima.
     for z in &v.repintar {
-        // Sin pasar de la barra del tipo, que en la caja que crece baja con
-        // ella: repintar sus extremos se los comería.
-        let y = z[1].max(desde_y);
-        let alto = z[1] + z[3] - y;
-        if alto <= 0.0 {
-            continue;
-        }
-        if let Some(rc) = Rect::from_xywh(l.x(z[0]), l.y(y), l.x(z[2]), l.y(alto)) {
+        if let Some(rc) = Rect::from_xywh(l.x(z[0]), l.y(z[1]), l.x(z[2]), l.y(z[3])) {
             zonas.fill_path(
                 &PathBuilder::from_rect(rc),
                 FillRule::Winding,
@@ -2176,9 +2172,31 @@ pub(super) fn estilo_para(
             .or_else(|_| rec.pack.estilo("borderless"))
             .map_err(|_| DisenoError::Lienzo)?,
     };
-    // Sin un layout pedido por la carta (ficha, saga…): el de la variante
-    // elegida si el estilo tiene uno con su id; si no, el primero de
-    // `layoutSi` que cumpla la carta (tierra no básica…).
+    // La clase sin layout propio en el pack: la caja alta, como las demás
+    // cartas con secciones.
+    let layout = match layout {
+        Some("clase")
+            if !base.layouts.contains_key("clase") && rec.pack.layout("clase").is_none() =>
+        {
+            Some("alto")
+        }
+        l => l,
+    };
+    // Las fichas de un pack sin marco de ficha salen con el estilo del propio
+    // pack, tal cual, para que se vean como el resto de cartas del tema (nunca
+    // con el marco de la casa), y sin aviso; y como las demás cartas, con lo
+    // que elija `layoutSi` (la ficha sin caja del Original).
+    let layout = match layout {
+        Some("ficha")
+            if !base.layouts.contains_key("ficha") && rec.pack.layout("ficha").is_none() =>
+        {
+            None
+        }
+        l => l,
+    };
+    // Sin un layout pedido por la carta (saga, ficha con marco propio…): el
+    // de la variante elegida si el estilo tiene uno con su id; si no, el
+    // primero de `layoutSi` que cumpla la carta (tierra no básica…).
     let por_carta: Option<String> = match (layout, hechos) {
         (None, Some(h)) => h
             .variante
@@ -2193,27 +2211,6 @@ pub(super) fn estilo_para(
         _ => None,
     };
     let layout = layout.or(por_carta.as_deref());
-    // Las fichas de un pack sin marco de ficha salen con el estilo del propio
-    // pack, tal cual, para que se vean como el resto de cartas del tema (nunca
-    // con el marco de la casa), y sin aviso.
-    // La clase sin layout propio en el pack: la caja alta, como las demás
-    // cartas con secciones.
-    let layout = match layout {
-        Some("clase")
-            if !base.layouts.contains_key("clase") && rec.pack.layout("clase").is_none() =>
-        {
-            Some("alto")
-        }
-        l => l,
-    };
-    let layout = match layout {
-        Some("ficha")
-            if !base.layouts.contains_key("ficha") && rec.pack.layout("ficha").is_none() =>
-        {
-            None
-        }
-        l => l,
-    };
     let mut e = base.clone();
     if let Some(l) = layout {
         if let Some(def) = base.layouts.get(l) {
@@ -2294,11 +2291,20 @@ pub(super) fn colores_wubrg(e: &DisenoEfectivo, cara: usize) -> Vec<String> {
 
 /// Lo que se sabe de una cara para las condiciones del pack (sin lo que
 /// depende del marco elegido: corona, cinta y emblema, que pone `pintar_cara`).
-pub(super) fn hechos_de(e: &DisenoEfectivo, cara: usize) -> Hechos {
+pub(super) fn hechos_de(e: &DisenoEfectivo, cara: usize, lang: DesignLang) -> Hechos {
     let card = &e.design.card;
     let f = card.faces.get(cara).or_else(|| card.faces.first());
     let tipo = f.map(|f| f.type_line.en.to_lowercase()).unwrap_or_default();
+    // Lo mismo que llena la caja: las reglas que se pintan y el sabor si se
+    // enseña.
+    let sabor = e.design.options.show_flavor
+        && e.design
+            .faces
+            .get(cara)
+            .is_some_and(|f| !f.textos(lang).flavor.trim().is_empty());
+    let reglas = sabor || !reglas_efectivas(&e.design, cara, lang).trim().is_empty();
     Hechos {
+        reglas,
         fr: f.is_some_and(|f| f.power.is_some() && f.toughness.is_some()),
         tipos: tipo
             .split(|c: char| !c.is_alphanumeric())
@@ -2638,7 +2644,7 @@ pub(super) fn pintar_cara(
         extra_marco: extra_marco(e),
         caja_pedida: (!matches!(e.frame.rules_box, RulesBox::Auto)).then_some(modo_caja),
         colores: colores_wubrg(e, cara),
-        hechos: hechos_de(e, cara),
+        hechos: hechos_de(e, cara, lang),
         estrechado_base: e.squeeze_base as f32,
         pesos: e.pesos,
         retoques: e.retoques,
@@ -3029,20 +3035,7 @@ pub(super) fn pintar_cara(
         .min(capas.len());
     c.capas(&capas[..corte], &cond);
     if let Some((v, radio)) = &repinta {
-        // La caja que crece deja dicho dónde acaba la barra del tipo.
-        let bajo_tipo = c
-            .vars
-            .get("yReglas")
-            .and_then(|y| y.parse::<f32>().ok())
-            .unwrap_or(0.0);
-        repintar_ventana(
-            &mut c.l,
-            v,
-            *radio,
-            arte_pintado.as_ref(),
-            o.sin_arte,
-            bajo_tipo,
-        );
+        repintar_ventana(&mut c.l, v, *radio, arte_pintado.as_ref(), o.sin_arte);
     }
     c.capas(&capas[corte..], &cond);
 
@@ -3620,6 +3613,68 @@ mod tests {
             normal
         );
         assert_eq!(con(Hechos::default()).arte, normal);
+    }
+
+    /// La ficha del Original: sin reglas ni sabor, sin caja (la barra del tipo
+    /// abajo); con texto, la caja de siempre. También cuando la carta pide el
+    /// layout `ficha`, que el Original no trae.
+    #[test]
+    fn la_ficha_del_original_sin_texto_va_sin_caja() {
+        use crate::diseno::pack::{ORIGINAL, ORIGINAL_IMAGENES};
+        let ficheros = ORIGINAL
+            .iter()
+            .map(|(k, v)| ((*k).to_string(), (*v).to_string()))
+            .collect();
+        let lista: serde_json::Value = serde_json::from_str(ORIGINAL_IMAGENES).unwrap();
+        let mut b = Vec::new();
+        image::RgbaImage::new(1, 1)
+            .write_to(&mut std::io::Cursor::new(&mut b), image::ImageFormat::Png)
+            .unwrap();
+        let png = Arc::new(b);
+        let im = lista["imagenes"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(|r| (r.clone(), png.clone()))
+            .collect();
+        let p = Pack::cargar_con_imagenes(ficheros, im).unwrap();
+        let s = Simbolos::nuevos();
+        let r = recursos(&p, &s);
+        let ficha = p.estilo("ficha").unwrap();
+        let sin_reglas = ficha.layouts["sinReglas"].capas.clone().unwrap();
+        for layout in [None, Some("ficha")] {
+            let con = |reglas: bool| {
+                estilo_para(
+                    &r,
+                    DesignStyle::Borderless,
+                    Some("ficha"),
+                    layout,
+                    Some(&Hechos {
+                        reglas,
+                        ..Hechos::default()
+                    }),
+                    &mut Vec::new(),
+                )
+                .unwrap()
+            };
+            let sin = con(false);
+            assert_eq!(sin.capas, sin_reglas);
+            assert!(sin.capas.iter().all(|c| !c.caja_reglas));
+            let con_texto = con(true);
+            assert_eq!(con_texto.capas, ficha.capas);
+            assert!(con_texto.capas.iter().any(|c| c.caja_reglas));
+        }
+        // El despejado no cambia por no tener texto.
+        let despejado = estilo_para(
+            &r,
+            DesignStyle::Borderless,
+            None,
+            Some("ficha"),
+            Some(&Hechos::default()),
+            &mut Vec::new(),
+        )
+        .unwrap();
+        assert_eq!(despejado.capas, p.estilo("borderless").unwrap().capas);
     }
 
     #[test]
