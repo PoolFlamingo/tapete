@@ -84,6 +84,10 @@ export type PreferenciasMesa = {
 	trackers: string[];
 	/** Cómo se reparten los tableros, recordado por número de jugadores. */
 	disposicion: Record<number, ConfigDisposicion>;
+	/** Los contadores de carta escritos a mano que no son del catálogo (el último, primero). */
+	contadoresPropios: string[];
+	/** Los contadores de carta favoritos (del catálogo o propios), arriba en «Añadir contador». */
+	contadoresFavoritos: string[];
 };
 
 export const MESA_DE_FABRICA: PreferenciasMesa = {
@@ -112,6 +116,8 @@ export const MESA_DE_FABRICA: PreferenciasMesa = {
 	ruletaEmpieza: true,
 	trackers: [],
 	disposicion: {},
+	contadoresPropios: [],
+	contadoresFavoritos: [],
 };
 
 /**

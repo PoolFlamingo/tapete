@@ -1,41 +1,43 @@
 import { describe, expect, it } from "vitest";
-import { CONTADORES_OTROS, PALABRAS_CLAVE } from "../colores";
-import {
-	conTemporal,
-	esTemporal,
-	manaDe,
-	nombreContador,
-	nombreEnRegistro,
-	sinTemporal,
-} from "../contadores";
+import { alternarFavorito, MAX_PROPIOS, recordarPropio, tipoEscrito } from "../contadores";
 
-const t = (s: string) => s;
+const t = (s: string) => (s === "Escudo" ? "Escudo" : s);
 
-describe("contadores temporales", () => {
-	it("el prefijo marca y quita lo temporal", () => {
-		expect(esTemporal("~+1/+1")).toBe(true);
-		expect(esTemporal("+1/+1")).toBe(false);
-		expect(sinTemporal("~Flying")).toBe("Flying");
-		expect(conTemporal("oil", true)).toBe("~oil");
-		expect(conTemporal("~oil", true)).toBe("~oil");
-		expect(conTemporal("~oil", false)).toBe("oil");
+describe("contadores propios y favoritos", () => {
+	it("solo recuerda los que no son del catálogo", () => {
+		expect(recordarPropio([], "+1/+1")).toEqual([]);
+		expect(recordarPropio([], "shield")).toEqual([]);
+		expect(recordarPropio([], "+2/+2")).toEqual([]);
+		expect(recordarPropio([], "Ánimo")).toEqual(["Ánimo"]);
 	});
-	it("el maná se reconoce, temporal o no", () => {
-		expect(manaDe("mana-R")).toBe("R");
-		expect(manaDe("~mana-G")).toBe("G");
-		expect(manaDe("oil")).toBeNull();
+
+	it("los recuerda sin el prefijo de temporal y el último va primero, sin repetirse", () => {
+		const a = recordarPropio([], "~Ánimo");
+		expect(a).toEqual(["Ánimo"]);
+		const b = recordarPropio(a, "Calma");
+		expect(b).toEqual(["Calma", "Ánimo"]);
+		expect(recordarPropio(b, "ánimo")).toEqual(["ánimo", "Calma"]);
 	});
-	it("el nombre sale sin prefijo, traducido si es del catálogo", () => {
-		expect(nombreContador("~oil", t)).toBe("Aceite");
-		expect(nombreContador("~Flying", t)).toBe("Volar");
-		expect(nombreContador("age", t)).toBe("Edad");
-		expect(nombreContador("lo-que-escriba-alguien", t)).toBe("lo-que-escriba-alguien");
-		expect(nombreEnRegistro("~oil", t)).toBe("Aceite (temporal)");
+
+	it("no pasa del tope", () => {
+		let l: string[] = [];
+		for (let i = 0; i < MAX_PROPIOS + 5; i++) l = recordarPropio(l, `c${i}`);
+		expect(l).toHaveLength(MAX_PROPIOS);
+		expect(l[0]).toBe(`c${MAX_PROPIOS + 4}`);
 	});
-	it("el catálogo no repite tipos ni nombres", () => {
-		for (const lista of [CONTADORES_OTROS, PALABRAS_CLAVE]) {
-			expect(new Set(lista.map((c) => c.tipo)).size).toBe(lista.length);
-			expect(new Set(lista.map((c) => c.nombre)).size).toBe(lista.length);
-		}
+
+	it("lo escrito que coincide con el catálogo es ese tipo", () => {
+		expect(tipoEscrito("  escudo ", t)).toBe("shield");
+		expect(tipoEscrito("SHIELD", t)).toBe("shield");
+		expect(tipoEscrito("Ánimo", t)).toBe("Ánimo");
+		expect(tipoEscrito("   ", t)).toBe("");
+		// Las palabras clave no son contadores: «flying» escrito es uno propio.
+		expect(tipoEscrito("flying", t)).toBe("flying");
+	});
+
+	it("alterna favoritos sin el prefijo de temporal", () => {
+		const a = alternarFavorito([], "~+1/+1");
+		expect(a).toEqual(["+1/+1"]);
+		expect(alternarFavorito(a, "+1/+1")).toEqual([]);
 	});
 });

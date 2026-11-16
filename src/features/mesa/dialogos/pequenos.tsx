@@ -26,7 +26,15 @@ import { useUi } from "@/stores/ui-store";
 import { hacer } from "../acciones";
 import { ATAJOS, bonita } from "../atajos";
 import { COLORES_ETIQUETA, CONTADORES_CARTA, CONTADORES_OTROS, CONTADORES_PT } from "../colores";
-import { CONTADORES_MANA, conTemporal, esTemporal, nombreContador } from "../contadores";
+import {
+	alternarFavorito,
+	CONTADORES_MANA,
+	conTemporal,
+	esTemporal,
+	nombreContador,
+	recordarPropio,
+	tipoEscrito,
+} from "../contadores";
 import { caraVisible, ImagenCarta } from "../imagen-carta";
 import { type DialogoMesa, usePantalla } from "../pantalla";
 
@@ -124,30 +132,52 @@ export function ContadorDialog({
 	const [texto, setTexto] = useState("");
 	const [n, setN] = useState(1);
 	const [temporal, setTemporal] = useState(temporalInicial);
+	const propios = useUi((s) => s.mesa.contadoresPropios);
+	const favoritos = useUi((s) => s.mesa.contadoresFavoritos);
+	const setMesa = useUi((s) => s.setMesa);
+	// Lo escrito que coincide con uno del catálogo («escudo») es ese, no uno propio.
+	const elegido = tipoEscrito(tipo, t);
+	const esFavorito = elegido !== "" && favoritos.includes(elegido);
+	const esPropio = propios.includes(elegido);
 	const ok = () => {
 		cerrar();
+		// Uno escrito a mano que no es del catálogo se recuerda, temporal o no.
+		const nuevos = recordarPropio(propios, elegido);
+		if (nuevos !== propios) setMesa({ contadoresPropios: nuevos });
 		void hacer({
 			que: "contador",
 			cartas,
-			tipo: conTemporal(tipo.trim(), temporal),
+			tipo: conTemporal(elegido, temporal),
 			delta: n,
 		});
 	};
+	const olvidar = () => {
+		setMesa({
+			contadoresPropios: propios.filter((x) => x !== elegido),
+			contadoresFavoritos: favoritos.filter((x) => x !== elegido),
+		});
+		setTipo("+1/+1");
+		setTexto("");
+	};
+	const conNombre = (tipos: string[]) =>
+		tipos.map((tipo) => ({ tipo, nombre: nombreContador(tipo, t) }));
 	const filtro = texto.trim().toLowerCase();
 	const secciones = [
-		{ titulo: t("Habituales"), items: CONTADORES_CARTA, ordenar: false },
-		{ titulo: t("Maná"), items: CONTADORES_MANA, ordenar: false },
+		{ titulo: t("Favoritos"), items: conNombre(favoritos), ordenar: false },
+		{ titulo: t("Tus contadores"), items: conNombre(propios), ordenar: false },
+		{ titulo: t("Habituales"), items: CONTADORES_CARTA, ordenar: false, traducir: true },
+		{ titulo: t("Maná"), items: CONTADORES_MANA, ordenar: false, traducir: true },
 		{
 			titulo: t("Fuerza y resistencia"),
 			items: CONTADORES_PT.map((c) => ({ tipo: c, nombre: c })),
 			ordenar: false,
 		},
-		{ titulo: t("Otros contadores"), items: CONTADORES_OTROS, ordenar: true },
+		{ titulo: t("Otros contadores"), items: CONTADORES_OTROS, ordenar: true, traducir: true },
 	]
 		.map((sec) => ({
 			...sec,
 			items: sec.items
-				.map((c) => ({ tipo: c.tipo, nombre: t(c.nombre) }))
+				.map((c) => ({ tipo: c.tipo, nombre: sec.traducir ? t(c.nombre) : c.nombre }))
 				.sort((a, b) => (sec.ordenar ? a.nombre.localeCompare(b.nombre, localeDe(lang)) : 0))
 				.filter(
 					(c) =>
@@ -172,8 +202,32 @@ export function ContadorDialog({
 						}}
 						maxLength={29}
 						placeholder={t("Otro tipo…")}
-						className="h-8 flex-1 text-xs"
+						className="h-8 min-w-0 flex-1 text-xs"
 					/>
+					<WithTooltip content={esFavorito ? t("Quitar de favoritos") : t("Añadir a favoritos")}>
+						<Button
+							size="icon-sm"
+							variant={esFavorito ? "default" : "outline"}
+							disabled={!elegido}
+							aria-label={esFavorito ? t("Quitar de favoritos") : t("Añadir a favoritos")}
+							aria-pressed={esFavorito}
+							onClick={() => setMesa({ contadoresFavoritos: alternarFavorito(favoritos, elegido) })}
+						>
+							<Icono icon={esFavorito ? "lucide:star-off" : "lucide:star"} />
+						</Button>
+					</WithTooltip>
+					{esPropio && (
+						<WithTooltip content={t("Olvidar este contador")}>
+							<Button
+								size="icon-sm"
+								variant="outline"
+								aria-label={t("Olvidar este contador")}
+								onClick={olvidar}
+							>
+								<Icono icon="lucide:trash-2" />
+							</Button>
+						</WithTooltip>
+					)}
 					<CampoNumero
 						valor={n}
 						onChange={(v) => setN(v ?? 0)}
@@ -199,7 +253,7 @@ export function ContadorDialog({
 										<Button
 											key={c.tipo}
 											size="sm"
-											variant={tipo.trim() === c.tipo ? "default" : "outline"}
+											variant={elegido === c.tipo ? "default" : "outline"}
 											onClick={() => setTipo(c.tipo)}
 										>
 											{c.nombre}
@@ -214,7 +268,7 @@ export function ContadorDialog({
 					<Button variant="outline" onClick={cerrar}>
 						{t("Cancelar")}
 					</Button>
-					<Button onClick={ok} disabled={!tipo.trim() || n === 0}>
+					<Button onClick={ok} disabled={!elegido || n === 0}>
 						{t("Añadir")}
 					</Button>
 				</DialogFooter>

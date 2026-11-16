@@ -1384,5 +1384,7 @@
 		"few": "{n} stworzenia o nieznanej wytrzymałości: ty decydujesz, czy giną.",
 		"many": "{n} stworzeń o nieznanej wytrzymałości: ty decydujesz, czy giną.",
 		"other": "{n} stworzenia o nieznanej wytrzymałości: ty decydujesz, czy giną."
-	}
+	},
+	"Tus contadores": "Twoje znaczniki",
+	"Olvidar este contador": "Zapomnij ten znacznik"
 }

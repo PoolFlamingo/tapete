@@ -1363,5 +1363,7 @@
 		"one": "{n} créature d'endurance inconnue : à vous de décider si elle meurt.",
 		"many": "{n} créatures d'endurance inconnue : à vous de décider si elles meurent.",
 		"other": "{n} créatures d'endurance inconnue : à vous de décider si elles meurent."
-	}
+	},
+	"Tus contadores": "Vos marqueurs",
+	"Olvidar este contador": "Oublier ce marqueur"
 }

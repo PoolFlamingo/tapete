@@ -1359,5 +1359,7 @@
 		"one": "{n} creatura con costituzione sconosciuta: decidi tu se muore.",
 		"many": "{n} creature con costituzione sconosciuta: decidi tu se muoiono.",
 		"other": "{n} creature con costituzione sconosciuta: decidi tu se muoiono."
-	}
+	},
+	"Tus contadores": "I tuoi segnalini",
+	"Olvidar este contador": "Dimentica questo segnalino"
 }

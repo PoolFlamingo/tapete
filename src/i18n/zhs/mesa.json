@@ -1281,5 +1281,7 @@
 	"Elige un deck en la lista para unirte a la partida.": "在列表中选择一副套牌即可加入对局。",
 	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "在列表中选择一副套牌，即可创建对局并邀请 {apodo}。",
 	"{dano} de daño a cada criatura: caen {n}": "对每个生物造成 {dano} 点伤害：{n} 个死去",
-	"{n} criaturas con resistencia desconocida: decide tú si caen.": "{n} 个防御力未知的生物：由你决定它们是否死去。"
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": "{n} 个防御力未知的生物：由你决定它们是否死去。",
+	"Tus contadores": "你的指示物",
+	"Olvidar este contador": "忘记此指示物"
 }

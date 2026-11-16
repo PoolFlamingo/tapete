@@ -1342,5 +1342,7 @@
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
 		"one": "{n} creature with unknown toughness: you decide whether it dies.",
 		"other": "{n} creatures with unknown toughness: you decide whether they die."
-	}
+	},
+	"Tus contadores": "Your counters",
+	"Olvidar este contador": "Forget this counter"
 }

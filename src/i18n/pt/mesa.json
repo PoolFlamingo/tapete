@@ -1359,5 +1359,7 @@
 		"one": "{n} criatura com resistência desconhecida: você decide se ela morre.",
 		"many": "{n} criaturas com resistência desconhecida: você decide se morrem.",
 		"other": "{n} criaturas com resistência desconhecida: você decide se morrem."
-	}
+	},
+	"Tus contadores": "Os seus marcadores",
+	"Olvidar este contador": "Esquecer este marcador"
 }

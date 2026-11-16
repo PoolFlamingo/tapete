@@ -1359,5 +1359,7 @@
 		"one": "{n} creatură cu rezistență necunoscută: tu decizi dacă moare.",
 		"few": "{n} creaturi cu rezistență necunoscută: tu decizi dacă mor.",
 		"other": "{n} de creaturi cu rezistență necunoscută: tu decizi dacă mor."
-	}
+	},
+	"Tus contadores": "Contoarele tale",
+	"Olvidar este contador": "Uită acest contor"
 }

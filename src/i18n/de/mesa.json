@@ -1342,5 +1342,7 @@
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
 		"one": "{n} Kreatur mit unbekannter Widerstandskraft: Du entscheidest, ob sie stirbt.",
 		"other": "{n} Kreaturen mit unbekannter Widerstandskraft: Du entscheidest, ob sie sterben."
-	}
+	},
+	"Tus contadores": "Deine Marken",
+	"Olvidar este contador": "Diese Marke vergessen"
 }

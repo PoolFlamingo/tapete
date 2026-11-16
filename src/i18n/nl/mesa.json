@@ -1342,5 +1342,7 @@
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": {
 		"one": "{n} wezen met onbekende verdediging: jij beslist of het sterft.",
 		"other": "{n} wezens met onbekende verdediging: jij beslist of ze sterven."
-	}
+	},
+	"Tus contadores": "Je counters",
+	"Olvidar este contador": "Deze counter vergeten"
 }

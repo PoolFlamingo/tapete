@@ -1,4 +1,10 @@
-import { CONTADORES_CARTA, CONTADORES_JUGADOR, CONTADORES_OTROS, PALABRAS_CLAVE } from "./colores";
+import {
+	CONTADORES_CARTA,
+	CONTADORES_JUGADOR,
+	CONTADORES_OTROS,
+	CONTADORES_PT,
+	PALABRAS_CLAVE,
+} from "./colores";
 
 /**
  * Los contadores **temporales**: un tipo que empieza por `~` se pierde al
@@ -58,4 +64,59 @@ export function nombreContador(tipo: string, t: (s: string) => string): string {
 export function nombreEnRegistro(tipo: string, t: (s: string) => string): string {
 	const nombre = nombreContador(tipo, t);
 	return esTemporal(tipo) ? `${nombre} (${t("Temporal").toLowerCase()})` : nombre;
+}
+
+/** Cuántos contadores propios se recuerdan (los más recientes). */
+export const MAX_PROPIOS = 40;
+
+/**
+ * Los contadores de carta del catálogo, los que ofrece «Añadir contador» (sin
+ * las palabras clave, que son otra cosa: escribir «Volar» no es la palabra clave).
+ */
+const DE_CARTA = new Map(
+	[
+		...CONTADORES_CARTA,
+		...CONTADORES_MANA,
+		...CONTADORES_PT.map((c) => ({ tipo: c, nombre: c })),
+		...CONTADORES_OTROS,
+	].map((c) => [c.tipo, c.nombre]),
+);
+
+/** Si un tipo (sin el prefijo de temporal) es de los contadores de carta del catálogo. */
+export const esDelCatalogo = (tipo: string) => DE_CARTA.has(sinTemporal(tipo));
+
+const igual = (a: string, b: string) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
+
+/**
+ * El tipo de lo que se escribe a mano: si coincide (sin mirar mayúsculas) con
+ * el tipo o con el nombre traducido de uno del catálogo, ese; si no, el texto
+ * tal cual. Así escribir «Escudo» pone el contador `shield`, que se traduce y
+ * se pinta como los demás, y no uno propio que se llama igual.
+ */
+export function tipoEscrito(texto: string, t: (s: string) => string): string {
+	const limpio = texto.trim();
+	if (!limpio) return "";
+	for (const [tipo, nombre] of DE_CARTA) {
+		if (igual(tipo, limpio) || igual(t(nombre), limpio)) return tipo;
+	}
+	return limpio;
+}
+
+/**
+ * La lista de contadores propios tras usar `tipo`: si no es del catálogo, va
+ * el primero (sin repetirse, sin mirar mayúsculas, y sin el prefijo de
+ * temporal, que es un interruptor aparte). Devuelve la misma lista si no cambia.
+ */
+export function recordarPropio(lista: string[], tipo: string): string[] {
+	const base = sinTemporal(tipo).trim();
+	if (!base || esDelCatalogo(base)) return lista;
+	if (lista[0] === base) return lista;
+	return [base, ...lista.filter((x) => !igual(x, base))].slice(0, MAX_PROPIOS);
+}
+
+/** Pone o quita `tipo` (sin el prefijo de temporal) de los favoritos. */
+export function alternarFavorito(lista: string[], tipo: string): string[] {
+	const base = sinTemporal(tipo).trim();
+	if (!base) return lista;
+	return lista.includes(base) ? lista.filter((x) => x !== base) : [...lista, base];
 }

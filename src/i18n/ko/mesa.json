@@ -1281,5 +1281,7 @@
 	"Elige un deck en la lista para unirte a la partida.": "게임에 참가하려면 목록에서 덱을 고르세요.",
 	"Elige un deck en la lista para crear la partida e invitar a {apodo}.": "목록에서 덱을 고르면 게임을 만들고 {apodo} 님을 초대해요.",
 	"{dano} de daño a cada criatura: caen {n}": "각 생물에게 피해 {dano}: {n}개가 죽는다",
-	"{n} criaturas con resistencia desconocida: decide tú si caen.": "방어력을 알 수 없는 생물 {n}개: 죽는지는 직접 정하세요."
+	"{n} criaturas con resistencia desconocida: decide tú si caen.": "방어력을 알 수 없는 생물 {n}개: 죽는지는 직접 정하세요.",
+	"Tus contadores": "내 카운터",
+	"Olvidar este contador": "이 카운터 지우기"
 }
