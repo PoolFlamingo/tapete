@@ -149,7 +149,10 @@ export function Mulligan() {
 							className={cn(
 								"relative overflow-hidden rounded-[5%] shadow-xl transition",
 								// En un móvil de lado (411 dp de alto) la mano entera tiene que caber con sus botones.
-								enFila ? "shrink-0" : movil ? "h-36 w-[103px]" : "h-60 w-[172px]",
+								// Fuera de ahí, solo el ancho (en rem, que escala con el tamaño de la interfaz) y
+								// el alto por la proporción de la carta: un alto en rem con un ancho en px
+								// deformaba la caja al cambiar la escala y `object-cover` cortaba los lados.
+								enFila ? "shrink-0" : cn("aspect-[63/88]", movil ? "w-26" : "w-43"),
 								elegida && "opacity-50 ring-4 ring-amber-400",
 								elegida && (enFila ? "translate-y-2" : "translate-y-3"),
 							)}
