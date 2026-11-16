@@ -1,5 +1,4 @@
 {
-	"Scryfall · listo para imprimir": "Scryfall · 인쇄 준비 완료",
 	"Deck": "덱",
 	"Biblioteca": "라이브러리",
 	"Lista de cartas": "카드 목록",
@@ -40,5 +39,6 @@
 	"Hojas": "용지",
 	"Minimizar": "최소화",
 	"Pantalla completa (F11)": "전체 화면 (F11)",
-	"Salir de pantalla completa (F11)": "전체 화면 종료 (F11)"
+	"Salir de pantalla completa (F11)": "전체 화면 종료 (F11)",
+	"Un lugar para cada jugador": "모든 플레이어를 위한 자리"
 }

@@ -1,5 +1,4 @@
 {
-	"Scryfall · listo para imprimir": "Scryfall · 印刷用",
 	"Deck": "デッキ",
 	"Biblioteca": "ライブラリ",
 	"Lista de cartas": "カードリスト",
@@ -40,5 +39,6 @@
 	"Hojas": "用紙",
 	"Minimizar": "最小化",
 	"Pantalla completa (F11)": "全画面表示 (F11)",
-	"Salir de pantalla completa (F11)": "全画面表示を終了 (F11)"
+	"Salir de pantalla completa (F11)": "全画面表示を終了 (F11)",
+	"Un lugar para cada jugador": "すべてのプレイヤーに居場所を"
 }

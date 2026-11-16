@@ -1,5 +1,4 @@
 {
-	"Scryfall · listo para imprimir": "Scryfall · готово до друку",
 	"Deck": "Колода",
 	"Biblioteca": "Бібліотека",
 	"Lista de cartas": "Список карт",
@@ -40,5 +39,6 @@
 	"Hojas": "Аркуші",
 	"Minimizar": "Згорнути",
 	"Pantalla completa (F11)": "Повний екран (F11)",
-	"Salir de pantalla completa (F11)": "Вийти з повноекранного режиму (F11)"
+	"Salir de pantalla completa (F11)": "Вийти з повноекранного режиму (F11)",
+	"Un lugar para cada jugador": "Місце для кожного гравця"
 }

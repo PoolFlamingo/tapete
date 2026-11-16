@@ -264,7 +264,7 @@ export function AppShell({
 					<div className={cn("leading-tight", tableta && "hidden")}>
 						<div className="text-sm font-semibold">Tapete</div>
 						<div className="hidden text-[10px] text-muted-foreground lg:block">
-							{t("Scryfall · listo para imprimir")}
+							{t("Un lugar para cada jugador")}
 						</div>
 					</div>
 				</div>

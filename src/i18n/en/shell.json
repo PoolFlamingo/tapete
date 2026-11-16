@@ -1,5 +1,4 @@
 {
-	"Scryfall · listo para imprimir": "Scryfall · print-ready",
 	"Deck": "Deck",
 	"Biblioteca": "Library",
 	"Lista de cartas": "Decklist",
@@ -40,5 +39,6 @@
 	"Hojas": "Sheets",
 	"Minimizar": "Minimize",
 	"Pantalla completa (F11)": "Full screen (F11)",
-	"Salir de pantalla completa (F11)": "Exit full screen (F11)"
+	"Salir de pantalla completa (F11)": "Exit full screen (F11)",
+	"Un lugar para cada jugador": "A place for every player"
 }
