@@ -43,6 +43,7 @@ fn nombre(a: &Accion) -> &'static str {
         Accion::HabilidadEnPila { .. } => "HabilidadEnPila",
         Accion::Flecha { .. } => "Flecha",
         Accion::QuitarFlechas { .. } => "QuitarFlechas",
+        Accion::QuitarFlecha { .. } => "QuitarFlecha",
         Accion::Robar { .. } => "Robar",
         Accion::Moler { .. } => "Moler",
         Accion::Manifestar { .. } => "Manifestar",
@@ -424,6 +425,30 @@ fn cada_accion_del_catalogo() {
     assert_eq!(m.p().flechas.len(), 1);
     m.haz(Accion::QuitarFlechas { de: None });
     assert!(m.p().flechas.is_empty());
+    // Quitar una sola (v7): la de ataque al otro se va y la de objetivo se queda.
+    for tipo in [TipoFlecha::Ataque, TipoFlecha::Objetivo] {
+        m.haz(Accion::Flecha {
+            de: Extremo::Carta(oso),
+            a: Extremo::Jugador(OTRO),
+            tipo,
+        });
+    }
+    m.haz(Accion::QuitarFlecha {
+        de: Extremo::Carta(oso),
+        a: Extremo::Jugador(OTRO),
+        tipo: TipoFlecha::Ataque,
+    });
+    assert_eq!(m.p().flechas.len(), 1);
+    assert_eq!(m.p().flechas[0].tipo, TipoFlecha::Objetivo);
+    // La de otro no se toca, y una que ya no está se rechaza sin cambiar nada.
+    let ajena = Accion::QuitarFlecha {
+        de: Extremo::Carta(oso),
+        a: Extremo::Jugador(OTRO),
+        tipo: TipoFlecha::Objetivo,
+    };
+    assert_eq!(m.como(OTRO, ajena), Err(Rechazo::NoExiste));
+    assert_eq!(m.p().flechas.len(), 1);
+    m.haz(Accion::QuitarFlechas { de: None });
     // Dar el control: al campo del otro, sigue siendo mía.
     m.haz(Accion::DarControl {
         cartas: vec![copia],
@@ -944,6 +969,7 @@ const TODAS: &[&str] = &[
     "HabilidadEnPila",
     "Flecha",
     "QuitarFlechas",
+    "QuitarFlecha",
     "Robar",
     "Moler",
     "Manifestar",

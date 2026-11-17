@@ -107,6 +107,12 @@ fn eventos_de_ejemplo() -> Vec<Evento> {
             tipo: mesa::modelo::TipoFlecha::Ataque,
         },
         Accion::QuitarFantasma { fantasma: 0 },
+        // v7: quitar una sola flecha.
+        Accion::QuitarFlecha {
+            de: mesa::modelo::Extremo::Carta(mesa::IdCarta(1)),
+            a: mesa::modelo::Extremo::Fantasma,
+            tipo: mesa::modelo::TipoFlecha::Ataque,
+        },
     ]
     .into_iter()
     .enumerate()

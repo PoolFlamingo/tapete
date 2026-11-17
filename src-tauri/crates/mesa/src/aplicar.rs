@@ -1181,6 +1181,16 @@ fn accion_(q: &mut Partida, a: &Accion, ctx: &mut Ctx, seq: u64) -> Result<(), R
                 .retain(|f| f.de_jugador != yo || de.is_some_and(|d| f.de != d));
             Ok(())
         }
+        Accion::QuitarFlecha { de, a, tipo } => {
+            // Solo una, aunque haya dos iguales: cada una se puso por separado.
+            let i = q
+                .flechas
+                .iter()
+                .position(|f| f.de_jugador == yo && f.de == *de && f.a == *a && f.tipo == *tipo)
+                .ok_or(Rechazo::NoExiste)?;
+            q.flechas.remove(i);
+            Ok(())
+        }
         // ── Biblioteca ──
         Accion::Robar { n } => {
             limite(*n)?;

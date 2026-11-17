@@ -24,7 +24,7 @@
 //! | `PorJugador`, `MirarMano` | hacer algo por otro jugador (que robe, muela, descarte…) y mirar su mano (v2) |
 //! | `CopiaFicha`, `DarControl`, `TomarControl` | «Create token copy», «Give to player», quitar el control (Control Magic, Threaten…; v2) |
 //! | `HabilidadEnPila` | «Put ability on stack» |
-//! | `Flecha`, `QuitarFlechas` | «Attack / Target» (`capturas/pablo/12`, `18`) |
+//! | `Flecha`, `QuitarFlechas` | «Attack / Target» (`capturas/pablo/12`, `18`); `QuitarFlecha`, una sola (v7) |
 //! | `Robar`, `Moler`, `Manifestar`, `ExiliarDeArriba` | menú de la biblioteca (`capturas/pablo/10–11`) |
 //! | `Mirar` + `Ordenar` | «Look at top/bottom», «Scry», «Surveil» |
 //! | `RevelarArriba`, `Excavar` + `ResolverExcavacion` | «Reveal», «Cascade», «Discover», «Reveal until» (§3) |
@@ -66,7 +66,7 @@ use crate::modelo::{
 use crate::sparring::{Decision, Intensidad, ReaccionSparring};
 
 /// Sube con cada variante nueva o cambiada de `Accion` o `Cambio`.
-pub const VERSION_CATALOGO: u32 = 6;
+pub const VERSION_CATALOGO: u32 = 7;
 
 impl Accion {
     /// Lo que se puede hacer por otro jugador (`PorJugador`): lo que afecta a
@@ -592,6 +592,12 @@ pub enum Accion {
     /// Quita mis flechas (o solo las que salen de `de`).
     QuitarFlechas {
         de: Option<Extremo>,
+    },
+    /// Quita una flecha mía concreta (v7): la primera que va de `de` a `a` con ese `tipo`.
+    QuitarFlecha {
+        de: Extremo,
+        a: Extremo,
+        tipo: TipoFlecha,
     },
     // ── Biblioteca ──
     Robar {
