@@ -395,6 +395,11 @@ le falta una cadena le sale la inglesa.
   comandante; solo marcadores: 🛑 el sparring no los lee, no traen más reacciones. En el móvil, con
   varios, fichas pequeñas (taparían el campo). Las insignias de carta con símbolo y texto, arriba y
   apiladas (`insignias.tsx`); en una carta de ≤ 96 px, solo el símbolo (consulta de contenedor).
+  **Flechas una a una** (Pablo, 17/11/2026): `Accion::QuitarFlecha` (catálogo v7, `PROTOCOLO` 8) quita
+  una flecha mía concreta; «Mis flechas…» (clic derecho en el campo vacío, `dialogos/mis-flechas.tsx`)
+  las lista y resalta en la mesa la que se señala (`flechaResaltada`). Con varias elegidas, «Atacar /
+  objetivo» es un submenú «Solo esta» / «En conjunto»: el modo guarda las demás en `modo.con` y
+  `objetivo.ts::ponerFlechas` manda una `Flecha` por carta (sin variante nueva).
   **Quién empieza y de quién es el turno** (Pablo, 06/11/2026): lo sortea siempre el motor (`turno.primero`); la ruleta
   (`features/mesa/ruleta/`) solo lo enseña, como los dados. Gira mientras se prepara la mesa (`conexion.ts::conRuleta`), frena
   al llegar la primera vista, y esta espera a que se vea. El invitado no prepara nada: su ruleta sale con la vista (`esperarSorteo`,
