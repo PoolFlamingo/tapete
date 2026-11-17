@@ -1389,5 +1389,14 @@
 	"Olvidar este contador": "Забыть этот жетон",
 	"Solo esta": "Только эта",
 	"En conjunto (todas las elegidas)": "Вместе (все выбранные)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "В одиночной и сетевой игре ваши кубики цвета приложения; в локальной игре на нескольких каждый бросает цветом своего места."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "В одиночной и сетевой игре ваши кубики цвета приложения; в локальной игре на нескольких каждый бросает цветом своего места.",
+	"Mis flechas…": "Мои стрелки…",
+	"Mis flechas": "Мои стрелки",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Уберите только лишнюю. Та, на которую вы указываете, подсвечивается на столе.",
+	"No tienes flechas en la mesa.": "У вас нет стрелок на столе.",
+	"Quitar esta flecha": "Убрать эту стрелку",
+	"Quitar todas": "Убрать все",
+	"Tú": "Вы",
+	"{quien} quita una flecha": "{quien} убирает стрелку",
+	"{quien} quita la flecha de {de}": "{quien} убирает стрелку от {de}"
 }

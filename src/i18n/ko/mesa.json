@@ -1286,5 +1286,14 @@
 	"Olvidar este contador": "이 카운터 지우기",
 	"Solo esta": "이 카드만",
 	"En conjunto (todas las elegidas)": "함께 (선택한 모든 카드)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "혼자 하기와 온라인에서는 내 주사위가 앱 색상이 됩니다. 여러 명이 하는 로컬 게임에서는 각 플레이어가 자기 자리 색상으로 굴립니다."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "혼자 하기와 온라인에서는 내 주사위가 앱 색상이 됩니다. 여러 명이 하는 로컬 게임에서는 각 플레이어가 자기 자리 색상으로 굴립니다.",
+	"Mis flechas…": "내 화살표…",
+	"Mis flechas": "내 화살표",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "필요 없는 것만 지우세요. 가리킨 화살표는 테이블에서 강조됩니다.",
+	"No tienes flechas en la mesa.": "테이블에 화살표가 없습니다.",
+	"Quitar esta flecha": "이 화살표 지우기",
+	"Quitar todas": "모두 지우기",
+	"Tú": "나",
+	"{quien} quita una flecha": "{quien}이(가) 화살표를 지움",
+	"{quien} quita la flecha de {de}": "{quien}이(가) {de}의 화살표를 지움"
 }

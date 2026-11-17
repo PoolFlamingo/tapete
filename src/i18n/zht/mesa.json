@@ -1286,5 +1286,14 @@
 	"Olvidar este contador": "忘記此指示物",
 	"Solo esta": "僅此一張",
 	"En conjunto (todas las elegidas)": "一起（所有選取的）",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "單人與連線時，你的骰子使用應用程式的顏色；多人本機對局中，每位玩家以自己座位的顏色擲骰。"
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "單人與連線時，你的骰子使用應用程式的顏色；多人本機對局中，每位玩家以自己座位的顏色擲骰。",
+	"Mis flechas…": "我的箭頭…",
+	"Mis flechas": "我的箭頭",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "只移除多餘的那一個。你指向的箭頭會在牌桌上醒目顯示。",
+	"No tienes flechas en la mesa.": "牌桌上沒有你的箭頭。",
+	"Quitar esta flecha": "移除此箭頭",
+	"Quitar todas": "全部移除",
+	"Tú": "你",
+	"{quien} quita una flecha": "{quien} 移除了一個箭頭",
+	"{quien} quita la flecha de {de}": "{quien} 移除了 {de} 的箭頭"
 }

@@ -1364,5 +1364,14 @@
 	"Olvidar este contador": "Uită acest contor",
 	"Solo esta": "Doar aceasta",
 	"En conjunto (todas las elegidas)": "Împreună (toate cele selectate)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "În solo și în rețea, zarurile tale au culoarea aplicației; într-o partidă locală cu mai mulți jucători, fiecare aruncă cu culoarea locului său."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "În solo și în rețea, zarurile tale au culoarea aplicației; într-o partidă locală cu mai mulți jucători, fiecare aruncă cu culoarea locului său.",
+	"Mis flechas…": "Săgețile mele…",
+	"Mis flechas": "Săgețile mele",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Elimină doar pe cea în plus. Cea pe care o indici este evidențiată pe masă.",
+	"No tienes flechas en la mesa.": "Nu ai săgeți pe masă.",
+	"Quitar esta flecha": "Elimină această săgeată",
+	"Quitar todas": "Elimină toate",
+	"Tú": "Tu",
+	"{quien} quita una flecha": "{quien} elimină o săgeată",
+	"{quien} quita la flecha de {de}": "{quien} elimină săgeata de la {de}"
 }

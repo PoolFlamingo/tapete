@@ -1347,5 +1347,14 @@
 	"Olvidar este contador": "Forget this counter",
 	"Solo esta": "Only this one",
 	"En conjunto (todas las elegidas)": "Together (all selected)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "In solo and online games, your dice use the app's colour; in a local game with several players, each player rolls with their seat colour."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "In solo and online games, your dice use the app's colour; in a local game with several players, each player rolls with their seat colour.",
+	"Mis flechas…": "My arrows…",
+	"Mis flechas": "My arrows",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Remove just the one you don't want. The one you point at is highlighted on the table.",
+	"No tienes flechas en la mesa.": "You have no arrows on the table.",
+	"Quitar esta flecha": "Remove this arrow",
+	"Quitar todas": "Remove all",
+	"Tú": "You",
+	"{quien} quita una flecha": "{quien} removes an arrow",
+	"{quien} quita la flecha de {de}": "{quien} removes the arrow from {de}"
 }

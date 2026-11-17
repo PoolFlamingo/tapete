@@ -1286,5 +1286,14 @@
 	"Olvidar este contador": "このカウンターを削除",
 	"Solo esta": "このカードのみ",
 	"En conjunto (todas las elegidas)": "まとめて（選択したすべて）",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "ソロとオンラインでは、あなたのダイスはアプリの色になります。複数人のローカル対戦では、各プレイヤーが自分の席の色で振ります。"
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "ソロとオンラインでは、あなたのダイスはアプリの色になります。複数人のローカル対戦では、各プレイヤーが自分の席の色で振ります。",
+	"Mis flechas…": "自分の矢印…",
+	"Mis flechas": "自分の矢印",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "不要な矢印だけを外せます。指したものはテーブル上で強調表示されます。",
+	"No tienes flechas en la mesa.": "テーブル上に矢印はありません。",
+	"Quitar esta flecha": "この矢印を外す",
+	"Quitar todas": "すべて外す",
+	"Tú": "あなた",
+	"{quien} quita una flecha": "{quien}が矢印を外す",
+	"{quien} quita la flecha de {de}": "{quien}が{de}の矢印を外す"
 }

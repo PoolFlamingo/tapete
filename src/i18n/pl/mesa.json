@@ -1389,5 +1389,14 @@
 	"Olvidar este contador": "Zapomnij ten znacznik",
 	"Solo esta": "Tylko ta",
 	"En conjunto (todas las elegidas)": "Razem (wszystkie zaznaczone)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "W grze solo i sieciowej twoje kości mają kolor aplikacji; w grze lokalnej kilku graczy każdy rzuca w kolorze swojego miejsca."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "W grze solo i sieciowej twoje kości mają kolor aplikacji; w grze lokalnej kilku graczy każdy rzuca w kolorze swojego miejsca.",
+	"Mis flechas…": "Moje strzałki…",
+	"Mis flechas": "Moje strzałki",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Usuń tylko tę zbędną. Wskazana zostanie podświetlona na stole.",
+	"No tienes flechas en la mesa.": "Nie masz strzałek na stole.",
+	"Quitar esta flecha": "Usuń tę strzałkę",
+	"Quitar todas": "Usuń wszystkie",
+	"Tú": "Ty",
+	"{quien} quita una flecha": "{quien} usuwa strzałkę",
+	"{quien} quita la flecha de {de}": "{quien} usuwa strzałkę z {de}"
 }

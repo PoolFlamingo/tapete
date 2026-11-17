@@ -1284,5 +1284,14 @@
 	"Olvidar este contador": "Olvidar este contador",
 	"Solo esta": "Solo esta",
 	"En conjunto (todas las elegidas)": "En conjunto (todas las elegidas)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.",
+	"Mis flechas…": "Mis flechas…",
+	"Mis flechas": "Mis flechas",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Quita solo la que sobra. La que señales se resalta en la mesa.",
+	"No tienes flechas en la mesa.": "No tienes flechas en la mesa.",
+	"Quitar esta flecha": "Quitar esta flecha",
+	"Quitar todas": "Quitar todas",
+	"Tú": "Tú",
+	"{quien} quita una flecha": "{quien} quita una flecha",
+	"{quien} quita la flecha de {de}": "{quien} quita la flecha de {de}"
 }

@@ -1368,5 +1368,14 @@
 	"Olvidar este contador": "Oublier ce marqueur",
 	"Solo esta": "Seulement celle-ci",
 	"En conjunto (todas las elegidas)": "Ensemble (toutes les sélectionnées)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "En solo et en ligne, vos dés prennent la couleur de l'application ; dans une partie locale à plusieurs, chaque joueur lance avec la couleur de sa place."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "En solo et en ligne, vos dés prennent la couleur de l'application ; dans une partie locale à plusieurs, chaque joueur lance avec la couleur de sa place.",
+	"Mis flechas…": "Mes flèches…",
+	"Mis flechas": "Mes flèches",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Retirez seulement celle qui est en trop. Celle que vous désignez est mise en évidence sur la table.",
+	"No tienes flechas en la mesa.": "Vous n'avez aucune flèche sur la table.",
+	"Quitar esta flecha": "Retirer cette flèche",
+	"Quitar todas": "Tout retirer",
+	"Tú": "Vous",
+	"{quien} quita una flecha": "{quien} retire une flèche",
+	"{quien} quita la flecha de {de}": "{quien} retire la flèche de {de}"
 }

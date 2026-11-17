@@ -1347,5 +1347,14 @@
 	"Olvidar este contador": "Deze counter vergeten",
 	"Solo esta": "Alleen deze",
 	"En conjunto (todas las elegidas)": "Samen (alle geselecteerde)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "Solo en online hebben je dobbelstenen de kleur van de app; in een lokaal spel met meerdere spelers gooit ieder met de kleur van zijn plaats."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "Solo en online hebben je dobbelstenen de kleur van de app; in een lokaal spel met meerdere spelers gooit ieder met de kleur van zijn plaats.",
+	"Mis flechas…": "Mijn pijlen…",
+	"Mis flechas": "Mijn pijlen",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Verwijder alleen de overbodige. Degene die je aanwijst, wordt op tafel uitgelicht.",
+	"No tienes flechas en la mesa.": "Je hebt geen pijlen op tafel.",
+	"Quitar esta flecha": "Deze pijl verwijderen",
+	"Quitar todas": "Alles verwijderen",
+	"Tú": "Jij",
+	"{quien} quita una flecha": "{quien} verwijdert een pijl",
+	"{quien} quita la flecha de {de}": "{quien} verwijdert de pijl van {de}"
 }

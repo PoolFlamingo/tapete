@@ -1394,5 +1394,14 @@
 	"Olvidar este contador": "Забути цей лічильник",
 	"Solo esta": "Лише ця",
 	"En conjunto (todas las elegidas)": "Разом (усі вибрані)",
-	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "В одиночній і мережевій грі ваші кубики кольору застосунку; у локальній грі на кількох кожен кидає кольором свого місця."
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "В одиночній і мережевій грі ваші кубики кольору застосунку; у локальній грі на кількох кожен кидає кольором свого місця.",
+	"Mis flechas…": "Мої стрілки…",
+	"Mis flechas": "Мої стрілки",
+	"Quita solo la que sobra. La que señales se resalta en la mesa.": "Приберіть лише зайву. Та, на яку ви вказуєте, підсвічується на столі.",
+	"No tienes flechas en la mesa.": "У вас немає стрілок на столі.",
+	"Quitar esta flecha": "Прибрати цю стрілку",
+	"Quitar todas": "Прибрати всі",
+	"Tú": "Ви",
+	"{quien} quita una flecha": "{quien} прибирає стрілку",
+	"{quien} quita la flecha de {de}": "{quien} прибирає стрілку від {de}"
 }
