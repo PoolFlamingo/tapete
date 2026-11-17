@@ -131,7 +131,9 @@ function Contenido({ id }: { id: string }) {
 			onOpenAutoFocus={(e) => e.preventDefault()}
 		>
 			<DialogHeader>
-				<DialogTitle className="truncate">{titulo}</DialogTitle>
+				{/* `truncate` recorta todo lo que sale de la línea: con el `leading-none` del título se
+				    comía los rasgos de la «y» o la «g». */}
+				<DialogTitle className="truncate leading-snug">{titulo}</DialogTitle>
 				<DialogDescription className="truncate">
 					{ficha
 						? `${ficha.setNombre} · ${ficha.set.toUpperCase()} ${ficha.numero} · ${ficha.idioma.toUpperCase()}`
@@ -151,7 +153,7 @@ function Contenido({ id }: { id: string }) {
 					) : (
 						<div className="grid gap-4 p-1 sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
 							<div className="mx-auto flex w-full max-w-64 flex-col gap-2.5 sm:max-w-none">
-								<div className="relative aspect-[63/88] overflow-hidden rounded-[4.5%] bg-muted">
+								<div className="relative aspect-[63/88] overflow-hidden rounded-carta bg-muted">
 									{caraVista?.imagen ? (
 										<img
 											src={urlBusqueda(caraVista.imagen)}
