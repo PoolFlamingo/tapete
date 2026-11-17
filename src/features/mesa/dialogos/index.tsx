@@ -7,6 +7,7 @@ import { BuscarDialog, VerZonaDialog } from "./buscar";
 import { DanoComandanteDialog } from "./dano-comandante";
 import { FichasDialog } from "./fichas";
 import { MirarDialog } from "./mirar";
+import { MisFlechasDialog } from "./mis-flechas";
 import {
 	AtajosDialog,
 	ContadorDialog,
@@ -43,6 +44,7 @@ export function DialogosMesa({ deckId }: { deckId: string | null }) {
 			{d?.tipo === "danoComandante" && <DanoComandanteDialog />}
 			{d?.tipo === "atajos" && <AtajosDialog />}
 			{d?.tipo === "nota" && <NotaDialog carta={d.carta} nota={d.nota} />}
+			{d?.tipo === "flechas" && <MisFlechasDialog />}
 			<TapeteDialog
 				abierto={d?.tipo === "tapete"}
 				onCerrar={() => usePantalla.getState().abrir(null)}

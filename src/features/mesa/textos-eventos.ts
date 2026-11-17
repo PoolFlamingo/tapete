@@ -50,6 +50,7 @@ export const FRASES: Record<Accion["que"], string> = {
 	habilidadEnPila: paraTraducir("{quien} pone una habilidad de {carta} en la pila"),
 	flecha: paraTraducir("{quien} señala un objetivo"),
 	quitarFlechas: paraTraducir("{quien} quita sus flechas"),
+	quitarFlecha: paraTraducir("{quien} quita una flecha"),
 	robar: paraTraducir("{quien} roba {n} cartas"),
 	moler: paraTraducir("{quien} muele {n} cartas"),
 	manifestar: paraTraducir("{quien} manifiesta {n} cartas"),
@@ -297,6 +298,8 @@ export function textoDeEvento(
 	}
 	if (a.que === "notaEnCarta" && a.carta === null) return t(FRASES.ponerNota, vars);
 	if (a.que === "atarNota" && a.carta === null) return t("{quien} suelta una nota", vars);
+	if (a.que === "quitarFlecha" && a.de.tipo === "carta")
+		return t("{quien} quita la flecha de {de}", { quien, de: nombreCarta(m, a.de.id, t, marcar) });
 	if (a.que === "flecha" && a.de.tipo === "carta") {
 		const de = nombreCarta(m, a.de.id, t, marcar);
 		const ataque = a.tipo === "ataque";

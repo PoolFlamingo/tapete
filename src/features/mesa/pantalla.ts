@@ -29,7 +29,9 @@ export type DialogoMesa =
 	| { tipo: "atajos" }
 	/** Escribir una nota (suelta o atada a `carta`) o cambiar `nota`. */
 	| { tipo: "nota"; carta: IdCarta | null; nota?: Nota }
-	| { tipo: "tapete" };
+	| { tipo: "tapete" }
+	/** Mis flechas, para quitar solo una (clic derecho en el campo vacío). */
+	| { tipo: "flechas" };
 
 /** El ancho del panel lateral, en px (la vista grande se aparta de él). */
 export const ANCHO_PANEL = 320;
@@ -94,6 +96,9 @@ type Pantalla = {
 	manoMostrada: IdJugador | null;
 	/** La carta del fantasma (por nombre) que se señala, para verla en grande. */
 	fantasma: string | null;
+	/** La flecha (su sitio en `general.flechas`) que se señala en «Mis flechas»: resalta en la mesa. */
+	flechaResaltada: number | null;
+	setFlechaResaltada: (i: number | null) => void;
 	/**
 	 * El tablero está cambiando de tamaño (la ventana, el reparto entre mesas,
 	 * un panel): las cartas van a su sitio nuevo sin deslizarse, o se quedan
@@ -122,6 +127,8 @@ export const usePantalla = create<Pantalla>((set) => ({
 	capa: null,
 	manoMostrada: null,
 	fantasma: null,
+	flechaResaltada: null,
+	setFlechaResaltada: (flechaResaltada) => set({ flechaResaltada }),
 	redimensionando: false,
 	setRedimensionando: (redimensionando) => set({ redimensionando }),
 	setFantasma: (fantasma) => set({ fantasma }),

@@ -319,6 +319,12 @@ export function MenuCampo({
 					<Icono icon="game-icons:tombstone" />
 					{t("Cementerios y exilios")}
 				</ContextMenuItem>
+				{useMesa.getState().yo !== null && (
+					<ContextMenuItem onSelect={() => usePantalla.getState().abrir({ tipo: "flechas" })}>
+						<Icono icon="game-icons:on-target" />
+						{t("Mis flechas…")}
+					</ContextMenuItem>
+				)}
 				<ContextMenuItem onSelect={() => hacer({ que: "quitarFlechas", de: null })}>
 					<Icono icon="lucide:unlink" />
 					{t("Quitar mis flechas")}

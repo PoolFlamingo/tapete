@@ -5,6 +5,7 @@ import { useLang } from "@/components/language-provider";
 import { type Mesa, NINGUNA, tableroDe, useMesa } from "@/stores/mesa-store";
 import { duenoDeExtremo, entradaDesde, idDePunta } from "./cuentas-flechas";
 import { type Disposicion, posAPx } from "./disposicion";
+import { usePantalla } from "./pantalla";
 import { ATRIBUTO_FANTASMA } from "./vida-fantasma";
 
 /** Un color de reserva para una flecha de alguien que ya no está. */
@@ -48,6 +49,8 @@ export function Flechas({ disp }: { disp: Disposicion }) {
 	// a la vista (sin «yo»), el del tablero que se mira.
 	const yo = useMesa(duenoDeControles);
 	const varios = useMesa((s) => s.asientos.length > 1);
+	// La que se señala en «Mis flechas»: más gruesa, y las demás se apagan.
+	const resaltada = usePantalla((s) => s.flechaResaltada);
 	const alrededor = useContext(MesasAlrededor);
 	const svg = useRef<SVGSVGElement>(null);
 	// Dónde está mi marcador de vida (abajo a la derecha del tablero grande): se
@@ -162,10 +165,10 @@ export function Flechas({ disp }: { disp: Disposicion }) {
 						x2={b.x}
 						y2={b.y}
 						stroke={color}
-						strokeWidth={f.tipo === "ataque" ? 4 : 2.5}
+						strokeWidth={(f.tipo === "ataque" ? 4 : 2.5) + (resaltada === i ? 3 : 0)}
 						strokeDasharray={f.tipo === "objetivo" ? "8 5" : undefined}
 						markerEnd={`url(#${idDePunta(color)})`}
-						opacity={0.9}
+						opacity={resaltada === null ? 0.9 : resaltada === i ? 1 : 0.2}
 					/>
 				))}
 			</svg>
