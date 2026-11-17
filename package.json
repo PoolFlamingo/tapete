@@ -2,7 +2,7 @@
 	"name": "proxy-builder",
 	"private": true,
 	"license": "GPL-3.0-or-later",
-	"version": "4.0.9",
+	"version": "4.0.10",
 	"type": "module",
 	"packageManager": "pnpm@12.14.0",
 	"scripts": {
