@@ -305,7 +305,7 @@ export function RevelarDialog({ presetInicial }: { presetInicial?: Preset }) {
 								if (!c) return null;
 								return (
 									<div key={id} className="flex w-32 flex-col gap-1">
-										<div className="h-[178px] overflow-hidden rounded-[5%]">
+										<div className="h-[178px] overflow-hidden rounded-carta">
 											<ImagenCarta imagen={caraVisible(c)} ancho={244} nombre={c.origen?.nombre} />
 										</div>
 										<div className="grid grid-cols-2 gap-0.5">

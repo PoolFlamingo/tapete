@@ -82,7 +82,7 @@ export function LecturaMovil({
 					{Array.from({ length: caras }, (_, i) => (
 						<div
 							key={i}
-							className="shrink-0 overflow-hidden rounded-[4.5%] shadow-2xl"
+							className="shrink-0 overflow-hidden rounded-carta shadow-2xl"
 							style={{ width: ancho, height: alto }}
 						>
 							{cara(i, ancho, alto)}

@@ -115,7 +115,7 @@ function Rejilla({
 	const pinta = (lista: VistaCarta[]) =>
 		lista.map((c) => (
 			<div key={c.id} className="flex w-32 flex-col gap-1">
-				<div className="h-[178px] overflow-hidden rounded-[5%]" {...manejadoresLeer(c.id)}>
+				<div className="h-[178px] overflow-hidden rounded-carta" {...manejadoresLeer(c.id)}>
 					<ImagenCarta imagen={caraVisible(c, true)} ancho={244} nombre={c.origen?.nombre} />
 				</div>
 				<div className="flex flex-wrap justify-center gap-1">{acciones(c)}</div>

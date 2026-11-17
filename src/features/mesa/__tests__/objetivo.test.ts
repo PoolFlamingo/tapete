@@ -53,4 +53,36 @@ describe("elegir objetivo", () => {
 			tipo: "objetivo",
 		});
 	});
+
+	it("en conjunto, cada elegida pone su flecha al mismo objetivo (menos el propio objetivo)", async () => {
+		hacer.mockResolvedValue(true);
+		usePantalla.getState().setModo({
+			tipo: "flecha",
+			de: 3 as IdCarta,
+			flecha: "ataque",
+			con: [4 as IdCarta, 9 as IdCarta],
+		});
+		expect(elegirCarta(carta(9), t)).toBe(true);
+		await vi.waitFor(() => expect(hacer).toHaveBeenCalledTimes(2));
+		expect(hacer.mock.calls.map(([a]) => a.de.id)).toEqual([3, 4]);
+		expect(hacer).toHaveBeenLastCalledWith({
+			que: "flecha",
+			de: { tipo: "carta", id: 4 },
+			a: { tipo: "carta", id: 9 },
+			tipo: "ataque",
+		});
+	});
+
+	it("en conjunto, si el motor rechaza una flecha no se mandan las demás", async () => {
+		hacer.mockResolvedValue(false);
+		usePantalla.getState().setModo({
+			tipo: "flecha",
+			de: 3 as IdCarta,
+			flecha: "ataque",
+			con: [4 as IdCarta],
+		});
+		expect(elegirJugador(1, t)).toBe(true);
+		await new Promise((r) => setTimeout(r, 0));
+		expect(hacer).toHaveBeenCalledTimes(1);
+	});
 });

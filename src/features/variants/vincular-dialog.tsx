@@ -126,7 +126,7 @@ function Contenido({ carta }: { carta: DeckCard }) {
 			<div className="flex min-h-0 flex-1 flex-col gap-4 sm:flex-row">
 				{/* En móvil la imagen propia y el OCR van en una fila arriba; desde tableta, en columna. */}
 				<div className="flex shrink-0 gap-2.5 sm:w-52 sm:flex-col sm:gap-2">
-					<div className="aspect-[63/88] w-20 shrink-0 overflow-hidden rounded-[4.5%] bg-muted sm:w-full">
+					<div className="aspect-[63/88] w-20 shrink-0 overflow-hidden rounded-carta bg-muted sm:w-full">
 						{imagen && <img src={imagen} alt="" className="size-full object-cover" />}
 					</div>
 					<div className="flex min-w-0 flex-1 flex-col gap-2">

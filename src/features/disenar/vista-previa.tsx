@@ -372,7 +372,7 @@ export function VistaPrevia({
 							className="size-full object-contain drop-shadow-lg"
 						/>
 					) : (
-						<div className="flex size-full items-center justify-center rounded-[4.5%] bg-muted">
+						<div className="flex size-full items-center justify-center rounded-carta bg-muted">
 							{cargando ? (
 								<Icono
 									icon="lucide:loader-2"

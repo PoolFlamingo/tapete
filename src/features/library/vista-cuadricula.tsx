@@ -113,7 +113,7 @@ function TarjetaDeck({ deck: d }: { deck: DeckSummary }) {
 					type="button"
 					onClick={(e) => sel.pulsar(d.id, e)}
 					onDoubleClick={sel.alDobleClic && (() => sel.alDobleClic?.(d.id))}
-					className="relative aspect-[63/88] w-full overflow-hidden rounded-[4.5%] bg-muted"
+					className="relative aspect-[63/88] w-full overflow-hidden rounded-carta bg-muted"
 				>
 					{d.thumbnail && visible ? (
 						<img

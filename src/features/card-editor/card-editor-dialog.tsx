@@ -160,7 +160,7 @@ function Contenido({ carta }: { carta: DeckCard }) {
 				<div className="flex shrink-0 flex-col items-center gap-2 sm:w-[46%]">
 					<div
 						ref={marco}
-						className="relative aspect-[63/88] w-full max-w-[12rem] touch-none sm:max-w-sm overflow-hidden rounded-[4.5%] bg-muted shadow-md"
+						className="relative aspect-[63/88] w-full max-w-[12rem] touch-none sm:max-w-sm overflow-hidden rounded-carta bg-muted shadow-md"
 						style={{ cursor: borrador.crop.zoom > 1 ? "grab" : "default" }}
 						onPointerDown={alBajar}
 						onPointerMove={alMover}

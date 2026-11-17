@@ -127,6 +127,13 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Las esquinas de una carta: 3,175 mm (1/8") sobre 63 × 88 mm. Un `rounded-[5%]` a secas es
+   el 5 % del ancho en horizontal pero el 5 % del alto en vertical (4,4 mm) y se come el borde
+   de la carta; aquí cada eje lleva el suyo. Va en todo lo que tenga forma de carta. */
+@utility rounded-carta {
+  border-radius: 5.04% / 3.61%;
+}
+
 @import "./themes.css";
 @import "./styles/materials.css";
 @import "./styles/skin-zeus.css";

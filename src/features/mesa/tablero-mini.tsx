@@ -644,7 +644,7 @@ function LecturaGrande({ d, w, h }: { d: DatosMini; w: number; h: number }) {
 					>
 						<span
 							className={cn(
-								"absolute inset-0 block overflow-hidden rounded-[5%] shadow-[0_3px_10px_rgba(0,0,0,0.55)]",
+								"absolute inset-0 block overflow-hidden rounded-carta shadow-[0_3px_10px_rgba(0,0,0,0.55)]",
 								!reducir && "transition-[transform] duration-150 ease-out",
 							)}
 							style={{ transform: c.girada ? "rotate(90deg)" : undefined }}
@@ -668,7 +668,7 @@ function LecturaGrande({ d, w, h }: { d: DatosMini; w: number; h: number }) {
 					zIndex: 1000 + i,
 				};
 				const clase =
-					"absolute block overflow-hidden rounded-[5%] shadow-[0_3px_10px_rgba(0,0,0,0.55)]";
+					"absolute block overflow-hidden rounded-carta shadow-[0_3px_10px_rgba(0,0,0,0.55)]";
 				return visible ? (
 					<Deslizante
 						key={visible.id}
@@ -706,7 +706,7 @@ function LecturaGrande({ d, w, h }: { d: DatosMini; w: number; h: number }) {
 						</span>
 						<span
 							className={cn(
-								"relative block w-full flex-1 rounded-[5%] border border-dashed border-white/25 bg-black/20",
+								"relative block w-full flex-1 rounded-carta border border-dashed border-white/25 bg-black/20",
 								ms === 0 && "overflow-hidden",
 							)}
 						>

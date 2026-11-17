@@ -56,7 +56,7 @@ export function VistaFantasma() {
 					...(panelLateral ? { right: ANCHO_PANEL + 20 } : {}),
 				}}
 			>
-				<div className="size-full overflow-hidden rounded-[4.5%] shadow-2xl">
+				<div className="size-full overflow-hidden rounded-carta shadow-2xl">
 					<CartaFantasma nombre={nombre} ancho={488} className="size-full" />
 				</div>
 				{tactil && (

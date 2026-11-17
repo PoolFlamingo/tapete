@@ -115,7 +115,7 @@ export function MirarDialog({ d }: { d: Extract<DialogoMesa, { tipo: "mirar" }> 
 								<div key={id} className="flex w-36 flex-col gap-1">
 									<div
 										className={cn(
-											"h-[200px] overflow-hidden rounded-[5%]",
+											"h-[200px] overflow-hidden rounded-carta",
 											donde(id) !== "arriba" && "opacity-60",
 										)}
 										{...manejadoresLeer(id)}

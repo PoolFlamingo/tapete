@@ -186,7 +186,7 @@ function CartaDeMano({ id }: { id: IdCarta }) {
 				{...manejadoresLeer(id)}
 				onClick={() => useMesa.getState().seleccionar([id])}
 				className={cn(
-					"relative h-40 w-28 shrink-0 overflow-hidden rounded-[5%] shadow-lg",
+					"relative h-40 w-28 shrink-0 overflow-hidden rounded-carta shadow-lg",
 					elegida && "ring-3 ring-primary ring-offset-2 ring-offset-background",
 				)}
 			>

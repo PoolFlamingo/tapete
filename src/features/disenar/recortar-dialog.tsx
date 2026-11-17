@@ -151,7 +151,7 @@ export function RecortarDialog({
 									)}
 									alt=""
 									draggable={false}
-									className="size-full rounded-[4.5%] object-cover"
+									className="size-full rounded-carta object-cover"
 								/>
 								<div
 									className="pointer-events-none absolute border-2 border-cyan-400 bg-cyan-400/10 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)]"
@@ -184,7 +184,7 @@ export function RecortarDialog({
 											key={c.id}
 											type="button"
 											onClick={() => setElegida(c)}
-											className="overflow-hidden rounded-[4.5%] ring-primary hover:ring-2"
+											className="overflow-hidden rounded-carta ring-primary hover:ring-2"
 										>
 											<img
 												src={urlMiniatura(

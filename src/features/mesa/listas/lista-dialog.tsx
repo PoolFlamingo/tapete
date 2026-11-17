@@ -230,7 +230,7 @@ export function ListaDialog({
 			type="button"
 			onClick={alPulsar}
 			className={cn(
-				"relative shrink-0 overflow-hidden rounded-[5%] bg-muted transition",
+				"relative shrink-0 overflow-hidden rounded-carta bg-muted transition",
 				movil ? "h-[129px] w-[92px]" : "h-[105px] w-[75px]",
 				elegida ? "ring-2 ring-primary" : "opacity-45 hover:opacity-80",
 			)}

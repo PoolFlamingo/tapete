@@ -149,7 +149,7 @@ function Contenido({ carta }: { carta: DeckCard }) {
 					</RaizScroll.Provider>
 				</DialogCuerpo>
 				<div className="hidden w-64 shrink-0 flex-col gap-2 md:flex">
-					<div className="aspect-[63/88] w-full overflow-hidden rounded-[4.5%] bg-muted">
+					<div className="aspect-[63/88] w-full overflow-hidden rounded-carta bg-muted">
 						{elegida?.thumb && (
 							<img src={urlBusqueda(elegida.thumb)} alt="" className="size-full object-cover" />
 						)}

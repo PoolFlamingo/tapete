@@ -43,7 +43,7 @@ export function AmpliarCartas({
 								<img
 									src={urlMiniatura(blob, parametros(ajustes, EDICION_NEUTRA, false, 0), 745)}
 									alt=""
-									className="max-h-full max-w-full rounded-[4.5%] object-contain"
+									className="max-h-full max-w-full rounded-carta object-contain"
 								/>
 							)}
 						</Lado>
@@ -52,7 +52,7 @@ export function AmpliarCartas({
 								<img
 									src={urlBusqueda(original.thumb)}
 									alt=""
-									className="max-h-full max-w-full rounded-[4.5%] object-contain"
+									className="max-h-full max-w-full rounded-carta object-contain"
 								/>
 							) : (
 								<span className="text-xs text-muted-foreground">—</span>

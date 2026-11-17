@@ -588,7 +588,7 @@ export function InspeccionDialog() {
 				<div className="flex gap-2.5">
 					<div className="flex shrink-0 gap-2.5">
 						{(c.origen?.caras ?? [caraVisible(c)]).map((cara, i) => (
-							<div key={i} className="h-[350px] w-[250px] overflow-hidden rounded-[4.5%]">
+							<div key={i} className="h-[350px] w-[250px] overflow-hidden rounded-carta">
 								<ImagenCarta imagen={cara} ancho={488} nombre={c.origen?.nombre} />
 							</div>
 						))}

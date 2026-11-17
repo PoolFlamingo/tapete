@@ -149,7 +149,7 @@ export function FichasDialog({ para: paraInicial }: { para?: IdJugador }) {
 											key={`${f.nombre}-${i}`}
 											type="button"
 											onClick={() => void crear({ tipo: "delDeck", indice: i })}
-											className="h-[140px] w-[100px] overflow-hidden rounded-[5%] hover:ring-2 hover:ring-primary"
+											className="h-[140px] w-[100px] overflow-hidden rounded-carta hover:ring-2 hover:ring-primary"
 										>
 											<ImagenCarta imagen={f.caras[0] ?? f.dorso} ancho={244} nombre={f.nombre} />
 										</button>
@@ -223,7 +223,7 @@ export function FichasDialog({ para: paraInicial }: { para?: IdJugador }) {
 											type="button"
 											disabled={ocupado}
 											onClick={() => void deScryfall(r.id)}
-											className="w-[100px] overflow-hidden rounded-[5%] hover:ring-2 hover:ring-primary"
+											className="w-[100px] overflow-hidden rounded-carta hover:ring-2 hover:ring-primary"
 										>
 											{r.thumb ? (
 												<img src={urlBusqueda(r.thumb)} alt={r.name} loading="lazy" />

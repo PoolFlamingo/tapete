@@ -68,7 +68,7 @@ const Tarjeta = memo(function Tarjeta({
 				elegida && "bg-primary/15 ring-2 ring-primary",
 			)}
 		>
-			<div className="relative aspect-[63/88] w-full overflow-hidden rounded-[4.5%] bg-muted">
+			<div className="relative aspect-[63/88] w-full overflow-hidden rounded-carta bg-muted">
 				{c.thumb && visible ? (
 					<img
 						src={urlBusqueda(c.thumb)}

@@ -147,7 +147,7 @@ export function Mulligan() {
 							onClick={() => toca !== 0 && alternar(id)}
 							{...manejadoresLeer(id)}
 							className={cn(
-								"relative overflow-hidden rounded-[5%] shadow-xl transition",
+								"relative overflow-hidden rounded-carta shadow-xl transition",
 								// En un móvil de lado (411 dp de alto) la mano entera tiene que caber con sus botones.
 								// Fuera de ahí, solo el ancho (en rem, que escala con el tamaño de la interfaz) y
 								// el alto por la proporción de la carta: un alto en rem con un ancho en px

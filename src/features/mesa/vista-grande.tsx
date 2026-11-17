@@ -208,7 +208,7 @@ export function VistaGrande() {
 					{imagenes.map((imagen, i) => (
 						<div
 							key={i}
-							className="overflow-hidden rounded-[4.5%] shadow-2xl"
+							className="overflow-hidden rounded-carta shadow-2xl"
 							style={{ width: ancho, height: alto }}
 						>
 							<ImagenCarta imagen={imagen} ancho={488} nombre={c.origen?.nombre} />

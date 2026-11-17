@@ -19,7 +19,7 @@ export function DorsoGenerico({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				"flex size-full items-center justify-center rounded-[5%] border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-black",
+				"flex size-full items-center justify-center rounded-carta border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-black",
 				className,
 			)}
 		>
@@ -68,7 +68,7 @@ export function ImagenCarta({
 				// En red puede llegar más tarde (el anfitrión aún no la tenía): se reintenta.
 				window.setTimeout(() => setFallida((f) => (f === url ? null : f)), REINTENTO_MS);
 			}}
-			className={cn("size-full rounded-[5%] bg-slate-900 object-cover select-none", className)}
+			className={cn("size-full rounded-carta bg-slate-900 object-cover select-none", className)}
 		/>
 	);
 }

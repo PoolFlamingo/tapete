@@ -141,7 +141,7 @@ export const CartaMesa = memo(function CartaMesa({
 				>
 					<div
 						className={cn(
-							"relative size-full rounded-[5%] transition-transform",
+							"relative size-full rounded-carta transition-transform",
 							levantar && "group-hover:-translate-y-[35%] group-hover:scale-110",
 							sombras && "shadow-[0_3px_10px_rgba(0,0,0,0.55)]",
 							c.faseFuera && "opacity-40",

@@ -1002,7 +1002,7 @@ function Zonas({ disp, alPulsar }: { disp: Disposicion; alPulsar: AlPulsar }) {
 						{n > 0 ? ` · ${n}` : ""}
 					</span>
 				)}
-				<div className="relative w-full flex-1 rounded-[5%] border border-dashed border-white/25 bg-black/20">
+				<div className="relative w-full flex-1 rounded-carta border border-dashed border-white/25 bg-black/20">
 					{hijo}
 				</div>
 			</div>

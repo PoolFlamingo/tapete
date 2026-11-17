@@ -585,9 +585,9 @@ function Arrastrada({
 	return (
 		<div className="relative size-full rotate-2 cursor-grabbing">
 			{total > 1 && (
-				<div className="absolute inset-0 translate-x-1.5 translate-y-1.5 rotate-3 rounded-[4.5%] bg-muted shadow-lg ring-1 ring-black/20" />
+				<div className="absolute inset-0 translate-x-1.5 translate-y-1.5 rotate-3 rounded-carta bg-muted shadow-lg ring-1 ring-black/20" />
 			)}
-			<div className="relative size-full overflow-hidden rounded-[4.5%] bg-muted opacity-95 shadow-2xl ring-2 ring-primary">
+			<div className="relative size-full overflow-hidden rounded-carta bg-muted opacity-95 shadow-2xl ring-2 ring-primary">
 				{url ? (
 					<img src={url} alt="" draggable={false} className="size-full object-cover" />
 				) : (
