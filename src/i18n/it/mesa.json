@@ -1361,5 +1361,8 @@
 		"other": "{n} creature con costituzione sconosciuta: decidi tu se muoiono."
 	},
 	"Tus contadores": "I tuoi segnalini",
-	"Olvidar este contador": "Dimentica questo segnalino"
+	"Olvidar este contador": "Dimentica questo segnalino",
+	"Solo esta": "Solo questa",
+	"En conjunto (todas las elegidas)": "Insieme (tutte le selezionate)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "In solitario e online i tuoi dadi hanno il colore dell'app; in una partita locale con più giocatori, ognuno tira con il colore del proprio posto."
 }

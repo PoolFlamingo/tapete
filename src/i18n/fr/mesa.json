@@ -1365,5 +1365,8 @@
 		"other": "{n} créatures d'endurance inconnue : à vous de décider si elles meurent."
 	},
 	"Tus contadores": "Vos marqueurs",
-	"Olvidar este contador": "Oublier ce marqueur"
+	"Olvidar este contador": "Oublier ce marqueur",
+	"Solo esta": "Seulement celle-ci",
+	"En conjunto (todas las elegidas)": "Ensemble (toutes les sélectionnées)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "En solo et en ligne, vos dés prennent la couleur de l'application ; dans une partie locale à plusieurs, chaque joueur lance avec la couleur de sa place."
 }

@@ -1281,5 +1281,8 @@
 	"{dano} de daño a cada criatura: caen {n}": "{dano} de daño a cada criatura: caen {n}",
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": "{n} criaturas con resistencia desconocida: decide tú si caen.",
 	"Tus contadores": "Tus contadores",
-	"Olvidar este contador": "Olvidar este contador"
+	"Olvidar este contador": "Olvidar este contador",
+	"Solo esta": "Solo esta",
+	"En conjunto (todas las elegidas)": "En conjunto (todas las elegidas)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento."
 }

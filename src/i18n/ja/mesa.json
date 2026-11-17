@@ -1283,5 +1283,8 @@
 	"{dano} de daño a cada criatura: caen {n}": "各クリーチャーに {dano} 点のダメージ：{n} 体が死亡",
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": "タフネス不明のクリーチャー {n} 体：死亡するかはあなたが決めてください。",
 	"Tus contadores": "自分のカウンター",
-	"Olvidar este contador": "このカウンターを削除"
+	"Olvidar este contador": "このカウンターを削除",
+	"Solo esta": "このカードのみ",
+	"En conjunto (todas las elegidas)": "まとめて（選択したすべて）",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "ソロとオンラインでは、あなたのダイスはアプリの色になります。複数人のローカル対戦では、各プレイヤーが自分の席の色で振ります。"
 }

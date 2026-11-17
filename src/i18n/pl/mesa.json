@@ -1386,5 +1386,8 @@
 		"other": "{n} stworzenia o nieznanej wytrzymałości: ty decydujesz, czy giną."
 	},
 	"Tus contadores": "Twoje znaczniki",
-	"Olvidar este contador": "Zapomnij ten znacznik"
+	"Olvidar este contador": "Zapomnij ten znacznik",
+	"Solo esta": "Tylko ta",
+	"En conjunto (todas las elegidas)": "Razem (wszystkie zaznaczone)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "W grze solo i sieciowej twoje kości mają kolor aplikacji; w grze lokalnej kilku graczy każdy rzuca w kolorze swojego miejsca."
 }

@@ -1391,5 +1391,8 @@
 		"other": "{n} істоти з невідомою витривалістю: вирішіть самі, чи гинуть вони."
 	},
 	"Tus contadores": "Ваші лічильники",
-	"Olvidar este contador": "Забути цей лічильник"
+	"Olvidar este contador": "Забути цей лічильник",
+	"Solo esta": "Лише ця",
+	"En conjunto (todas las elegidas)": "Разом (усі вибрані)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "В одиночній і мережевій грі ваші кубики кольору застосунку; у локальній грі на кількох кожен кидає кольором свого місця."
 }

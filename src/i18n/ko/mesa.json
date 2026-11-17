@@ -1283,5 +1283,8 @@
 	"{dano} de daño a cada criatura: caen {n}": "각 생물에게 피해 {dano}: {n}개가 죽는다",
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": "방어력을 알 수 없는 생물 {n}개: 죽는지는 직접 정하세요.",
 	"Tus contadores": "내 카운터",
-	"Olvidar este contador": "이 카운터 지우기"
+	"Olvidar este contador": "이 카운터 지우기",
+	"Solo esta": "이 카드만",
+	"En conjunto (todas las elegidas)": "함께 (선택한 모든 카드)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "혼자 하기와 온라인에서는 내 주사위가 앱 색상이 됩니다. 여러 명이 하는 로컬 게임에서는 각 플레이어가 자기 자리 색상으로 굴립니다."
 }

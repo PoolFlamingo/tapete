@@ -1344,5 +1344,8 @@
 		"other": "{n} creatures with unknown toughness: you decide whether they die."
 	},
 	"Tus contadores": "Your counters",
-	"Olvidar este contador": "Forget this counter"
+	"Olvidar este contador": "Forget this counter",
+	"Solo esta": "Only this one",
+	"En conjunto (todas las elegidas)": "Together (all selected)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "In solo and online games, your dice use the app's colour; in a local game with several players, each player rolls with their seat colour."
 }

@@ -1344,5 +1344,8 @@
 		"other": "{n} Kreaturen mit unbekannter Widerstandskraft: Du entscheidest, ob sie sterben."
 	},
 	"Tus contadores": "Deine Marken",
-	"Olvidar este contador": "Diese Marke vergessen"
+	"Olvidar este contador": "Diese Marke vergessen",
+	"Solo esta": "Nur diese",
+	"En conjunto (todas las elegidas)": "Gemeinsam (alle ausgewählten)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "Allein und online haben deine Würfel die Farbe der App; in einer lokalen Partie mit mehreren würfelt jeder mit der Farbe seines Platzes."
 }

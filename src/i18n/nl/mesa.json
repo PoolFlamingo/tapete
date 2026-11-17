@@ -1344,5 +1344,8 @@
 		"other": "{n} wezens met onbekende verdediging: jij beslist of ze sterven."
 	},
 	"Tus contadores": "Je counters",
-	"Olvidar este contador": "Deze counter vergeten"
+	"Olvidar este contador": "Deze counter vergeten",
+	"Solo esta": "Alleen deze",
+	"En conjunto (todas las elegidas)": "Samen (alle geselecteerde)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "Solo en online hebben je dobbelstenen de kleur van de app; in een lokaal spel met meerdere spelers gooit ieder met de kleur van zijn plaats."
 }

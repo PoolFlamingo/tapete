@@ -1283,5 +1283,8 @@
 	"{dano} de daño a cada criatura: caen {n}": "对每个生物造成 {dano} 点伤害：{n} 个死去",
 	"{n} criaturas con resistencia desconocida: decide tú si caen.": "{n} 个防御力未知的生物：由你决定它们是否死去。",
 	"Tus contadores": "你的指示物",
-	"Olvidar este contador": "忘记此指示物"
+	"Olvidar este contador": "忘记此指示物",
+	"Solo esta": "仅此一张",
+	"En conjunto (todas las elegidas)": "一起（所有选中的）",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "单人和联机时，你的骰子使用应用的颜色；多人本地对局中，每位玩家用自己座位的颜色掷骰。"
 }

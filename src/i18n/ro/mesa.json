@@ -1361,5 +1361,8 @@
 		"other": "{n} de creaturi cu rezistență necunoscută: tu decizi dacă mor."
 	},
 	"Tus contadores": "Contoarele tale",
-	"Olvidar este contador": "Uită acest contor"
+	"Olvidar este contador": "Uită acest contor",
+	"Solo esta": "Doar aceasta",
+	"En conjunto (todas las elegidas)": "Împreună (toate cele selectate)",
+	"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.": "În solo și în rețea, zarurile tale au culoarea aplicației; într-o partidă locală cu mai mulți jucători, fiecare aruncă cu culoarea locului său."
 }
