@@ -43,7 +43,13 @@ export type CapaMovil = "mano" | "vida";
 /** Elegir con el siguiente clic la carta (o jugador) a la que se adjunta o apunta. */
 export type ModoObjetivo =
 	| { tipo: "adjuntar"; carta: IdCarta }
-	| { tipo: "flecha"; de: IdCarta; flecha: "ataque" | "objetivo" }
+	| {
+			tipo: "flecha";
+			de: IdCarta;
+			flecha: "ataque" | "objetivo";
+			/** «En conjunto»: las demás elegidas, cada una con su flecha al mismo objetivo. */
+			con?: IdCarta[];
+	  }
 	/** Atar esta nota a la carta del campo que se pulse. */
 	| { tipo: "nota"; nota: number };
 

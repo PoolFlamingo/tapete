@@ -133,11 +133,15 @@ function DelCampo({ c }: { c: VistaCarta }) {
 					<Tecla nombre="Adjuntar a…" />
 				</ContextMenuItem>
 			)}
-			<ContextMenuItem onSelect={() => op.flecha(c.id, "ataque")}>
-				<Icono icon="game-icons:on-target" />
-				{t("Atacar / objetivo")}
-				<Tecla nombre="Atacar / objetivo" />
-			</ContextMenuItem>
+			{varias ? (
+				<FlechaDeVarias c={c} />
+			) : (
+				<ContextMenuItem onSelect={() => op.flecha(c.id, "ataque")}>
+					<Icono icon="game-icons:on-target" />
+					{t("Atacar / objetivo")}
+					<Tecla nombre="Atacar / objetivo" />
+				</ContextMenuItem>
+			)}
 			<ContextMenuItem onSelect={() => op.habilidadEnPila(c.id)}>
 				<Icono icon="lucide:sparkles" />
 				{t("Habilidad a la pila…")}
@@ -157,6 +161,33 @@ function DelCampo({ c }: { c: VistaCarta }) {
 			<Resaltar c={c} />
 			{(c.cantidad > 1 || varias) && <Monton c={c} varias={varias} />}
 		</>
+	);
+}
+
+/**
+ * «Atacar / objetivo» con varias elegidas: solo la carta pulsada o todas juntas
+ * contra el mismo objetivo (una flecha desde cada una).
+ */
+function FlechaDeVarias({ c }: { c: VistaCarta }) {
+	const { t } = useLang();
+	return (
+		<ContextMenuSub>
+			<ContextMenuSubTrigger>
+				<Icono icon="game-icons:on-target" />
+				{t("Atacar / objetivo")}
+			</ContextMenuSubTrigger>
+			<ContextMenuSubContent className="w-56 text-xs">
+				<ContextMenuItem onSelect={() => op.flecha(c.id, "ataque")}>
+					<Icono icon="game-icons:on-target" />
+					{t("Solo esta")}
+					<Tecla nombre="Atacar / objetivo" />
+				</ContextMenuItem>
+				<ContextMenuItem onSelect={() => op.flecha(c.id, "ataque", true)}>
+					<Icono icon="game-icons:crossed-swords" />
+					{t("En conjunto (todas las elegidas)")}
+				</ContextMenuItem>
+			</ContextMenuSubContent>
+		</ContextMenuSub>
 	);
 }
 

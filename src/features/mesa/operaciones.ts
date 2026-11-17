@@ -149,8 +149,16 @@ export function tomarControl(ids: IdCarta[], hastaFinDeTurno = false) {
 	return hacer({ que: "tomarControl", cartas: ids, hastaFinDeTurno });
 }
 
-export function flecha(id: IdCarta, tipo: "ataque" | "objetivo" = "ataque") {
-	usePantalla.getState().setModo({ tipo: "flecha", de: id, flecha: tipo });
+export function flecha(
+	id: IdCarta,
+	tipo: "ataque" | "objetivo" = "ataque",
+	/** Con varias elegidas, que ataquen todas al mismo objetivo (si no, solo esta). */
+	enConjunto = false,
+) {
+	const con = enConjunto ? objetivo(id).filter((x) => x !== id) : [];
+	usePantalla
+		.getState()
+		.setModo({ tipo: "flecha", de: id, flecha: tipo, ...(con.length > 0 && { con }) });
 }
 
 export function inspeccionar(id: IdCarta) {

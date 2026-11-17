@@ -1,11 +1,12 @@
 import { toast } from "sonner";
+import type { Extremo } from "@/bindings/Extremo";
 import type { IdJugador } from "@/bindings/IdJugador";
 import type { VistaCarta } from "@/bindings/VistaCarta";
 import { useMesa } from "@/stores/mesa-store";
 import { hacer } from "./acciones";
 import { ataqueAUnCompanero } from "./equipos";
 import * as op from "./operaciones";
-import { usePantalla } from "./pantalla";
+import { type ModoObjetivo, usePantalla } from "./pantalla";
 
 type Traducir = (texto: string) => string;
 
@@ -20,6 +21,19 @@ function avisarFuegoAmigo(
 	if (md.flecha !== "ataque" || !de) return;
 	if (ataqueAUnCompanero(m.jugadores, m.variantes, de.controlador, contra)) {
 		toast.warning(t("Ese jugador es de tu equipo y el fuego amigo está apagado."));
+	}
+}
+
+/**
+ * Una flecha a `a` desde la carta del modo y, «en conjunto», desde las demás
+ * elegidas (menos la que sea el propio objetivo). El motor solo sabe de flechas
+ * sueltas: van una tras otra, en orden.
+ */
+async function ponerFlechas(md: Extract<ModoObjetivo, { tipo: "flecha" }>, a: Extremo) {
+	for (const de of [md.de, ...(md.con ?? [])]) {
+		if (a.tipo === "carta" && a.id === de) continue;
+		if (!(await hacer({ que: "flecha", de: { tipo: "carta", id: de }, a, tipo: md.flecha })))
+			return;
 	}
 }
 
@@ -44,12 +58,7 @@ export function elegirCarta(c: VistaCarta, t: Traducir): boolean {
 		void op.adjuntar(md.carta, c.id);
 	} else if (md.tipo === "flecha" && md.de !== c.id) {
 		avisarFuegoAmigo(useMesa.getState().cartas[md.de], c.controlador, t, md);
-		void hacer({
-			que: "flecha",
-			de: { tipo: "carta", id: md.de },
-			a: { tipo: "carta", id: c.id },
-			tipo: md.flecha,
-		});
+		void ponerFlechas(md, { tipo: "carta", id: c.id });
 	}
 	return true;
 }
@@ -63,12 +72,7 @@ export function elegirFantasma(_t: Traducir, otro: number | null = null): boolea
 	const md = pantalla.modo;
 	if (md?.tipo !== "flecha") return false;
 	pantalla.setModo(null);
-	void hacer({
-		que: "flecha",
-		de: { tipo: "carta", id: md.de },
-		a: otro === null ? { tipo: "fantasma" } : { tipo: "otroFantasma", id: otro },
-		tipo: md.flecha,
-	});
+	void ponerFlechas(md, otro === null ? { tipo: "fantasma" } : { tipo: "otroFantasma", id: otro });
 	return true;
 }
 
@@ -82,11 +86,6 @@ export function elegirJugador(jugador: IdJugador, t: Traducir): boolean {
 	if (md?.tipo !== "flecha") return false;
 	pantalla.setModo(null);
 	avisarFuegoAmigo(useMesa.getState().cartas[md.de], jugador, t, md);
-	void hacer({
-		que: "flecha",
-		de: { tipo: "carta", id: md.de },
-		a: { tipo: "jugador", id: jugador },
-		tipo: md.flecha,
-	});
+	void ponerFlechas(md, { tipo: "jugador", id: jugador });
 	return true;
 }
