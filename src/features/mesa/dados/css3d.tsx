@@ -261,13 +261,13 @@ function Dado({ p, estilo, fondo }: { p: PiezaTirada; estilo: Estilo; fondo: str
 				const pl = planoCara(g, i);
 				const d = pl.radio * 2 * ESCALA;
 				const puntos = pl.puntos.map(([x, y]) => `${x * ESCALA},${-y * ESCALA}`).join(" ");
-				const xs = pl.puntos.map(([x]) => x * ESCALA);
-				const ys = pl.puntos.map(([, y]) => -y * ESCALA);
-				const [x0, y0] = [Math.min(...xs), Math.min(...ys)];
-				const [ancho, alto] = [Math.max(...xs) - x0, Math.max(...ys) - y0];
-				// El trozo del fondo de esta cara, estirado a la caja del polígono.
+				// El trozo del fondo de esta cara, como en el 3D (`escena3d.ts::mallaDado`): un
+				// cuadrado centrado en la cara, con la misma escala en los dos ejes, en el que
+				// el radio de la cara es el 46 % del lado. Estirado a la caja del polígono, una
+				// imagen propia salía aplastada en los triángulos (d4, d8, d20).
 				const [fx, fy, fl] = trozoDeCara(estilo, i);
-				const [ex, ey] = [ancho / fl, alto / fl];
+				const celda = (pl.radio * ESCALA) / 0.46;
+				const escala = celda / fl;
 				const recorte = `${id}-${i}`;
 				let dentro: React.ReactNode = null;
 				if (p.forma === "planar") {
@@ -334,10 +334,10 @@ function Dado({ p, estilo, fondo }: { p: PiezaTirada; estilo: Estilo; fondo: str
 						/>
 						<image
 							href={fondo}
-							x={x0 - fx * ex}
-							y={y0 - fy * ey}
-							width={LADO_FONDO * ex}
-							height={LADO_FONDO * ey}
+							x={-celda / 2 - fx * escala}
+							y={-celda / 2 - fy * escala}
+							width={LADO_FONDO * escala}
+							height={LADO_FONDO * escala}
 							preserveAspectRatio="none"
 							clipPath={`url(#${CSS.escape(recorte)})`}
 						/>

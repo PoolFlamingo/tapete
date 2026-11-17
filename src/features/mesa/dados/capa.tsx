@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useMesa } from "@/stores/mesa-store";
 import { useUi } from "@/stores/ui-store";
 import { useSinAnimaciones } from "../fps";
-import { claveEstilo, estiloDe, useAspectoDados } from "./aspecto";
+import { claveEstilo, estiloDe, useAspectoDados, useQuienTira } from "./aspecto";
 import { type Tirada, useDados } from "./cola";
 import { DadosCss } from "./css3d";
 import type { EscenaDados } from "./escena3d";
@@ -42,10 +41,7 @@ export function CapaDados() {
 	const escena = useRef<EscenaDados | null>(null);
 	// El 3D no acabó una tirada: desde la siguiente, CSS 3D.
 	const colgado3d = useRef(false);
-	const color = useMesa((s) =>
-		tirada?.actor != null ? (s.jugadores[tirada.actor]?.color ?? "#7c3aed") : "#7c3aed",
-	);
-	const yo = useMesa((s) => s.yo);
+	const { color, mia } = useQuienTira(tirada?.actor ?? null);
 	const aspecto = useAspectoDados((s) => s.vista);
 	useEffect(() => {
 		void useAspectoDados.getState().cargar();
@@ -64,10 +60,7 @@ export function CapaDados() {
 			if (!ric) window.clearTimeout(id);
 		};
 	}, [nivel]);
-	const estilo = useMemo(
-		() => estiloDe(aspecto, color, tirada !== null && tirada.actor === yo),
-		[aspecto, color, tirada, yo],
-	);
+	const estilo = useMemo(() => estiloDe(aspecto, color, mia), [aspecto, color, mia]);
 	// El fondo de las caras se pinta una vez por estilo (con imagen, al cargarla).
 	const [fondo, setFondo] = useState<{
 		clave: string;

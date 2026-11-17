@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLang } from "@/components/language-provider";
-import { useMesa } from "@/stores/mesa-store";
-import { claveEstilo, type Estilo, estiloDe, useAspectoDados } from "./aspecto";
+import { claveEstilo, type Estilo, estiloDe, useAspectoDados, useQuienTira } from "./aspecto";
 import { type CambioAzar, MAX_PIEZAS, type PiezaTirada } from "./cola";
 import { dadosDeTirada } from "./geometria";
 import { PiezaQuieta } from "./plano";
@@ -17,18 +16,12 @@ import { lienzoFondo, urlFondo } from "./texturas";
 
 /** El estilo de las piezas de `actor` y el fondo de sus caras (`null` mientras se pinta). */
 export function useEstiloDe(actor: number | null): { estilo: Estilo; fondo: string | null } {
-	const color = useMesa((s) =>
-		actor != null ? (s.jugadores[actor]?.color ?? "#7c3aed") : "#7c3aed",
-	);
-	const yo = useMesa((s) => s.yo);
+	const { color, mia } = useQuienTira(actor);
 	const vista = useAspectoDados((s) => s.vista);
 	useEffect(() => {
 		void useAspectoDados.getState().cargar();
 	}, []);
-	const estilo = useMemo(
-		() => estiloDe(vista, color, actor !== null && actor === yo),
-		[vista, color, actor, yo],
-	);
+	const estilo = useMemo(() => estiloDe(vista, color, mia), [vista, color, mia]);
 	const clave = claveEstilo(estilo);
 	const [fondo, setFondo] = useState<{ clave: string; url: string } | null>(null);
 	useEffect(() => {

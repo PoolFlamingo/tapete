@@ -5,13 +5,15 @@ import { Fila, FilaInterruptor, Selector } from "@/components/campos";
 import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
-import { ASPECTO_DE_FABRICA, estiloDe, useAspectoDados } from "@/features/mesa/dados/aspecto";
+import {
+	ASPECTO_DE_FABRICA,
+	estiloDe,
+	useAspectoDados,
+	useColorDeLaApp,
+} from "@/features/mesa/dados/aspecto";
 import type { Tirada } from "@/features/mesa/dados/cola";
 import { TiradaEnVivo } from "@/features/mesa/dados/en-vivo";
 import { abrirParaImportar } from "@/lib/dialogos";
-
-/** El color de muestra cuando el dado lleva el del jugador. */
-const COLOR_DE_MUESTRA = "#7c3aed";
 
 /** Una tirada de muestra: un d20 en 20, un d6 en 6 y una moneda de cara. */
 function muestra(semilla: number): Tirada {
@@ -42,6 +44,8 @@ export function AjustesDados() {
 	const [sonar, setSonar] = useState(false);
 	const [ocupado, setOcupado] = useState(false);
 	const espera = useRef<number | undefined>(undefined);
+	// «Del color del jugador» es el color de la app: el mismo que llevan tus dados en la mesa.
+	const colorApp = useColorDeLaApp();
 
 	useEffect(() => {
 		void useAspectoDados.getState().cargar();
@@ -87,10 +91,10 @@ export function AjustesDados() {
 		() =>
 			estiloDe(
 				{ aspecto: local, imagen: local.imagen ? (vista?.imagen ?? null) : null },
-				COLOR_DE_MUESTRA,
+				colorApp,
 				true,
 			),
-		[local, vista],
+		[local, vista, colorApp],
 	);
 	const tirada = useMemo(() => muestra(semilla), [semilla]);
 
@@ -117,8 +121,11 @@ export function AjustesDados() {
 			</div>
 			<FilaInterruptor
 				etiqueta={t("Del color del jugador")}
+				ayuda={t(
+					"En solitario y en red, tus dados llevan el color de la app; en una partida local de varios, cada jugador tira con el color de su asiento.",
+				)}
 				valor={local.color === null}
-				onChange={(v) => cambiar({ color: v ? null : COLOR_DE_MUESTRA })}
+				onChange={(v) => cambiar({ color: v ? null : colorApp })}
 			/>
 			{local.color !== null && (
 				<Fila etiqueta={t("Color del dado")}>

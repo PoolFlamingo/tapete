@@ -179,8 +179,16 @@ async function pintarFondo(e: Estilo): Promise<HTMLCanvasElement> {
 	ctx.fillRect(0, 0, lado, lado);
 	if (e.imagen) {
 		try {
-			ctx.drawImage(await cargarImagen(e.imagen), 0, 0, lado, lado);
-			return c;
+			// Como `object-fit: cover`: centrada y recortada, nunca estirada (una foto
+			// apaisada salía aplastada en cada cara).
+			const img = await cargarImagen(e.imagen);
+			const s = Math.min(img.naturalWidth, img.naturalHeight);
+			if (s > 0) {
+				const sx = (img.naturalWidth - s) / 2;
+				const sy = (img.naturalHeight - s) / 2;
+				ctx.drawImage(img, sx, sy, s, s, 0, 0, lado, lado);
+				return c;
+			}
 		} catch {
 			// Sin la imagen, el color.
 		}

@@ -1,9 +1,12 @@
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import type { Acabado } from "@/bindings/Acabado";
 import type { AspectoDados } from "@/bindings/AspectoDados";
 import type { Metal } from "@/bindings/Metal";
 import type { VistaAspectoDados } from "@/bindings/VistaAspectoDados";
 import { call } from "@/lib/ipc";
+import { useMesa } from "@/stores/mesa-store";
+import { useRed } from "@/stores/red-store";
 
 /**
  * **El aspecto de los dados y la moneda** de quien juega (Ajustes > Mesa).
@@ -66,10 +69,79 @@ export function esClaro(hex: string): boolean {
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b > 140;
 }
 
+/** Si no se puede leer el color del tema (sin lienzo), este violeta. */
+const COLOR_DE_RESERVA = "#7c3aed";
+
+/** El `--primary` del tema de ahora como `#rrggbb` (a través de un lienzo: vale `oklch(…)`). */
+function leerColorDeLaApp(): string {
+	if (typeof document === "undefined") return COLOR_DE_RESERVA;
+	const ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+	if (!ctx) return COLOR_DE_RESERVA;
+	const sonda = document.createElement("span");
+	sonda.style.display = "none";
+	sonda.style.color = "var(--primary)";
+	document.body.append(sonda);
+	const css = getComputedStyle(sonda).color;
+	sonda.remove();
+	ctx.fillStyle = "#010203";
+	ctx.fillStyle = css;
+	if (ctx.fillStyle === "#010203") return COLOR_DE_RESERVA;
+	ctx.fillRect(0, 0, 1, 1);
+	const [r = 0, g = 0, b = 0, a = 0] = ctx.getImageData(0, 0, 1, 1).data;
+	if (!a) return COLOR_DE_RESERVA;
+	return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
+}
+
+let colorDeLaApp: string | null = null;
+
+/** El tema se cambia en `<html>` (`data-theme`, la clase `dark`, variables en `style`). */
+function seguirElTema(aviso: () => void): () => void {
+	const o = new MutationObserver(() => {
+		colorDeLaApp = null;
+		aviso();
+	});
+	o.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["class", "data-theme", "style"],
+	});
+	return () => o.disconnect();
+}
+
 /**
- * El estilo de una tirada: con el aspecto de quien juega si la tiró él, y si
- * no, el de fábrica con el color de quien tiró. (En línea, cada jugador
- * mandará el suyo.)
+ * **Tu color** para los dados con «Del color del jugador»: el de la app (el
+ * primario del tema). Es el que enseña la muestra de Ajustes y el de tus
+ * tiradas en solitario y en red, sea cual sea tu asiento.
+ */
+export function useColorDeLaApp(): string {
+	return useSyncExternalStore(seguirElTema, () => {
+		colorDeLaApp ??= leerColorDeLaApp();
+		return colorDeLaApp;
+	});
+}
+
+/**
+ * Con qué color y si con mi aspecto se pintan las piezas que tiró `actor`.
+ * Las mías llevan lo de Ajustes (y, «del color del jugador», el de la app)
+ * en solitario y en red; en una partida local de varios no, porque todos
+ * juegan en esta pantalla: cada uno tira con el aspecto de fábrica y el color
+ * de su asiento, para que se vea quién tiró.
+ */
+export function useQuienTira(actor: number | null): { color: string; mia: boolean } {
+	const delAsiento = useMesa((s) =>
+		actor != null ? (s.jugadores[actor]?.color ?? COLOR_DE_RESERVA) : COLOR_DE_RESERVA,
+	);
+	const yo = useMesa((s) => s.yo);
+	const varios = useMesa((s) => s.asientos.length > 1);
+	const sinRed = useRed((s) => s.papel === null);
+	const app = useColorDeLaApp();
+	const mia = !(varios && sinRed) && actor !== null && actor === yo;
+	return { color: mia ? app : delAsiento, mia };
+}
+
+/**
+ * El estilo de una tirada: con el aspecto de quien juega si es suya
+ * (`useQuienTira`), y si no, el de fábrica con el color de quien tiró.
+ * (En línea, cada jugador mandará el suyo.)
  */
 export function estiloDe(
 	vista: VistaAspectoDados | null,
