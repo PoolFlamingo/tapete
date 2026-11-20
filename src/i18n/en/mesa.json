@@ -723,7 +723,6 @@
 	"Ese fichero no es una identidad de Tapete.": "That file is not a Tapete identity.",
 	"Copiar enlace": "Copy link",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "A game is in progress: leave it to use the link.",
-	"En partida local, pasar a mirar al jugador del turno": "In a local game, switch to the player whose turn it is",
 	"Partida local…": "Local game…",
 	"Partida local": "Local game",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Several players on this computer, each with their own deck. Switch between boards with the player chips.",
@@ -1154,7 +1153,6 @@
 	"Mirar su mano": "Look at their hand",
 	"Dejar de mirar su mano": "Stop looking at their hand",
 	"Que enseñe su mano a todos": "Make them reveal their hand",
-	"Que deje de enseñar su mano": "Make them hide their hand",
 	"Descartar cuántas al azar": "Discard how many at random",
 	"Que descarte al azar…": "Make them discard at random…",
 	"Que descarte toda la mano": "Make them discard their hand",
@@ -1356,5 +1354,12 @@
 	"Quitar todas": "Remove all",
 	"Tú": "You",
 	"{quien} quita una flecha": "{quien} removes an arrow",
-	"{quien} quita la flecha de {de}": "{quien} removes the arrow from {de}"
+	"{quien} quita la flecha de {de}": "{quien} removes the arrow from {de}",
+	"Seguir al jugador del turno": "Follow the player whose turn it is",
+	"Ocultar la barra": "Hide the bar",
+	"Mostrar la barra": "Show the bar",
+	"Quitar la bolita (doble toque)": "Remove the marker (double tap)",
+	"Desplegar {panel}": "Expand {panel}",
+	"Plegar {panel}": "Collapse {panel}",
+	"Plegar el aviso": "Collapse the notice"
 }

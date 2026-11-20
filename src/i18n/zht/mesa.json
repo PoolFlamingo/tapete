@@ -669,7 +669,6 @@
 	"Ese fichero no es una identidad de Tapete.": "該檔案不是 Tapete 的身分檔案。",
 	"Copiar enlace": "複製連結",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "對局進行中：請先退出對局再使用該連結。",
-	"En partida local, pasar a mirar al jugador del turno": "本機對局中自動切換到目前回合的玩家",
 	"Partida local…": "本機對局…",
 	"Partida local": "本機對局",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "多位玩家在這台電腦上各用自己的牌組對局。透過玩家標籤在各自的牌桌之間切換。",
@@ -1100,7 +1099,6 @@
 	"Mirar su mano": "查看手牌",
 	"Dejar de mirar su mano": "不再查看手牌",
 	"Que enseñe su mano a todos": "讓其向所有人展示手牌",
-	"Que deje de enseñar su mano": "讓其不再展示手牌",
 	"Descartar cuántas al azar": "隨機棄幾張",
 	"Que descarte al azar…": "讓其隨機棄牌…",
 	"Que descarte toda la mano": "讓其棄掉全部手牌",
@@ -1295,5 +1293,12 @@
 	"Quitar todas": "全部移除",
 	"Tú": "你",
 	"{quien} quita una flecha": "{quien} 移除了一個箭頭",
-	"{quien} quita la flecha de {de}": "{quien} 移除了 {de} 的箭頭"
+	"{quien} quita la flecha de {de}": "{quien} 移除了 {de} 的箭頭",
+	"Seguir al jugador del turno": "跟隨目前回合的玩家",
+	"Ocultar la barra": "隱藏工具列",
+	"Mostrar la barra": "顯示工具列",
+	"Quitar la bolita (doble toque)": "移除標記（雙擊）",
+	"Desplegar {panel}": "展開{panel}",
+	"Plegar {panel}": "收合{panel}",
+	"Plegar el aviso": "收合提示"
 }

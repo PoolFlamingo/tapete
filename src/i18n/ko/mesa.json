@@ -669,7 +669,6 @@
 	"Ese fichero no es una identidad de Tapete.": "해당 파일은 Tapete 신원이 아닙니다.",
 	"Copiar enlace": "링크 복사",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "게임이 진행 중입니다. 링크를 사용하려면 게임에서 나가세요.",
-	"En partida local, pasar a mirar al jugador del turno": "로컬 게임에서 차례인 플레이어로 전환",
 	"Partida local…": "로컬 게임…",
 	"Partida local": "로컬 게임",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "이 컴퓨터에서 여러 플레이어가 각자의 덱으로 플레이합니다. 플레이어 칩으로 보드를 전환합니다.",
@@ -1100,7 +1099,6 @@
 	"Mirar su mano": "손 보기",
 	"Dejar de mirar su mano": "손 그만 보기",
 	"Que enseñe su mano a todos": "손을 모두에게 공개하게 하기",
-	"Que deje de enseñar su mano": "손 공개를 멈추게 하기",
 	"Descartar cuántas al azar": "무작위로 버릴 장수",
 	"Que descarte al azar…": "무작위로 버리게 하기…",
 	"Que descarte toda la mano": "손 전체를 버리게 하기",
@@ -1295,5 +1293,12 @@
 	"Quitar todas": "모두 지우기",
 	"Tú": "나",
 	"{quien} quita una flecha": "{quien}이(가) 화살표를 지움",
-	"{quien} quita la flecha de {de}": "{quien}이(가) {de}의 화살표를 지움"
+	"{quien} quita la flecha de {de}": "{quien}이(가) {de}의 화살표를 지움",
+	"Seguir al jugador del turno": "차례인 플레이어 따라가기",
+	"Ocultar la barra": "바 숨기기",
+	"Mostrar la barra": "바 보이기",
+	"Quitar la bolita (doble toque)": "마커 제거(두 번 탭)",
+	"Desplegar {panel}": "{panel} 펼치기",
+	"Plegar {panel}": "{panel} 접기",
+	"Plegar el aviso": "알림 접기"
 }

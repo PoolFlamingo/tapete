@@ -669,7 +669,6 @@
 	"Ese fichero no es una identidad de Tapete.": "そのファイルはTapeteのIDではありません。",
 	"Copiar enlace": "リンクをコピー",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "対戦中です。リンクを使うには対戦から抜けてください。",
-	"En partida local, pasar a mirar al jugador del turno": "ローカル対戦では手番のプレイヤーに切り替える",
 	"Partida local…": "ローカル対戦…",
 	"Partida local": "ローカル対戦",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "このコンピューターで複数のプレイヤーが、それぞれのデッキで遊びます。プレイヤーのチップでボードを切り替えます。",
@@ -1100,7 +1099,6 @@
 	"Mirar su mano": "手札を見る",
 	"Dejar de mirar su mano": "手札を見るのをやめる",
 	"Que enseñe su mano a todos": "手札を全員に公開させる",
-	"Que deje de enseñar su mano": "手札の公開をやめさせる",
 	"Descartar cuántas al azar": "ランダムに捨てる枚数",
 	"Que descarte al azar…": "ランダムに捨てさせる…",
 	"Que descarte toda la mano": "手札をすべて捨てさせる",
@@ -1295,5 +1293,12 @@
 	"Quitar todas": "すべて外す",
 	"Tú": "あなた",
 	"{quien} quita una flecha": "{quien}が矢印を外す",
-	"{quien} quita la flecha de {de}": "{quien}が{de}の矢印を外す"
+	"{quien} quita la flecha de {de}": "{quien}が{de}の矢印を外す",
+	"Seguir al jugador del turno": "手番のプレイヤーを追う",
+	"Ocultar la barra": "バーを隠す",
+	"Mostrar la barra": "バーを表示",
+	"Quitar la bolita (doble toque)": "マーカーを外す（ダブルタップ）",
+	"Desplegar {panel}": "{panel}を開く",
+	"Plegar {panel}": "{panel}をたたむ",
+	"Plegar el aviso": "お知らせをたたむ"
 }

@@ -759,7 +759,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Этот файл не является личностью Tapete.",
 	"Copiar enlace": "Скопировать ссылку",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Идёт партия: выйди из неё, чтобы использовать ссылку.",
-	"En partida local, pasar a mirar al jugador del turno": "В локальной партии переключаться на игрока, чей сейчас ход",
 	"Partida local…": "Локальная партия…",
 	"Partida local": "Локальная партия",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Несколько игроков на этом компьютере, у каждого своя колода. Между столами переключаются фишками игроков.",
@@ -1190,7 +1189,6 @@
 	"Mirar su mano": "Посмотреть руку",
 	"Dejar de mirar su mano": "Перестать смотреть руку",
 	"Que enseñe su mano a todos": "Пусть покажет руку всем",
-	"Que deje de enseñar su mano": "Пусть спрячет руку",
 	"Descartar cuántas al azar": "Сколько сбросить случайно",
 	"Que descarte al azar…": "Пусть сбросит случайно…",
 	"Que descarte toda la mano": "Пусть сбросит всю руку",
@@ -1398,5 +1396,12 @@
 	"Quitar todas": "Убрать все",
 	"Tú": "Вы",
 	"{quien} quita una flecha": "{quien} убирает стрелку",
-	"{quien} quita la flecha de {de}": "{quien} убирает стрелку от {de}"
+	"{quien} quita la flecha de {de}": "{quien} убирает стрелку от {de}",
+	"Seguir al jugador del turno": "Следить за игроком, чей ход",
+	"Ocultar la barra": "Скрыть панель",
+	"Mostrar la barra": "Показать панель",
+	"Quitar la bolita (doble toque)": "Убрать метку (двойное касание)",
+	"Desplegar {panel}": "Развернуть: {panel}",
+	"Plegar {panel}": "Свернуть: {panel}",
+	"Plegar el aviso": "Свернуть уведомление"
 }

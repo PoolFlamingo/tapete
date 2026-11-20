@@ -723,7 +723,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Diese Datei ist keine Tapete-Identität.",
 	"Copiar enlace": "Link kopieren",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Es läuft eine Partie: Verlasse sie, um den Link zu verwenden.",
-	"En partida local, pasar a mirar al jugador del turno": "In einer lokalen Partie zum Spieler am Zug wechseln",
 	"Partida local…": "Lokale Partie…",
 	"Partida local": "Lokale Partie",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Mehrere Spieler an diesem Rechner, jeder mit eigenem Deck. Zwischen den Spielfeldern wechselst du mit den Spieler-Chips.",
@@ -1154,7 +1153,6 @@
 	"Mirar su mano": "Seine Hand ansehen",
 	"Dejar de mirar su mano": "Seine Hand nicht mehr ansehen",
 	"Que enseñe su mano a todos": "Hand für alle aufdecken lassen",
-	"Que deje de enseñar su mano": "Hand wieder verdecken lassen",
 	"Descartar cuántas al azar": "Wie viele zufällig abwerfen",
 	"Que descarte al azar…": "Zufällig abwerfen lassen…",
 	"Que descarte toda la mano": "Ganze Hand abwerfen lassen",
@@ -1356,5 +1354,12 @@
 	"Quitar todas": "Alle entfernen",
 	"Tú": "Du",
 	"{quien} quita una flecha": "{quien} entfernt einen Pfeil",
-	"{quien} quita la flecha de {de}": "{quien} entfernt den Pfeil von {de}"
+	"{quien} quita la flecha de {de}": "{quien} entfernt den Pfeil von {de}",
+	"Seguir al jugador del turno": "Dem Spieler am Zug folgen",
+	"Ocultar la barra": "Leiste ausblenden",
+	"Mostrar la barra": "Leiste einblenden",
+	"Quitar la bolita (doble toque)": "Markierung entfernen (doppelt tippen)",
+	"Desplegar {panel}": "{panel} ausklappen",
+	"Plegar {panel}": "{panel} einklappen",
+	"Plegar el aviso": "Hinweis einklappen"
 }

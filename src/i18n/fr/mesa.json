@@ -741,7 +741,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Ce fichier n’est pas une identité Tapete.",
 	"Copiar enlace": "Copier le lien",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Une partie est en cours : quitte-la pour utiliser le lien.",
-	"En partida local, pasar a mirar al jugador del turno": "En partie locale, passer au joueur dont c'est le tour",
 	"Partida local…": "Partie locale…",
 	"Partida local": "Partie locale",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Plusieurs joueurs sur cet ordinateur, chacun avec son deck. Passe d'un plateau à l'autre avec les pastilles de joueur.",
@@ -1172,7 +1171,6 @@
 	"Mirar su mano": "Regarder sa main",
 	"Dejar de mirar su mano": "Arrêter de regarder sa main",
 	"Que enseñe su mano a todos": "Qu'il montre sa main à tous",
-	"Que deje de enseñar su mano": "Qu'il cache sa main",
 	"Descartar cuántas al azar": "Défausser combien au hasard",
 	"Que descarte al azar…": "Qu'il défausse au hasard…",
 	"Que descarte toda la mano": "Qu'il défausse toute sa main",
@@ -1377,5 +1375,12 @@
 	"Quitar todas": "Tout retirer",
 	"Tú": "Vous",
 	"{quien} quita una flecha": "{quien} retire une flèche",
-	"{quien} quita la flecha de {de}": "{quien} retire la flèche de {de}"
+	"{quien} quita la flecha de {de}": "{quien} retire la flèche de {de}",
+	"Seguir al jugador del turno": "Suivre le joueur dont c'est le tour",
+	"Ocultar la barra": "Masquer la barre",
+	"Mostrar la barra": "Afficher la barre",
+	"Quitar la bolita (doble toque)": "Retirer le marqueur (double appui)",
+	"Desplegar {panel}": "Déplier {panel}",
+	"Plegar {panel}": "Replier {panel}",
+	"Plegar el aviso": "Replier l'avis"
 }

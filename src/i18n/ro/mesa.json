@@ -737,7 +737,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Fișierul acela nu este o identitate Tapete.",
 	"Copiar enlace": "Copiază linkul",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "O partidă este în desfășurare: ieși din ea ca să folosești linkul.",
-	"En partida local, pasar a mirar al jugador del turno": "În partida locală, treci la jucătorul al cărui rând este",
 	"Partida local…": "Partidă locală…",
 	"Partida local": "Partidă locală",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Mai mulți jucători pe acest calculator, fiecare cu deck-ul său. Treci de la o tablă la alta cu cipurile jucătorilor.",
@@ -1168,7 +1167,6 @@
 	"Mirar su mano": "Uită-te la mâna lui",
 	"Dejar de mirar su mano": "Nu te mai uita la mâna lui",
 	"Que enseñe su mano a todos": "Să-și arate mâna tuturor",
-	"Que deje de enseñar su mano": "Să-și ascundă mâna",
 	"Descartar cuántas al azar": "Câte să arunce la întâmplare",
 	"Que descarte al azar…": "Să arunce la întâmplare…",
 	"Que descarte toda la mano": "Să arunce toată mâna",
@@ -1373,5 +1371,12 @@
 	"Quitar todas": "Elimină toate",
 	"Tú": "Tu",
 	"{quien} quita una flecha": "{quien} elimină o săgeată",
-	"{quien} quita la flecha de {de}": "{quien} elimină săgeata de la {de}"
+	"{quien} quita la flecha de {de}": "{quien} elimină săgeata de la {de}",
+	"Seguir al jugador del turno": "Urmărește jucătorul care e la rând",
+	"Ocultar la barra": "Ascunde bara",
+	"Mostrar la barra": "Arată bara",
+	"Quitar la bolita (doble toque)": "Elimină marcajul (atingere dublă)",
+	"Desplegar {panel}": "Extinde {panel}",
+	"Plegar {panel}": "Restrânge {panel}",
+	"Plegar el aviso": "Restrânge avertismentul"
 }

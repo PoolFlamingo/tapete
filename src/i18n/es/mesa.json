@@ -669,7 +669,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Ese fichero no es una identidad de Tapete.",
 	"Copiar enlace": "Copiar enlace",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Hay una partida en marcha: sal de ella para usar el enlace.",
-	"En partida local, pasar a mirar al jugador del turno": "En partida local, pasar a mirar al jugador del turno",
 	"Partida local…": "Partida local…",
 	"Partida local": "Partida local",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.",
@@ -1100,7 +1099,6 @@
 	"Mirar su mano": "Mirar su mano",
 	"Dejar de mirar su mano": "Dejar de mirar su mano",
 	"Que enseñe su mano a todos": "Que enseñe su mano a todos",
-	"Que deje de enseñar su mano": "Que deje de enseñar su mano",
 	"Descartar cuántas al azar": "Descartar cuántas al azar",
 	"Que descarte al azar…": "Que descarte al azar…",
 	"Que descarte toda la mano": "Que descarte toda la mano",
@@ -1293,5 +1291,12 @@
 	"Quitar todas": "Quitar todas",
 	"Tú": "Tú",
 	"{quien} quita una flecha": "{quien} quita una flecha",
-	"{quien} quita la flecha de {de}": "{quien} quita la flecha de {de}"
+	"{quien} quita la flecha de {de}": "{quien} quita la flecha de {de}",
+	"Seguir al jugador del turno": "Seguir al jugador del turno",
+	"Ocultar la barra": "Ocultar la barra",
+	"Mostrar la barra": "Mostrar la barra",
+	"Quitar la bolita (doble toque)": "Quitar la bolita (doble toque)",
+	"Desplegar {panel}": "Desplegar {panel}",
+	"Plegar {panel}": "Plegar {panel}",
+	"Plegar el aviso": "Plegar el aviso"
 }

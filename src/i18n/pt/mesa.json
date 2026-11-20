@@ -737,7 +737,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Esse ficheiro não é uma identidade do Tapete.",
 	"Copiar enlace": "Copiar link",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Há uma partida em andamento: saia dela para usar o link.",
-	"En partida local, pasar a mirar al jugador del turno": "Em partida local, passar a olhar o jogador da vez",
 	"Partida local…": "Partida local…",
 	"Partida local": "Partida local",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Vários jogadores neste computador, cada um com o seu deck. Passas de um tabuleiro a outro com os chips de jogador.",
@@ -1168,7 +1167,6 @@
 	"Mirar su mano": "Olhar a mão",
 	"Dejar de mirar su mano": "Deixar de olhar a mão",
 	"Que enseñe su mano a todos": "Fazer mostrar a mão a todos",
-	"Que deje de enseñar su mano": "Fazer esconder a mão",
 	"Descartar cuántas al azar": "Quantas descartar ao acaso",
 	"Que descarte al azar…": "Fazer descartar ao acaso…",
 	"Que descarte toda la mano": "Fazer descartar a mão toda",
@@ -1373,5 +1371,12 @@
 	"Quitar todas": "Remover todas",
 	"Tú": "Tu",
 	"{quien} quita una flecha": "{quien} remove uma seta",
-	"{quien} quita la flecha de {de}": "{quien} remove a seta de {de}"
+	"{quien} quita la flecha de {de}": "{quien} remove a seta de {de}",
+	"Seguir al jugador del turno": "Seguir o jogador da vez",
+	"Ocultar la barra": "Ocultar a barra",
+	"Mostrar la barra": "Mostrar a barra",
+	"Quitar la bolita (doble toque)": "Remover o marcador (toque duplo)",
+	"Desplegar {panel}": "Expandir {panel}",
+	"Plegar {panel}": "Recolher {panel}",
+	"Plegar el aviso": "Recolher o aviso"
 }

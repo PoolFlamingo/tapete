@@ -764,7 +764,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Цей файл не є особою Tapete.",
 	"Copiar enlace": "Скопіювати посилання",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Триває партія: вийди з неї, щоб скористатися посиланням.",
-	"En partida local, pasar a mirar al jugador del turno": "У локальній партії перемикатися на гравця, чий зараз хід",
 	"Partida local…": "Локальна партія…",
 	"Partida local": "Локальна партія",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Кілька гравців на цьому комп'ютері, кожен зі своєю колодою. Між столами перемикаються фішками гравців.",
@@ -1195,7 +1194,6 @@
 	"Mirar su mano": "Подивитися руку",
 	"Dejar de mirar su mano": "Перестати дивитися руку",
 	"Que enseñe su mano a todos": "Нехай покаже руку всім",
-	"Que deje de enseñar su mano": "Нехай сховає руку",
 	"Descartar cuántas al azar": "Скільки скинути випадково",
 	"Que descarte al azar…": "Нехай скине випадково…",
 	"Que descarte toda la mano": "Нехай скине всю руку",
@@ -1403,5 +1401,12 @@
 	"Quitar todas": "Прибрати всі",
 	"Tú": "Ви",
 	"{quien} quita una flecha": "{quien} прибирає стрілку",
-	"{quien} quita la flecha de {de}": "{quien} прибирає стрілку від {de}"
+	"{quien} quita la flecha de {de}": "{quien} прибирає стрілку від {de}",
+	"Seguir al jugador del turno": "Стежити за гравцем, чий хід",
+	"Ocultar la barra": "Сховати панель",
+	"Mostrar la barra": "Показати панель",
+	"Quitar la bolita (doble toque)": "Прибрати мітку (подвійний дотик)",
+	"Desplegar {panel}": "Розгорнути: {panel}",
+	"Plegar {panel}": "Згорнути: {panel}",
+	"Plegar el aviso": "Згорнути сповіщення"
 }

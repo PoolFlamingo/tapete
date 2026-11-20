@@ -737,7 +737,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Quel file non è un’identità di Tapete.",
 	"Copiar enlace": "Copia il link",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "C'è una partita in corso: esci per usare il link.",
-	"En partida local, pasar a mirar al jugador del turno": "In una partita locale, passa al giocatore di turno",
 	"Partida local…": "Partita locale…",
 	"Partida local": "Partita locale",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Più giocatori su questo computer, ciascuno con il proprio mazzo. Passi da un campo all'altro con i chip dei giocatori.",
@@ -1168,7 +1167,6 @@
 	"Mirar su mano": "Guarda la sua mano",
 	"Dejar de mirar su mano": "Smetti di guardare la sua mano",
 	"Que enseñe su mano a todos": "Fagli mostrare la mano a tutti",
-	"Que deje de enseñar su mano": "Fagli nascondere la mano",
 	"Descartar cuántas al azar": "Quante scartare a caso",
 	"Que descarte al azar…": "Fagli scartare a caso…",
 	"Que descarte toda la mano": "Fagli scartare tutta la mano",
@@ -1373,5 +1371,12 @@
 	"Quitar todas": "Togli tutte",
 	"Tú": "Tu",
 	"{quien} quita una flecha": "{quien} toglie una freccia",
-	"{quien} quita la flecha de {de}": "{quien} toglie la freccia di {de}"
+	"{quien} quita la flecha de {de}": "{quien} toglie la freccia di {de}",
+	"Seguir al jugador del turno": "Segui il giocatore di turno",
+	"Ocultar la barra": "Nascondi la barra",
+	"Mostrar la barra": "Mostra la barra",
+	"Quitar la bolita (doble toque)": "Rimuovi il segnalino (doppio tocco)",
+	"Desplegar {panel}": "Espandi {panel}",
+	"Plegar {panel}": "Comprimi {panel}",
+	"Plegar el aviso": "Comprimi l'avviso"
 }

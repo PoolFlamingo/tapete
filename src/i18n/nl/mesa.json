@@ -723,7 +723,6 @@
 	"Ese fichero no es una identidad de Tapete.": "Dat bestand is geen Tapete-identiteit.",
 	"Copiar enlace": "Link kopiëren",
 	"Hay una partida en marcha: sal de ella para usar el enlace.": "Er loopt een partij: verlaat die om de link te gebruiken.",
-	"En partida local, pasar a mirar al jugador del turno": "In een lokale partij overschakelen naar de speler die aan de beurt is",
 	"Partida local…": "Lokale partij…",
 	"Partida local": "Lokale partij",
 	"Varios jugadores en este equipo, cada uno con su deck. Pasas de un tablero a otro con los chips de jugador.": "Meerdere spelers op deze computer, elk met een eigen deck. Je wisselt tussen de borden met de spelerchips.",
@@ -1154,7 +1153,6 @@
 	"Mirar su mano": "Bekijk de hand",
 	"Dejar de mirar su mano": "Stop met de hand bekijken",
 	"Que enseñe su mano a todos": "Laat de hand aan iedereen zien",
-	"Que deje de enseñar su mano": "Laat de hand weer verbergen",
 	"Descartar cuántas al azar": "Hoeveel willekeurig afleggen",
 	"Que descarte al azar…": "Willekeurig laten afleggen…",
 	"Que descarte toda la mano": "De hele hand laten afleggen",
@@ -1356,5 +1354,12 @@
 	"Quitar todas": "Alles verwijderen",
 	"Tú": "Jij",
 	"{quien} quita una flecha": "{quien} verwijdert een pijl",
-	"{quien} quita la flecha de {de}": "{quien} verwijdert de pijl van {de}"
+	"{quien} quita la flecha de {de}": "{quien} verwijdert de pijl van {de}",
+	"Seguir al jugador del turno": "De speler die aan de beurt is volgen",
+	"Ocultar la barra": "Balk verbergen",
+	"Mostrar la barra": "Balk tonen",
+	"Quitar la bolita (doble toque)": "Markering verwijderen (dubbeltikken)",
+	"Desplegar {panel}": "{panel} uitklappen",
+	"Plegar {panel}": "{panel} inklappen",
+	"Plegar el aviso": "Melding inklappen"
 }
