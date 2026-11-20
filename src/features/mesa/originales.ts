@@ -6,7 +6,7 @@ import { leerIdioma } from "@/components/language-provider";
 import { idioma as datosDeIdioma } from "@/lib/idiomas";
 import { call } from "@/lib/ipc";
 import { useMesa } from "@/stores/mesa-store";
-import { useOriginales } from "@/stores/originales-store";
+import { quiereOriginal, useOriginales } from "@/stores/originales-store";
 import { pedirVista } from "./conexion";
 
 /**
@@ -48,7 +48,7 @@ export function pedirOriginales() {
 	}
 	const orden = (z: string) => (z === "campo" ? 0 : z === "mano" ? 1 : 2);
 	const cartas = Object.values(useMesa.getState().cartas)
-		.filter((c) => o.modos[c.dueno] && c.origen?.scryfallId)
+		.filter((c) => quiereOriginal(c, o))
 		.sort(
 			(a, b) =>
 				orden(a.zona.tipo === "de" ? a.zona.zona : "") -
@@ -84,10 +84,31 @@ export function alternarOriginales(jugador: IdJugador) {
 /** Mientras la mesa está abierta, lo que llega de nuevo de esos jugadores también se pide. */
 export function useOriginalesAlDia() {
 	const version = useMesa((s) => s.version);
-	const hay = useOriginales((s) => Object.keys(s.modos).length > 0);
+	const hay = useOriginales(
+		(s) => Object.keys(s.modos).length > 0 || Object.keys(s.sinImagen).length > 0,
+	);
 	useEffect(() => {
 		if (!hay) return;
 		const i = window.setTimeout(pedirOriginales, 400);
 		return () => window.clearTimeout(i);
 	}, [hay, version]);
+}
+
+/**
+ * En una repetición, las cartas cuya imagen propia no llegó a esta app antes de
+ * guardarse la partida (las de un rival que nunca salieron) se ven con su
+ * original de Scryfall en vez de con un reverso. Las que no tienen vínculo se
+ * quedan como están.
+ */
+export async function originalesSinImagen() {
+	try {
+		const ids = await call("repeticion_sin_imagen");
+		if (ids.length === 0) return;
+		escuchar();
+		useOriginales.getState().ponerSinImagen(ids);
+		pedirOriginales();
+		useMesa.getState().reaplicarOriginales();
+	} catch {
+		// Sin esto se ven como antes: el reverso con el nombre.
+	}
 }

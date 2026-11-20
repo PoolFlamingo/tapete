@@ -21,6 +21,7 @@ import {
 	VELOCIDADES,
 } from "./cuentas-repeticion";
 import { olvidarSitios } from "./flip";
+import { originalesSinImagen } from "./originales";
 
 /**
  * **La repetición de una partida terminada** (H3): la mesa en «solo mirar»
@@ -35,6 +36,7 @@ export async function verRepeticionDelHistorial(id: string): Promise<boolean> {
 		const v = await call("repeticion_abrir", { id });
 		useRepeticion.getState().poner(v);
 		if (!suscrito()) await suscribir();
+		void originalesSinImagen();
 		useUi.getState().setVista("mesa");
 		return true;
 	} catch (e) {
@@ -47,6 +49,7 @@ export async function verRepeticionDelHistorial(id: string): Promise<boolean> {
 export async function verRepeticionActual(): Promise<boolean> {
 	try {
 		useRepeticion.getState().poner(await call("repeticion_actual"));
+		void originalesSinImagen();
 		return true;
 	} catch (e) {
 		toast.error(mensajeDeError(e, traduccionSuelta));

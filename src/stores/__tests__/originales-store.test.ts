@@ -18,7 +18,7 @@ describe("conOriginales", () => {
 
 	it("cambia las caras si el dueño está en el modo y la impresión ya está resuelta", () => {
 		const c = carta(1, "id-en", [scry("id-en")]);
-		const r = conOriginales(c, { modos: { 1: true }, caras });
+		const r = conOriginales(c, { modos: { 1: true }, sinImagen: {}, caras });
 		expect(r.origen?.caras).toEqual([scry("id-es")]);
 		// No toca la original.
 		expect(c.origen?.caras).toEqual([scry("id-en")]);
@@ -26,17 +26,26 @@ describe("conOriginales", () => {
 
 	it("deja la misma carta si el dueño no está en el modo, no hay vínculo o falta la resolución", () => {
 		const c = carta(1, "id-en", [scry("id-en")]);
-		expect(conOriginales(c, { modos: { 2: true }, caras })).toBe(c);
+		expect(conOriginales(c, { modos: { 2: true }, sinImagen: {}, caras })).toBe(c);
 		const sin = carta(1, null, [scry("x")]);
-		expect(conOriginales(sin, { modos: { 1: true }, caras })).toBe(sin);
-		expect(conOriginales(c, { modos: { 1: true }, caras: {} })).toBe(c);
+		expect(conOriginales(sin, { modos: { 1: true }, sinImagen: {}, caras })).toBe(sin);
+		expect(conOriginales(c, { modos: { 1: true }, sinImagen: {}, caras: {} })).toBe(c);
 		// «Vacío»: no hay otra impresión.
-		expect(conOriginales(c, { modos: { 1: true }, caras: { "id-en": [] } })).toBe(c);
+		expect(conOriginales(c, { modos: { 1: true }, sinImagen: {}, caras: { "id-en": [] } })).toBe(c);
 	});
 
 	it("de una carta de dos caras con solo una resuelta, la otra se queda", () => {
 		const c = carta(1, "id-en", [scry("id-en", 0), scry("id-en", 1)]);
-		const r = conOriginales(c, { modos: { 1: true }, caras });
+		const r = conOriginales(c, { modos: { 1: true }, sinImagen: {}, caras });
 		expect(r.origen?.caras).toEqual([scry("id-es"), scry("id-en", 1)]);
+	});
+
+	it("una carta sin su imagen propia (en una repetición) va con su original aunque su dueño no esté en el modo", () => {
+		const c = carta(2, "id-en", [scry("id-en")]);
+		const r = conOriginales(c, { modos: {}, sinImagen: { "id-en": true }, caras });
+		expect(r.origen?.caras).toEqual([scry("id-es")]);
+		// Las demás de ese jugador, como estaban.
+		const otra = carta(2, "otra", [scry("otra")]);
+		expect(conOriginales(otra, { modos: {}, sinImagen: { "id-en": true }, caras })).toBe(otra);
 	});
 });

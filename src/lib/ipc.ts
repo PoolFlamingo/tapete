@@ -348,6 +348,7 @@ export interface Commands {
 	partida_borrar: { args: { id: string }; result: null };
 	repeticion_abrir: { args: { id: string }; result: VistaRepeticion };
 	repeticion_actual: { args: Record<string, never>; result: VistaRepeticion };
+	repeticion_sin_imagen: { args: Record<string, never>; result: string[] };
 	repeticion_ir: { args: { pos: number; como: IdJugador | null }; result: VistaRepeticion };
 	repeticion_salir: { args: Record<string, never>; result: null };
 	mesa_banquillo: { args: { jugador: IdJugador }; result: VistaBanquillo };
