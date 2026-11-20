@@ -85,3 +85,22 @@ export function campoAjeno(
 		c.controlador !== m.yo
 	);
 }
+
+const PUBLICAS = new Set(["campo", "cementerio", "exilio", "mando", "planesEnMarcha"]);
+
+/**
+ * ¿Puede `m.yo` enseñar o volver a tapar esta carta? La misma regla que
+ * `resolver::la_ensena` del motor: la de una mano, biblioteca o banquillo, su
+ * dueño; la boca abajo del campo, quien la controla; la boca abajo del exilio,
+ * su dueño. Haberla visto no deja pasársela a otros ni taparla.
+ */
+export function laEnsena(
+	m: Pick<Mesa, "opciones" | "yo">,
+	c: Pick<VistaCarta, "zona" | "controlador" | "dueno" | "bocaAbajo">,
+): boolean {
+	if (m.opciones?.todosTocanTodo === true) return true;
+	if (c.zona.tipo !== "de") return !c.bocaAbajo;
+	if (c.zona.zona === "campo") return !c.bocaAbajo || c.controlador === m.yo;
+	if (PUBLICAS.has(c.zona.zona)) return !c.bocaAbajo || c.dueno === m.yo;
+	return c.zona.jugador === m.yo;
+}

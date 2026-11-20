@@ -1232,6 +1232,14 @@ fn por_otro_jugador_como_si_lo_hiciera_el() {
     assert_eq!(m.zona(OTRO, Zona::Mano).len(), mano - 1);
     // Lo del turno no se hace por nadie.
     assert_eq!(m.como(YO, por(Accion::PasarTurno)), Err(Rechazo::NoSePuede));
+    // Revelar la de arriba de otro, sí; taparle la que él enseña, no.
+    m.haz(por(Accion::RevelarArriba { n: 1 }));
+    assert_eq!(
+        m.como(YO, por(Accion::OcultarArriba { n: 1 })),
+        Err(Rechazo::SinPermiso)
+    );
+    // Su dueño sí la deja de revelar.
+    assert!(m.como(OTRO, Accion::OcultarArriba { n: 1 }).is_ok());
 }
 
 #[test]
@@ -1589,4 +1597,66 @@ fn una_carta_de_la_mano_se_muestra_a_todos_y_se_vuelve_a_tapar() {
         m.como(YO, Accion::MostrarATodos { cartas: vec![suya] }),
         Err(Rechazo::SinPermiso)
     );
+}
+
+#[test]
+fn lo_que_otro_te_ensena_no_lo_pasas_ni_se_lo_tapas() {
+    let mut m = Mesa::nueva(3);
+    let suya = m.zona(OTRO, Zona::Mano)[0];
+    m.como(
+        OTRO,
+        Accion::RevelarA {
+            cartas: vec![suya],
+            a: vec![YO],
+        },
+    )
+    .unwrap();
+    // La veo, pero no es mía: ni a todos, ni a un tercero, ni volver a taparla.
+    assert_eq!(
+        m.como(YO, Accion::MostrarATodos { cartas: vec![suya] }),
+        Err(Rechazo::SinPermiso)
+    );
+    assert_eq!(
+        m.como(
+            YO,
+            Accion::RevelarA {
+                cartas: vec![suya],
+                a: vec![mesa::IdJugador(2)],
+            }
+        ),
+        Err(Rechazo::SinPermiso)
+    );
+    assert_eq!(
+        m.como(YO, Accion::DejarDeMostrar { cartas: vec![suya] }),
+        Err(Rechazo::SinPermiso)
+    );
+    // Su dueño sí.
+    assert!(m
+        .como(OTRO, Accion::DejarDeMostrar { cartas: vec![suya] })
+        .is_ok());
+}
+
+#[test]
+fn que_otro_ensene_vale_y_dejar_de_ensenar_es_suyo() {
+    let mut m = Mesa::nueva(2);
+    let por = |accion: Accion| Accion::PorJugador {
+        jugador: OTRO,
+        accion: Box::new(accion),
+    };
+    // Telepathy, Lantern of Insight: que lo enseñe, sí.
+    assert!(m.como(YO, por(Accion::RevelarMano { si: true })).is_ok());
+    assert!(m
+        .como(YO, por(Accion::DeArribaRevelada { si: true }))
+        .is_ok());
+    // Taparlo es suyo.
+    assert_eq!(
+        m.como(YO, por(Accion::RevelarMano { si: false })),
+        Err(Rechazo::SinPermiso)
+    );
+    assert_eq!(
+        m.como(YO, por(Accion::DeArribaRevelada { si: false })),
+        Err(Rechazo::SinPermiso)
+    );
+    assert!(m.como(OTRO, Accion::RevelarMano { si: false }).is_ok());
+    assert!(m.como(OTRO, Accion::DeArribaRevelada { si: false }).is_ok());
 }

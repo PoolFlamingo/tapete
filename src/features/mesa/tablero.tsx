@@ -482,6 +482,10 @@ export function Tablero({ deckId }: { deckId: string | null }) {
 			if (e.key === "Escape") setVista(VISTA_ENTERA);
 			const m = useMesa.getState();
 			const carta = m.sobre ?? (m.seleccion.length > 0 ? (m.seleccion[0] ?? null) : null);
+			// Sobre el campo protegido de otro, ningún atajo: el motor lo rechazaría sin que se
+			// viera por qué (con el ratón, su menú solo deja mirar o tomar el control).
+			const vc = carta === null ? undefined : m.cartas[carta];
+			if (vc && campoAjeno(m, vc)) return;
 			const sobreLib = usePantalla.getState().zonaSobre === "biblioteca";
 			const f = atajoDe(teclaDe(e), sobreLib ? null : carta, sobreLib);
 			if (f) {
@@ -961,13 +965,16 @@ function Zonas({ disp, alPulsar }: { disp: Disposicion; alPulsar: AlPulsar }) {
 	// mirarla (escrutar, mirar) no la pone boca arriba en la mesa.
 	const cartaArriba = useMesa((s) => cartaDeArribaRevelada(s, yo));
 	const arribaLib = cartaArriba?.id ?? null;
-	// Revelada a todos (no por jugar así): se puede dejar de revelar con el botón.
-	const arribaRevelada = cartaArriba?.revelada ?? false;
+	// Revelada a todos (no por jugar así): su dueño la puede dejar de revelar con el
+	// botón (el motor no deja a otro taparla). Con el dedo el botón no va: en una carta
+	// tan pequeña taparía la lupa; queda en el menú de la biblioteca (pulsación larga).
+	const mia = useMesa((s) => s.yo === yo);
+	const { tactil } = useFormato();
+	const arribaRevelada = (cartaArriba?.revelada ?? false) && mia && !tactil;
 	const z = disp.zonas;
 	// Leer en grande la de arriba revelada: con el ratón, al pasar; con el dedo, un toque
 	// en su botón de la lupa (tocar la biblioteca roba).
 	const leerArriba = useLeerEnGrande(arribaLib, false);
-	const { tactil } = useFormato();
 	// Con las zonas encogidas (el móvil de pie, o un tablero pequeño de una rejilla de 4) el
 	// nombre no cabe: letra menor y puntos suspensivos; así los rótulos vecinos no se pisan.
 	const zona = (r: Rect, nombre: string, hijo: React.ReactNode, n: number, alVer?: () => void) => {
@@ -1212,8 +1219,12 @@ function Recortado({
 	);
 }
 
+/** El doble toque de las bolitas (con el dedo no llega un `dblclick` fiable). */
+const dobleToqueBolita = crearDobleToque();
+
 function Bolitas({ campo }: { campo: Rect }) {
 	const yo = useMesa(tableroDe);
+	const { t } = useLang();
 	const bolitas = useMesa((s) => s.general?.bolitas ?? NINGUNA);
 	const lado = { S: 12, M: 18, L: 26 };
 	return (
@@ -1227,7 +1238,14 @@ function Bolitas({ campo }: { campo: Rect }) {
 						<button
 							key={b.id}
 							type="button"
+							aria-label={t("Quitar la bolita (doble toque)")}
 							onDoubleClick={() => void hacer({ que: "quitarBolita", id: b.id })}
+							onPointerUp={(e) => {
+								if (hayEncima(e.pointerType)) return;
+								if (dobleToqueBolita.toque(b.id, e.timeStamp, e.clientX, e.clientY)) {
+									void hacer({ que: "quitarBolita", id: b.id });
+								}
+							}}
 							// Con zoom van en una capa recortada que no recoge toques (`Recortado`).
 							className="pointer-events-auto absolute rounded-full shadow ring-2 ring-white/60"
 							style={{

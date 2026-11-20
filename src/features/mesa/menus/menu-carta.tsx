@@ -47,6 +47,7 @@ export function MenuCarta({ c, children }: { c: VistaCarta; children: ReactNode 
 	const soloMira = useRed((s) => s.papel === "espectador");
 	// Del campo de otro (protegido) solo se mira o se toma el control.
 	const ajena = useMesa((s) => campoAjeno(s, c));
+	const yo = useMesa((s) => s.yo);
 	if (soloMira) return <>{children}</>;
 	return (
 		<ContextMenu onOpenChange={abrir}>
@@ -60,7 +61,9 @@ export function MenuCarta({ c, children }: { c: VistaCarta; children: ReactNode 
 				<ContextMenuSeparator />
 				{ajena && <Control c={c} />}
 				{zona === "campo" && !ajena && <DelCampo c={c} />}
-				{zona === "mano" && <DeLaMano c={c} />}
+				{/* La de la mano de otro (porque te la enseñó o la miraste) no se juega ni se
+				    enseña por él: solo se lee o se mueve (un descarte elegido, Duress). */}
+				{zona === "mano" && c.dueno === yo && <DeLaMano c={c} />}
 				{zona === "pila" && <DeLaPila c={c} />}
 				{zona === "mando" && <DelMando c={c} />}
 				{(zona === "cementerio" || zona === "exilio" || zona === "banquillo") && (

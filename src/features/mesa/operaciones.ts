@@ -9,6 +9,7 @@ import { useUi } from "@/stores/ui-store";
 import { destino, destinoComun, hacer, mover, objetivo, sitio } from "./acciones";
 import { avisarBono } from "./aviso-bono";
 import { pedirNumero, usePantalla } from "./pantalla";
+import { laEnsena } from "./privacidad";
 
 /**
  * **Lo que se hace con las cartas**, en un solo sitio: los menús, los atajos
@@ -136,7 +137,10 @@ export function dejarDeMostrar(id: IdCarta) {
 
 /** El atajo: la enseña a todos, o la tapa si ya está enseñada. */
 export function alternarMostrada(id: IdCarta) {
-	return carta(id)?.revelada ? dejarDeMostrar(id) : mostrar(id);
+	const c = carta(id);
+	// Solo lo tuyo (el motor rechaza lo demás): lo que otro te enseña no se pasa ni se tapa.
+	if (!c || !laEnsena(useMesa.getState(), c)) return;
+	return c.revelada ? dejarDeMostrar(id) : mostrar(id);
 }
 
 /** Da el control de estas cartas (con lo que llevan encima) a otro jugador. */

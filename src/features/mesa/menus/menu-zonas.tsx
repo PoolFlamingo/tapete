@@ -150,20 +150,24 @@ export function MenuBiblioteca({ jugador, children }: { jugador: IdJugador; chil
 					<Icono icon="lucide:eye" />
 					{t("Revelar la de arriba")}
 				</ContextMenuItem>
-				{arribaVista && (
+				{/* Solo su dueño deja de revelarla: lo que otro enseña no se lo tapa nadie. */}
+				{arribaVista && !ajena && (
 					<ContextMenuItem onSelect={() => op.hacerPor(jugador, { que: "ocultarArriba", n: 1 })}>
 						<Icono icon="lucide:eye-off" />
 						{t("Dejar de revelar la de arriba")}
 					</ContextMenuItem>
 				)}
-				<ContextMenuItem
-					onSelect={() => op.hacerPor(jugador, { que: "deArribaRevelada", si: !revelada })}
-				>
-					{revelada ? <Icono icon="lucide:eye-off" /> : <Icono icon="lucide:eye" />}
-					{revelada
-						? t("Dejar de jugar con la de arriba revelada")
-						: t("Jugar con la de arriba revelada")}
-				</ContextMenuItem>
+				{/* En la de otro, ponerlo sí (Lantern of Insight); quitarlo es de su dueño. */}
+				{(!ajena || !revelada) && (
+					<ContextMenuItem
+						onSelect={() => op.hacerPor(jugador, { que: "deArribaRevelada", si: !revelada })}
+					>
+						{revelada ? <Icono icon="lucide:eye-off" /> : <Icono icon="lucide:eye" />}
+						{revelada
+							? t("Dejar de jugar con la de arriba revelada")
+							: t("Jugar con la de arriba revelada")}
+					</ContextMenuItem>
+				)}
 				<ContextMenuSeparator />
 				<ContextMenuItem onSelect={() => op.barajar(jugador)}>
 					<Icono icon="lucide:shuffle" />
@@ -281,16 +285,23 @@ export function MenuCampo({
 }) {
 	const { t } = useLang();
 	const soloMira = useRed((s) => s.papel === "espectador");
+	// El campo protegido de otro (en red): ni enderezarlo ni ordenarlo (el motor lo rechaza).
+	const cerrado = useMesa(
+		(s) =>
+			s.opciones?.campoAjenoProtegido === true && s.yo !== jugador && !s.opciones.todosTocanTodo,
+	);
 	if (soloMira) return <>{children}</>;
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
 			<ContenidoContextual className="w-60 text-xs">
-				<ContextMenuItem onSelect={() => op.enderezarTodo(jugador)}>
-					<Icono icon="lucide:rotate-ccw" />
-					{t("Enderezar todo")}
-					<Tecla contexto="mesa" nombre="Enderezar todo" />
-				</ContextMenuItem>
+				{!cerrado && (
+					<ContextMenuItem onSelect={() => op.enderezarTodo(jugador)}>
+						<Icono icon="lucide:rotate-ccw" />
+						{t("Enderezar todo")}
+						<Tecla contexto="mesa" nombre="Enderezar todo" />
+					</ContextMenuItem>
+				)}
 				<ContextMenuItem
 					onSelect={() => {
 						const m = useMesa.getState();
@@ -301,10 +312,12 @@ export function MenuCampo({
 					{t("Elegir todo")}
 					<Tecla contexto="mesa" nombre="Elegir todo el campo" />
 				</ContextMenuItem>
-				<ContextMenuItem onSelect={() => op.hacerPor(jugador, { que: "organizar" })}>
-					<Icono icon="lucide:layout-grid" />
-					{t("Organizar el campo")}
-				</ContextMenuItem>
+				{!cerrado && (
+					<ContextMenuItem onSelect={() => op.hacerPor(jugador, { que: "organizar" })}>
+						<Icono icon="lucide:layout-grid" />
+						{t("Organizar el campo")}
+					</ContextMenuItem>
+				)}
 				<ContextMenuItem
 					onSelect={() => usePantalla.getState().abrir({ tipo: "fichas", para: jugador })}
 				>
@@ -391,12 +404,13 @@ export function MenuManoAjena({ jugador, children }: { jugador: IdJugador; child
 					{mirando ? <Icono icon="lucide:eye-off" /> : <Icono icon="lucide:eye" />}
 					{mirando ? t("Dejar de mirar su mano") : t("Mirar su mano")}
 				</ContextMenuItem>
-				<ContextMenuItem
-					onSelect={() => op.hacerPor(jugador, { que: "revelarMano", si: !revelada })}
-				>
-					<Icono icon="lucide:eye" />
-					{revelada ? t("Que deje de enseñar su mano") : t("Que enseñe su mano a todos")}
-				</ContextMenuItem>
+				{/* Que la enseñe, sí (Telepathy); dejar de enseñarla es suyo (el motor lo rechaza). */}
+				{!revelada && (
+					<ContextMenuItem onSelect={() => op.hacerPor(jugador, { que: "revelarMano", si: true })}>
+						<Icono icon="lucide:eye" />
+						{t("Que enseñe su mano a todos")}
+					</ContextMenuItem>
+				)}
 				<ContextMenuSeparator />
 				<ContextMenuItem
 					onSelect={() =>

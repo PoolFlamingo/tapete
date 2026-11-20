@@ -174,6 +174,31 @@ pub fn puede_tocar(p: &Partida, yo: IdJugador, id: IdCarta) -> Result<(), Rechaz
     }
 }
 
+/// Enseñar o volver a tapar una carta oculta es de quien la tiene: la de una
+/// mano, biblioteca o banquillo, de su dueño; la boca abajo del campo, de quien
+/// la controla; la boca abajo de otra zona a la vista (el exilio), de su dueño.
+/// Haberla visto (porque te la enseñaron o la miraste) no deja pasársela a otros
+/// ni taparla a los demás. Lo que ya está a la vista no tiene nada que enseñar.
+fn la_ensena(p: &Partida, yo: IdJugador, id: IdCarta) -> Result<(), Rechazo> {
+    if p.opciones.todos_tocan_todo {
+        return Ok(());
+    }
+    let c = p.cartas.get(&id).ok_or(Rechazo::NoExiste)?;
+    let (zona, _) = p.donde(id).ok_or(Rechazo::NoExiste)?;
+    let suya = if zona.es_campo() {
+        !c.boca_abajo || c.controlador == yo
+    } else if zona.es_publica() {
+        !c.boca_abajo || c.dueno == yo
+    } else {
+        zona.jugador() == Some(yo)
+    };
+    if suya {
+        Ok(())
+    } else {
+        Err(Rechazo::SinPermiso)
+    }
+}
+
 fn todas(p: &Partida, yo: IdJugador, ids: &[IdCarta]) -> Result<(), Rechazo> {
     for id in ids {
         puede_tocar(p, yo, *id)?;
@@ -204,6 +229,28 @@ fn permisos(p: &Partida, yo: IdJugador, a: &Accion) -> Result<(), Rechazo> {
             if !accion.se_hace_por_otro() {
                 return Err(Rechazo::NoSePuede);
             }
+            // Hacer que otro enseñe algo vale (Telepathy, Lantern of Insight, «revela la
+            // de arriba de su biblioteca»); dejar de enseñarlo es de su dueño: lo que otro
+            // enseña a la mesa no lo tapa nadie más.
+            let deja_de_ensenar = matches!(
+                **accion,
+                Accion::OcultarArriba { .. }
+                    | Accion::RevelarMano { si: false }
+                    | Accion::DeArribaRevelada { si: false }
+            );
+            if deja_de_ensenar && *jugador != yo && !p.opciones.todos_tocan_todo {
+                return Err(Rechazo::SinPermiso);
+            }
+            // Con el campo de los demás cerrado, tampoco se le endereza ni se le
+            // ordena el suyo (sería tocar sus cartas sin pasar por `puede_tocar`).
+            let toca_su_campo = matches!(**accion, Accion::EnderezarTodo | Accion::Organizar);
+            if toca_su_campo
+                && *jugador != yo
+                && p.opciones.campo_ajeno_protegido
+                && !p.opciones.todos_tocan_todo
+            {
+                return Err(Rechazo::SinPermiso);
+            }
             permisos(p, *jugador, accion)
         }
         Accion::Colocar { cartas, .. } => {
@@ -221,11 +268,17 @@ fn permisos(p: &Partida, yo: IdJugador, a: &Accion) -> Result<(), Rechazo> {
         | Accion::Resaltar { cartas, .. }
         | Accion::CopiaFicha { cartas }
         | Accion::DarControl { cartas, .. }
-        | Accion::RevelarA { cartas, .. }
-        | Accion::MostrarATodos { cartas }
-        | Accion::DejarDeMostrar { cartas }
         | Accion::Amontonar { cartas }
         | Accion::Agrupar { cartas, .. } => todas(p, yo, cartas),
+        Accion::RevelarA { cartas, .. }
+        | Accion::MostrarATodos { cartas }
+        | Accion::DejarDeMostrar { cartas } => {
+            todas(p, yo, cartas)?;
+            for id in cartas {
+                la_ensena(p, yo, *id)?;
+            }
+            Ok(())
+        }
         Accion::CambiarCara { carta }
         | Accion::FijarContador { carta, .. }
         | Accion::MultiplicarContadores { carta, .. }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
 	deckDelTablero,
+	laEnsena,
 	manoOcultaPorTurno,
 	quienResponde,
 	siguienteAlResponder,
@@ -84,5 +85,28 @@ describe("el atajo de responder con varios jugadores", () => {
 		expect(siguienteAlResponder(mesa4(3))).toBe(0);
 		expect(siguienteAlResponder(mesa4(0, 2))).toBe(1);
 		expect(siguienteAlResponder(mesa4(1, 2))).toBe(2);
+	});
+});
+
+describe("quién enseña o tapa una carta (como `resolver::la_ensena`)", () => {
+	const m = (todos = false) => ({ yo: 0, opciones: { todosTocanTodo: todos } }) as never;
+	const carta = (zona: string, jugador: number, extra: Record<string, unknown> = {}) =>
+		({
+			zona: { tipo: "de", zona, jugador },
+			dueno: jugador,
+			controlador: jugador,
+			bocaAbajo: false,
+			...extra,
+		}) as never;
+	it("la de mi mano, yo; la de la mano de otro, aunque me la enseñara, no", () => {
+		expect(laEnsena(m(), carta("mano", 0))).toBe(true);
+		expect(laEnsena(m(), carta("mano", 1))).toBe(false);
+	});
+	it("la boca abajo del campo, quien la controla", () => {
+		expect(laEnsena(m(), carta("campo", 1, { bocaAbajo: true }))).toBe(false);
+		expect(laEnsena(m(), carta("campo", 1, { bocaAbajo: true, controlador: 0 }))).toBe(true);
+	});
+	it("con «todos tocan todo», cualquiera", () => {
+		expect(laEnsena(m(true), carta("mano", 1))).toBe(true);
 	});
 });

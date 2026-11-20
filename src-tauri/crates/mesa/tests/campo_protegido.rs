@@ -159,3 +159,24 @@ fn una_partida_guardada_sin_la_opcion_la_trae_apagada() {
     let o: mesa::formato::Opciones = serde_json::from_value(v).unwrap();
     assert!(!o.campo_ajeno_protegido);
 }
+
+#[test]
+fn ni_enderezar_ni_ordenar_el_campo_cerrado_de_otro() {
+    let por = |accion: Accion| Accion::PorJugador {
+        jugador: OTRO,
+        accion: Box::new(accion),
+    };
+    let mut b = Banco::nuevo(true);
+    b.al_campo(OTRO);
+    assert_eq!(
+        b.como(YO, por(Accion::EnderezarTodo)),
+        Err(Rechazo::SinPermiso)
+    );
+    assert_eq!(b.como(YO, por(Accion::Organizar)), Err(Rechazo::SinPermiso));
+    // Lo suyo, su dueño sí; y sin la protección, cualquiera (una mesa local).
+    assert!(b.como(OTRO, Accion::EnderezarTodo).is_ok());
+    let mut b = Banco::nuevo(false);
+    b.al_campo(OTRO);
+    assert!(b.como(YO, por(Accion::EnderezarTodo)).is_ok());
+    assert!(b.como(YO, por(Accion::Organizar)).is_ok());
+}
