@@ -4,6 +4,7 @@ import { useLang } from "@/components/language-provider";
 import { tableroDe, useMesa } from "@/stores/mesa-store";
 import { useRed } from "@/stores/red-store";
 import { useRepeticion } from "@/stores/repeticion-store";
+import { useUi } from "@/stores/ui-store";
 import { AyudasTurno } from "./ayudas-turno";
 import { Bocadillo, InsigniaSenal } from "./chat";
 import {
@@ -81,6 +82,8 @@ function Controles() {
 
 /** Lo que dejan libre la barra de la mesa por arriba, en px. */
 const MARGEN_BARRA = 52;
+/** Con la barra escondida, solo lo de la pestaña que la vuelve a sacar. */
+const MARGEN_PESTANA = 16;
 
 function VariosTableros({ deckId }: { deckId: string | null }) {
 	const { t } = useLang();
@@ -94,6 +97,9 @@ function VariosTableros({ deckId }: { deckId: string | null }) {
 		useShallow((s) => asientos.map((id) => s.jugadores[id]?.equipo ?? null)),
 	);
 	const enRed = useRed((s) => s.papel !== null);
+	// En una repetición la barra es la suya, que no se esconde.
+	const repitiendo = useRepeticion((s) => s.activa !== null);
+	const barraOculta = useUi((s) => s.mesa.barraOculta) && !repitiendo;
 	const colorGrande = useMesa((s) => {
 		const j = s.jugadores[grande];
 		const e = j?.equipo != null ? s.general?.equipos.find((x) => x.id === j.equipo) : undefined;
@@ -164,8 +170,8 @@ function VariosTableros({ deckId }: { deckId: string | null }) {
 		<div className="relative size-full">
 			<div
 				ref={caja}
-				className="absolute inset-x-0 bottom-0 overflow-hidden"
-				style={{ top: MARGEN_BARRA }}
+				className="absolute inset-x-0 bottom-0 overflow-hidden transition-[top] duration-200 motion-reduce:transition-none"
+				style={{ top: barraOculta ? MARGEN_PESTANA : MARGEN_BARRA }}
 			>
 				{tam.w > 0 && rectGrande && (
 					<div

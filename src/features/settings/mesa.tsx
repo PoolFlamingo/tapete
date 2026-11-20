@@ -2,6 +2,7 @@ import type { Intensidad } from "@/bindings/Intensidad";
 import { Fila, FilaDeslizador, FilaInterruptor, Seccion, Selector } from "@/components/campos";
 import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
+import { useMesaMovil } from "@/features/mesa/formato-mesa";
 import { MODO_RENDIMIENTO } from "@/features/mesa/fps";
 import { INTENSIDADES } from "@/features/mesa/sparring/textos";
 import { type NivelDados, useUi } from "@/stores/ui-store";
@@ -17,6 +18,7 @@ export function AjustesMesa({ fija = false }: { fija?: boolean }) {
 	const { t } = useLang();
 	const m = useUi((s) => s.mesa);
 	const set = useUi((s) => s.setMesa);
+	const movil = useMesaMovil();
 	const modoRendimiento = () => set(MODO_RENDIMIENTO);
 	return (
 		<Seccion
@@ -42,10 +44,11 @@ export function AjustesMesa({ fija = false }: { fija?: boolean }) {
 				valor={m.movimientoEnVivo}
 				onChange={(v) => set({ movimientoEnVivo: v })}
 			/>
+			{/* Un ajuste por formato: en el móvil, de fábrica encendido; en escritorio, apagado. */}
 			<FilaInterruptor
-				etiqueta={t("En partida local, pasar a mirar al jugador del turno")}
-				valor={m.seguirTurnoLocal}
-				onChange={(v) => set({ seguirTurnoLocal: v })}
+				etiqueta={movil ? t("Enfocar al jugador activo") : t("Seguir al jugador del turno")}
+				valor={movil ? m.seguirTurnoLocal : m.seguirTurnoEscritorio}
+				onChange={(v) => set(movil ? { seguirTurnoLocal: v } : { seguirTurnoEscritorio: v })}
 			/>
 			<FilaInterruptor
 				etiqueta={t("Ruleta al sortear quién empieza")}

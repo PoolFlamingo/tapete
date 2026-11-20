@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils";
 import { NINGUNA, tableroDe, useMesa } from "@/stores/mesa-store";
 import { useRed } from "@/stores/red-store";
 import { useUi } from "@/stores/ui-store";
+import { useConSalida } from "../con-salida";
 import { atacantesDe } from "../cuentas-flechas";
-import { mirarJugador } from "../mirar";
+import { mirarJugador, useAjusteSeguir } from "../mirar";
 import { elegirFantasma, elegirJugador } from "../objetivo";
 import { usePantalla } from "../pantalla";
 import { nombreFantasma, vidaDe } from "./cuentas-vida";
@@ -40,13 +41,18 @@ export function BarraAsientos() {
 	const fantasma = useMesa((s) => s.general?.fantasma ?? null);
 	const otros = useMesa((s) => s.general?.fantasmasExtra ?? NINGUNA);
 	const verFantasma = useUi((s) => s.mesa.fantasma);
-	const seguir = useUi((s) => s.mesa.seguirTurnoLocal);
+	const [seguir, setSeguir] = useAjusteSeguir();
 	const equipos = useMesa((s) => s.general?.equipos);
 	const enRed = useRed((s) => s.papel !== null);
 	const flechas = useMesa((s) => s.general?.flechas ?? NINGUNA);
 	const cartas = useMesa((s) => s.cartas);
 	const apuntando = usePantalla((s) => s.modo?.tipo === "flecha");
 	const [plegada, setPlegada] = useState(plegadaGuardada);
+	const abierta = !plegada || apuntando;
+	// Al plegarse, la barra encoge hacia su esquina y sale por la izquierda mientras
+	// el botón crece en ese mismo sitio; al abrirse, al revés.
+	const panel = useConSalida(abierta);
+	const boton = useConSalida(!abierta);
 	const hayFantasma = fantasma?.visible === true && verFantasma;
 	if (asientos.length < 2 && !hayFantasma) return null;
 
@@ -60,168 +66,177 @@ export function BarraAsientos() {
 		return e?.color || j?.color || "transparent";
 	};
 
-	if (plegada && !apuntando) {
-		const colorActivo = activo === null ? "transparent" : colorDe(activo);
-		return (
-			<button
-				type="button"
-				aria-label={t("Enseñar los jugadores")}
-				onClick={() => plegar(false)}
-				className="absolute top-12 left-1 z-[7000] flex size-10 items-center justify-center rounded-xl border border-white/10 bg-black/60 text-white shadow-lg backdrop-blur-md"
-				data-tutorial="mesa-asientos"
-			>
-				<Icono icon="lucide:users" className="size-5" />
-				<span
-					className="absolute -top-1 -right-1 size-3 rounded-full ring-2 ring-black/60"
-					style={{ background: colorActivo }}
-				/>
-			</button>
-		);
-	}
+	const colorActivo = activo === null ? "transparent" : colorDe(activo);
+	const botonPlegado = boton.montado && (
+		<button
+			type="button"
+			aria-label={t("Enseñar los jugadores")}
+			onClick={() => plegar(false)}
+			className={cn(
+				"absolute top-12 left-1 z-[7000] flex size-10 origin-top-left items-center justify-center rounded-xl border border-white/10 bg-black/60 text-white shadow-lg backdrop-blur-md duration-200",
+				boton.animar && !boton.saliendo && "animate-in fade-in zoom-in-50",
+				boton.saliendo && "pointer-events-none animate-out fade-out zoom-out-50 fill-mode-forwards",
+			)}
+			data-tutorial={abierta ? undefined : "mesa-asientos"}
+		>
+			<Icono icon="lucide:users" className="size-5" />
+			<span
+				className="absolute -top-1 -right-1 size-3 rounded-full ring-2 ring-black/60"
+				style={{ background: colorActivo }}
+			/>
+		</button>
+	);
+	if (!panel.montado) return botonPlegado;
 
 	return (
-		<div
-			// Hasta la franja de la mano (la misma cuenta que `disponer`): no la tapa.
-			style={{ bottom: "calc(min(220px, max(90px, 22%)) + 4px)" }}
-			className={cn(
-				"absolute top-12 left-1 z-[7000] flex flex-col gap-1 rounded-xl border border-white/10 bg-black/60 p-1 text-white shadow-lg backdrop-blur-md",
-				apuntando ? "w-[9.5rem]" : "w-[6.5rem]",
-			)}
-			data-tutorial="mesa-asientos"
-		>
-			<ScrollArea className="min-h-0 flex-1" viewportClassName="h-full">
-				<div className="flex flex-col gap-1 p-0.5">
-					{asientos.map((id) => {
-						const j = jugadores[id];
-						if (!j) return null;
-						const atacantes = atacantesDe(flechas, cartas, id);
-						return (
-							<div key={id} className="flex items-stretch gap-1">
-								<button
-									type="button"
-									onClick={() => {
-										if (!elegirJugador(id, t)) void mirarJugador(id);
-									}}
-									aria-pressed={viendo === id}
-									className={cn(
-										"flex min-h-11 min-w-0 flex-1 items-center gap-1.5 rounded-lg px-1.5 py-1 text-left text-xs",
-										viendo === id && "bg-white/20",
-										j.eliminado && "opacity-50",
-										activo === id && "ring-2 ring-primary",
-										apuntando && "bg-primary/30",
-									)}
-								>
-									<span
-										className="size-3 shrink-0 rounded-full"
-										style={{ background: j.color, boxShadow: `0 0 0 2px ${colorDe(id)}` }}
-									/>
-									<span className="flex min-w-0 flex-1 flex-col leading-tight">
-										<span className="truncate font-medium">
-											{id === yo && enRed ? t("{nombre} (tú)", { nombre: j.nombre }) : j.nombre}
-										</span>
-										{/* Debajo del nombre, para no comerle sitio en esta barra tan estrecha. */}
-										<span className="flex items-center gap-0.5 text-white/70 tabular-nums">
-											{activo === id && (
-												<Icono
-													icon="lucide:play"
-													role="img"
-													aria-label={t("Tiene el turno")}
-													className="size-3 shrink-0 text-primary"
-												/>
-											)}
-											{asientos.length > 1 && primero === id && (
-												<Icono
-													icon="lucide:flag"
-													role="img"
-													aria-label={t("Primer jugador")}
-													className="mr-0.5 size-3 shrink-0"
-												/>
-											)}
-											<Icono icon="game-icons:hearts" className="size-3" />
-											{vidaDe(j, equipos)}
-											{atacantes > 0 && (
-												<span
-													role="img"
-													className="ml-auto flex items-center gap-0.5 rounded-sm bg-rose-600 px-1 font-semibold text-white"
-													aria-label={t("Ataques contra {nombre}: {cuantos}", {
-														nombre: j.nombre,
-														cuantos: atacantes,
-													})}
-												>
-													<Icono icon="game-icons:crossed-swords" className="size-3" />
-													{atacantes}
-												</span>
-											)}
-										</span>
-									</span>
-								</button>
-								{apuntando && viendo !== id && (
+		<>
+			{botonPlegado}
+			<div
+				// Hasta la franja de la mano (la misma cuenta que `disponer`): no la tapa.
+				style={{ bottom: "calc(min(220px, max(90px, 22%)) + 4px)" }}
+				className={cn(
+					"absolute top-12 left-1 z-[7000] flex origin-top-left flex-col gap-1 rounded-xl border border-white/10 bg-black/60 p-1 text-white shadow-lg backdrop-blur-md duration-200",
+					apuntando ? "w-[9.5rem]" : "w-[6.5rem]",
+					panel.animar && !panel.saliendo && "animate-in fade-in zoom-in-50 slide-in-from-left-8",
+					panel.saliendo &&
+						"pointer-events-none animate-out fade-out zoom-out-50 slide-out-to-left-8 fill-mode-forwards",
+				)}
+				data-tutorial={abierta ? "mesa-asientos" : undefined}
+			>
+				<ScrollArea className="min-h-0 flex-1" viewportClassName="h-full">
+					<div className="flex flex-col gap-1 p-0.5">
+						{asientos.map((id) => {
+							const j = jugadores[id];
+							if (!j) return null;
+							const atacantes = atacantesDe(flechas, cartas, id);
+							return (
+								<div key={id} className="flex items-stretch gap-1">
 									<button
 										type="button"
-										aria-label={t("Ver el tablero de {nombre}", { nombre: j.nombre })}
-										onClick={() => void mirarJugador(id)}
-										className="flex w-9 shrink-0 items-center justify-center rounded-lg bg-white/10"
+										onClick={() => {
+											if (!elegirJugador(id, t)) void mirarJugador(id);
+										}}
+										aria-pressed={viendo === id}
+										className={cn(
+											"flex min-h-11 min-w-0 flex-1 items-center gap-1.5 rounded-lg px-1.5 py-1 text-left text-xs",
+											viendo === id && "bg-white/20",
+											j.eliminado && "opacity-50",
+											activo === id && "ring-2 ring-primary",
+											apuntando && "bg-primary/30",
+										)}
 									>
-										<Icono icon="lucide:eye" className="size-4" />
+										<span
+											className="size-3 shrink-0 rounded-full"
+											style={{ background: j.color, boxShadow: `0 0 0 2px ${colorDe(id)}` }}
+										/>
+										<span className="flex min-w-0 flex-1 flex-col leading-tight">
+											<span className="truncate font-medium">
+												{id === yo && enRed ? t("{nombre} (tú)", { nombre: j.nombre }) : j.nombre}
+											</span>
+											{/* Debajo del nombre, para no comerle sitio en esta barra tan estrecha. */}
+											<span className="flex items-center gap-0.5 text-white/70 tabular-nums">
+												{activo === id && (
+													<Icono
+														icon="lucide:play"
+														role="img"
+														aria-label={t("Tiene el turno")}
+														className="size-3 shrink-0 text-primary"
+													/>
+												)}
+												{asientos.length > 1 && primero === id && (
+													<Icono
+														icon="lucide:flag"
+														role="img"
+														aria-label={t("Primer jugador")}
+														className="mr-0.5 size-3 shrink-0"
+													/>
+												)}
+												<Icono icon="game-icons:hearts" className="size-3" />
+												{vidaDe(j, equipos)}
+												{atacantes > 0 && (
+													<span
+														role="img"
+														className="ml-auto flex items-center gap-0.5 rounded-sm bg-rose-600 px-1 font-semibold text-white"
+														aria-label={t("Ataques contra {nombre}: {cuantos}", {
+															nombre: j.nombre,
+															cuantos: atacantes,
+														})}
+													>
+														<Icono icon="game-icons:crossed-swords" className="size-3" />
+														{atacantes}
+													</span>
+												)}
+											</span>
+										</span>
 									</button>
-								)}
-							</div>
-						);
-					})}
-					{hayFantasma &&
-						fantasma &&
-						[fantasma, ...otros].map((f, i) => {
-							const otro = i === 0 ? null : i - 1;
-							return (
-								<button
-									key={otro ?? "primero"}
-									type="button"
-									aria-label={nombreFantasma(t, otro, otros.length)}
-									onClick={() => {
-										if (!elegirFantasma(t, otro)) usePantalla.getState().setCapa("vida");
-									}}
-									className="flex min-h-11 items-center gap-1.5 rounded-lg px-1.5 py-1 text-left text-xs"
-								>
-									<Icono icon="game-icons:ghost" className="size-3.5 shrink-0 opacity-80" />
-									<span className="flex min-w-0 flex-1 flex-col leading-tight">
-										{/* Con varios, el número: «Fantasma 2» no cabe en esta barra y se cortaría. */}
-										<span className="truncate font-medium">
-											{otros.length > 0 ? i + 1 : t("Fantasma")}
-										</span>
-										<span className="flex items-center gap-0.5 text-white/70 tabular-nums">
-											<Icono icon="game-icons:hearts" className="size-3" />
-											{f.vida}
-										</span>
-									</span>
-								</button>
+									{apuntando && viendo !== id && (
+										<button
+											type="button"
+											aria-label={t("Ver el tablero de {nombre}", { nombre: j.nombre })}
+											onClick={() => void mirarJugador(id)}
+											className="flex w-9 shrink-0 items-center justify-center rounded-lg bg-white/10"
+										>
+											<Icono icon="lucide:eye" className="size-4" />
+										</button>
+									)}
+								</div>
 							);
 						})}
-				</div>
-			</ScrollArea>
-			<div className="flex shrink-0 items-center justify-between gap-1">
-				{asientos.length > 1 && (
+						{hayFantasma &&
+							fantasma &&
+							[fantasma, ...otros].map((f, i) => {
+								const otro = i === 0 ? null : i - 1;
+								return (
+									<button
+										key={otro ?? "primero"}
+										type="button"
+										aria-label={nombreFantasma(t, otro, otros.length)}
+										onClick={() => {
+											if (!elegirFantasma(t, otro)) usePantalla.getState().setCapa("vida");
+										}}
+										className="flex min-h-11 items-center gap-1.5 rounded-lg px-1.5 py-1 text-left text-xs"
+									>
+										<Icono icon="game-icons:ghost" className="size-3.5 shrink-0 opacity-80" />
+										<span className="flex min-w-0 flex-1 flex-col leading-tight">
+											{/* Con varios, el número: «Fantasma 2» no cabe en esta barra y se cortaría. */}
+											<span className="truncate font-medium">
+												{otros.length > 0 ? i + 1 : t("Fantasma")}
+											</span>
+											<span className="flex items-center gap-0.5 text-white/70 tabular-nums">
+												<Icono icon="game-icons:hearts" className="size-3" />
+												{f.vida}
+											</span>
+										</span>
+									</button>
+								);
+							})}
+					</div>
+				</ScrollArea>
+				<div className="flex shrink-0 items-center justify-between gap-1">
+					{asientos.length > 1 && (
+						<button
+							type="button"
+							aria-label={t("Enfocar al jugador activo")}
+							aria-pressed={seguir}
+							onClick={() => setSeguir(!seguir)}
+							className={cn(
+								"flex size-11 items-center justify-center rounded-lg",
+								seguir ? "bg-primary text-primary-foreground" : "bg-white/10",
+							)}
+						>
+							<Icono icon="lucide:crosshair" className="size-5" />
+						</button>
+					)}
 					<button
 						type="button"
-						aria-label={t("Enfocar al jugador activo")}
-						aria-pressed={seguir}
-						onClick={() => useUi.getState().setMesa({ seguirTurnoLocal: !seguir })}
-						className={cn(
-							"flex size-11 items-center justify-center rounded-lg",
-							seguir ? "bg-primary text-primary-foreground" : "bg-white/10",
-						)}
+						aria-label={t("Plegar la barra de jugadores")}
+						onClick={() => plegar(true)}
+						className="flex size-11 items-center justify-center rounded-lg bg-white/10"
 					>
-						<Icono icon="lucide:crosshair" className="size-5" />
+						<Icono icon="lucide:chevron-left" className="size-5" />
 					</button>
-				)}
-				<button
-					type="button"
-					aria-label={t("Plegar la barra de jugadores")}
-					onClick={() => plegar(true)}
-					className="flex size-11 items-center justify-center rounded-lg bg-white/10"
-				>
-					<Icono icon="lucide:chevron-left" className="size-5" />
-				</button>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

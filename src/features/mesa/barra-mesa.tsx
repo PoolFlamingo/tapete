@@ -20,8 +20,10 @@ import { alternarPantallaCompleta } from "@/lib/ventana";
 import { useChat } from "@/stores/chat-store";
 import { tableroDe, useMesa } from "@/stores/mesa-store";
 import { useRed } from "@/stores/red-store";
+import { useUi } from "@/stores/ui-store";
 import { hacer } from "./acciones";
 import { useMesaMovil } from "./formato-mesa";
+import { useAjusteSeguir } from "./mirar";
 import * as op from "./operaciones";
 import { usePantalla } from "./pantalla";
 import { BotonResponder } from "./responder";
@@ -62,11 +64,12 @@ function Boton({
 				onClick={onClick}
 				aria-label={ayuda}
 				disabled={deshabilitado}
-				className={cn("text-white hover:bg-white/10 hover:text-white", className)}
+				// `relative`: la insignia de los no leídos va en su esquina, no en la de la barra.
+				className={cn("relative text-white hover:bg-white/10 hover:text-white", className)}
 			>
 				{children}
 				{insignia ? (
-					<span className="absolute -top-1 -right-1 min-w-4 rounded-full bg-primary px-1 text-[10px] leading-4 text-primary-foreground tabular-nums">
+					<span className="pointer-events-none absolute -top-1 -right-1 min-w-4 rounded-full bg-primary px-1 text-[10px] leading-4 text-primary-foreground tabular-nums">
 						{insignia}
 					</span>
 				) : null}
@@ -87,12 +90,14 @@ export function BarraMesa(props: PropsBarra) {
 }
 
 type PropsBarra = {
+	/** Para animar su entrada y salida al esconderla (`mesa-screen.tsx`). */
+	className?: string;
 	onSalir: () => void;
 	onEditarDeck: () => void;
 	onReiniciar: () => void;
 };
 
-function BarraEscritorio({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
+function BarraEscritorio({ className, onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 	const { t } = useLang();
 	const turno = useMesa((s) => s.general?.turno ?? null);
 	const pausada = useMesa((s) => s.general?.pausada ?? false);
@@ -127,10 +132,14 @@ function BarraEscritorio({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 	);
 	// En Android (también en una tableta) la app ya va siempre a pantalla completa.
 	const enAndroid = useEsMovil();
+	const [seguir, setSeguir] = useAjusteSeguir();
 
 	return (
 		<div
-			className="absolute top-2 left-1/2 z-[7000] flex w-max max-w-[calc(100%-1rem)] -translate-x-1/2 flex-wrap items-center justify-center gap-1 rounded-xl border border-white/10 bg-black/60 px-2 py-1 text-white shadow-lg backdrop-blur-md"
+			className={cn(
+				"absolute top-2 left-1/2 z-[7000] flex w-max max-w-[calc(100%-1rem)] -translate-x-1/2 flex-wrap items-center justify-center gap-1 rounded-xl border border-white/10 bg-black/60 px-2 py-1 text-white shadow-lg backdrop-blur-md",
+				className,
+			)}
 			data-tutorial="mesa-barra"
 		>
 			{!juega && (
@@ -265,6 +274,15 @@ function BarraEscritorio({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 				</Boton>
 			)}
 			<SelectorDisposicion className="text-white hover:bg-white/10 hover:text-white" />
+			{varios && (
+				<Boton
+					ayuda={t("Seguir al jugador del turno")}
+					activo={seguir}
+					onClick={() => setSeguir(!seguir)}
+				>
+					<Icono icon="lucide:crosshair" className="size-4" />
+				</Boton>
+			)}
 			{!enRed && <BotonSparring />}
 			<span className="mx-0.5 h-5 w-px bg-white/15" />
 			{manda && (
@@ -285,7 +303,42 @@ function BarraEscritorio({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 			<Boton ayuda={t("Salir de la mesa")} onClick={onSalir}>
 				<Icono icon="lucide:log-out" className="size-4" />
 			</Boton>
+			<Boton ayuda={t("Ocultar la barra")} onClick={() => ocultarBarra(true)}>
+				<Icono icon="lucide:chevron-up" className="size-4" />
+			</Boton>
 		</div>
+	);
+}
+
+function ocultarBarra(si: boolean) {
+	useUi.getState().setMesa({ barraOculta: si });
+}
+
+/**
+ * Con la barra escondida, una pestaña pequeña arriba en el centro la vuelve a
+ * sacar (en el móvil, pegada a la izquierda como la barra de pie).
+ */
+export function PestanaBarra({ className }: { className?: string }) {
+	const { t } = useLang();
+	const movil = useMesaMovil();
+	const { horizontal } = useFormato();
+	return (
+		<WithTooltip content={t("Mostrar la barra")}>
+			<button
+				type="button"
+				aria-label={t("Mostrar la barra")}
+				onClick={() => ocultarBarra(false)}
+				data-tutorial="mesa-barra"
+				className={cn(
+					"absolute top-0 z-[7000] flex items-center justify-center rounded-b-lg border border-t-0 border-white/10 bg-black/60 text-white shadow-lg backdrop-blur-md hover:bg-black/80",
+					movil && !horizontal ? "left-1" : "left-1/2 -translate-x-1/2",
+					movil ? "h-6 w-11 !min-h-6 !min-w-11" : "h-4 w-10",
+					className,
+				)}
+			>
+				<Icono icon="lucide:chevron-down" className={movil ? "size-4" : "size-3.5"} />
+			</button>
+		</WithTooltip>
 	);
 }
 
@@ -297,7 +350,7 @@ function BarraEscritorio({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 const BOTON_MOVIL = "size-9 !min-h-9 !min-w-9";
 
 /** Lo que enseña la barra del móvil: el turno y los botones de lo que más se usa; el resto, en «⋯». */
-function BarraMovil({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
+function BarraMovil({ className, onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 	const { t } = useLang();
 	const turno = useMesa((s) => s.general?.turno ?? null);
 	const pausada = useMesa((s) => s.general?.pausada ?? false);
@@ -340,6 +393,7 @@ function BarraMovil({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 				horizontal
 					? "left-1/2 w-max max-w-[calc(100%-7rem)] -translate-x-1/2 flex-wrap justify-center"
 					: "left-1 max-w-[calc(100%-3.5rem)] flex-nowrap",
+				className,
 			)}
 			data-tutorial="mesa-barra"
 		>
@@ -397,7 +451,7 @@ function BarraMovil({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 					<Boton className={BOTON_MOVIL} ayuda={t("Rehacer")} onClick={() => void op.rehacer()}>
 						<Icono icon="lucide:redo-2" className="size-[1.125rem]" />
 					</Boton>
-					<BotonResponder compacto={!horizontal} />
+					<BotonResponder compacto={!horizontal} className="!min-h-9 !min-w-9" />
 					{horizontal && (
 						<Boton
 							className={BOTON_MOVIL}
@@ -523,6 +577,10 @@ function BarraMovil({ onSalir, onEditarDeck, onReiniciar }: PropsBarra) {
 							<DropdownMenuShortcut>F11</DropdownMenuShortcut>
 						</DropdownMenuItem>
 					)}
+					<DropdownMenuItem onSelect={() => ocultarBarra(true)}>
+						<Icono icon="lucide:chevron-up" />
+						{t("Ocultar la barra")}
+					</DropdownMenuItem>
 					<DropdownMenuSeparator />
 					{manda && (
 						<>

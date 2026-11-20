@@ -29,6 +29,8 @@ export function Ausentes() {
 	const mulligan = useMesa((s) => s.general?.mulligan != null);
 	const fin = useMesa((s) => s.general?.fin != null);
 	const [ahora, setAhora] = useState(() => Date.now());
+	// Cada aviso se pliega a una pastilla (tapa el campo y quien se fue puede tardar en volver).
+	const [plegados, setPlegados] = useState<number[]>([]);
 	useEffect(() => {
 		if (ausentes.length === 0) return;
 		const id = window.setInterval(() => setAhora(Date.now()), 1000);
@@ -57,6 +59,22 @@ export function Ausentes() {
 				const seg = segundosAusente(a.haceMs, a.visto, ahora);
 				const esElTurno = a.jugador === activo && !mulligan;
 				const puedeSaltar = esElTurno && seg * 1000 >= ESPERA_SALTAR_MS;
+				// Si me toca saltar su turno, el aviso se abre aunque estuviera plegado.
+				const meToca = puedeSaltar && siguiente === yo && papel !== "espectador";
+				if (plegados.includes(a.jugador) && !meToca) {
+					return (
+						<button
+							key={a.jugador}
+							type="button"
+							aria-label={t("{quien} está desconectado.", { quien })}
+							onClick={() => setPlegados(plegados.filter((x) => x !== a.jugador))}
+							className="flex h-8 items-center gap-1.5 self-end rounded-full border border-amber-500/40 bg-black/85 px-2.5 text-[11px] text-white shadow-lg backdrop-blur-md"
+						>
+							<Icono icon="lucide:user-x" className="size-3.5 shrink-0 text-amber-400" />
+							<span className="max-w-24 truncate">{quien}</span>
+						</button>
+					);
+				}
 				return (
 					<div
 						key={a.jugador}
@@ -64,7 +82,15 @@ export function Ausentes() {
 					>
 						<div className="flex items-center gap-2">
 							<Icono icon="lucide:user-x" className="size-3.5 shrink-0 text-amber-400" />
-							<span>{t("{quien} está desconectado.", { quien })}</span>
+							<span className="min-w-0 flex-1">{t("{quien} está desconectado.", { quien })}</span>
+							<button
+								type="button"
+								aria-label={t("Plegar el aviso")}
+								onClick={() => setPlegados([...plegados, a.jugador])}
+								className="-m-1 flex size-7 shrink-0 items-center justify-center rounded-md text-white/70 hover:bg-white/10 hover:text-white"
+							>
+								<Icono icon="lucide:minus" className="size-4" />
+							</button>
 						</div>
 						{mulligan && (
 							<p className="text-white/70">{t("Se quedará con su mano si no vuelve.")}</p>
@@ -78,7 +104,7 @@ export function Ausentes() {
 							</p>
 						)}
 						{puedeSaltar &&
-							(siguiente === yo && papel !== "espectador" ? (
+							(meToca ? (
 								<Button
 									size="sm"
 									onClick={() => void hacer({ que: "saltarTurno", jugador: a.jugador })}

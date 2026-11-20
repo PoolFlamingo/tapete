@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cartasDe, cuantasEn, useMesa } from "@/stores/mesa-store";
 import { hacer, zonaComun } from "./acciones";
+import { CabeceraPanel } from "./cabecera-panel";
+import { useMesaMovil } from "./formato-mesa";
 import { caraVisible, ImagenCarta } from "./imagen-carta";
 import { useLeerEnGrande } from "./leer-en-grande";
 import { planeswalkPendiente } from "./planar";
@@ -29,52 +32,61 @@ function PlanoActivo() {
 	const pendiente = useMesa((s) => planeswalkPendiente(s.registro));
 	const quieta = useMesa((s) => s.general?.mulligan != null);
 	const leer = useLeerEnGrande(carta?.id ?? null);
+	const movil = useMesaMovil();
+	const [plegado, setPlegado] = useState(false);
 	return (
 		<div
 			className="flex w-48 flex-col gap-1.5 rounded-lg border border-white/10 bg-black/60 p-2 text-white shadow-lg backdrop-blur-md"
 			data-tutorial="mesa-plano"
 		>
-			<div className="flex flex-col text-[10px] leading-tight">
-				<span className="font-semibold tracking-wider uppercase">{t("Plano activo")}</span>
-				<span className="text-white/60">{t("{cuantos} en el mazo", { cuantos: enMazo })}</span>
-			</div>
-			<div
-				className="aspect-[88/63] w-full overflow-hidden rounded-md border border-white/15 bg-black/40"
-				{...leer}
-			>
-				{carta ? (
-					<ImagenCarta imagen={caraVisible(carta)} ancho={244} nombre={carta.origen?.nombre} />
-				) : (
-					<p className="flex size-full items-center justify-center p-2 text-center text-[11px] text-white/60">
-						{t("No hay planos: añade planos al deck.")}
+			<CabeceraPanel
+				titulo={t("Plano activo")}
+				subtitulo={t("{cuantos} en el mazo", { cuantos: enMazo })}
+				plegable={movil}
+				plegado={movil && plegado}
+				onPlegar={setPlegado}
+			/>
+			{!(movil && plegado) && (
+				<>
+					<div
+						className="aspect-[88/63] w-full overflow-hidden rounded-md border border-white/15 bg-black/40"
+						{...leer}
+					>
+						{carta ? (
+							<ImagenCarta imagen={caraVisible(carta)} ancho={244} nombre={carta.origen?.nombre} />
+						) : (
+							<p className="flex size-full items-center justify-center p-2 text-center text-[11px] text-white/60">
+								{t("No hay planos: añade planos al deck.")}
+							</p>
+						)}
+					</div>
+					<div className="grid grid-cols-2 gap-1.5">
+						<Button
+							size="sm"
+							variant={pendiente ? "default" : "secondary"}
+							className={cn("px-1.5 text-[11px]", pendiente && "animate-pulse")}
+							disabled={quieta || (activo.length === 0 && enMazo === 0)}
+							onClick={() => void hacer({ que: "planeswalk" })}
+						>
+							{t("Planeswalk")}
+						</Button>
+						<Button
+							size="sm"
+							variant="secondary"
+							className="px-1.5 text-[11px]"
+							disabled={quieta}
+							onClick={() => void hacer({ que: "dadoPlanar" })}
+						>
+							{t("Dado planar")}
+						</Button>
+					</div>
+					<p className="text-center text-[10px] text-white/60">
+						{tiradas === 0
+							? t("La próxima tirada es gratis.")
+							: t("La próxima tirada cuesta {coste}.", { coste: tiradas })}
 					</p>
-				)}
-			</div>
-			<div className="grid grid-cols-2 gap-1.5">
-				<Button
-					size="sm"
-					variant={pendiente ? "default" : "secondary"}
-					className={cn("px-1.5 text-[11px]", pendiente && "animate-pulse")}
-					disabled={quieta || (activo.length === 0 && enMazo === 0)}
-					onClick={() => void hacer({ que: "planeswalk" })}
-				>
-					{t("Planeswalk")}
-				</Button>
-				<Button
-					size="sm"
-					variant="secondary"
-					className="px-1.5 text-[11px]"
-					disabled={quieta}
-					onClick={() => void hacer({ que: "dadoPlanar" })}
-				>
-					{t("Dado planar")}
-				</Button>
-			</div>
-			<p className="text-center text-[10px] text-white/60">
-				{tiradas === 0
-					? t("La próxima tirada es gratis.")
-					: t("La próxima tirada cuesta {coste}.", { coste: tiradas })}
-			</p>
+				</>
+			)}
 		</div>
 	);
 }

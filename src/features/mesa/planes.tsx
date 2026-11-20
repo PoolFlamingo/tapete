@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/react/shallow";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
 import { cartasDe, cuantasEn, useMesa } from "@/stores/mesa-store";
 import { hacer, zonaDe } from "./acciones";
+import { CabeceraPanel } from "./cabecera-panel";
+import { useMesaMovil } from "./formato-mesa";
 import { caraVisible, ImagenCarta } from "./imagen-carta";
 import { manejadoresLeer } from "./leer-en-grande";
 import { esArchienemigo } from "./planar";
@@ -39,28 +41,38 @@ function Planes({ archenemy }: { archenemy: number }) {
 			},
 		});
 	}, [mio, toca, enMazo, turno, t]);
+	const movil = useMesaMovil();
+	const [plegado, setPlegado] = useState(false);
 	if (enMazo === 0 && enMarcha.length === 0) return null;
+	const ver = !(movil && plegado);
 	return (
 		<div
 			className="flex w-48 flex-col gap-1.5 rounded-lg border border-white/10 bg-black/60 p-2 text-white shadow-lg backdrop-blur-md"
 			data-tutorial="mesa-planes"
 		>
-			<div className="flex flex-col text-[10px] leading-tight">
-				<span className="font-semibold tracking-wider uppercase">{t("Planes en marcha")}</span>
-				<span className="text-white/60">{t("{cuantos} en el mazo", { cuantos: enMazo })}</span>
-			</div>
-			<ul className="flex max-h-44 flex-col gap-1.5">
-				{enMarcha.map((id) => (
-					<Plan key={id} id={id} mio={mio} />
-				))}
-			</ul>
-			<Button
-				size="sm"
-				disabled={!mio || enMazo === 0}
-				onClick={() => void hacer({ que: "ponerEnMarcha" })}
-			>
-				{t("Poner en marcha")}
-			</Button>
+			<CabeceraPanel
+				titulo={t("Planes en marcha")}
+				subtitulo={t("{cuantos} en el mazo", { cuantos: enMazo })}
+				plegable={movil}
+				plegado={!ver}
+				onPlegar={setPlegado}
+			/>
+			{ver && (
+				<>
+					<ul className="flex max-h-44 flex-col gap-1.5">
+						{enMarcha.map((id) => (
+							<Plan key={id} id={id} mio={mio} />
+						))}
+					</ul>
+					<Button
+						size="sm"
+						disabled={!mio || enMazo === 0}
+						onClick={() => void hacer({ que: "ponerEnMarcha" })}
+					>
+						{t("Poner en marcha")}
+					</Button>
+				</>
+			)}
 		</div>
 	);
 }

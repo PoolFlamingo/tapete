@@ -76,8 +76,12 @@ export type PreferenciasMesa = {
 	rivalesFantasma: number;
 	/** En red: mandar el cursor y la carta que se arrastra, y ver los de los demás. */
 	movimientoEnVivo: boolean;
-	/** En una partida local de varios, pasar a mirar al jugador del turno. */
+	/** En el móvil, pasar a mirar al jugador del turno («Enfocar al jugador activo»). */
 	seguirTurnoLocal: boolean;
+	/** En escritorio, pasar a mirar al jugador del turno (de fábrica, apagado). */
+	seguirTurnoEscritorio: boolean;
+	/** La barra de arriba de la mesa, escondida (queda una pestaña para sacarla). */
+	barraOculta: boolean;
 	/** Con varios jugadores, la ruleta que enseña a quién le ha tocado empezar. */
 	ruletaEmpieza: boolean;
 	/** Los contadores de jugador que se enseñan junto a la vida. */
@@ -113,6 +117,8 @@ export const MESA_DE_FABRICA: PreferenciasMesa = {
 	rivalesFantasma: 1,
 	movimientoEnVivo: true,
 	seguirTurnoLocal: true,
+	seguirTurnoEscritorio: false,
+	barraOculta: false,
 	ruletaEmpieza: true,
 	trackers: [],
 	disposicion: {},

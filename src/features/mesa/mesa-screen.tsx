@@ -9,8 +9,9 @@ import { useRed } from "@/stores/red-store";
 import { useRepeticion } from "@/stores/repeticion-store";
 import { useUi } from "@/stores/ui-store";
 import { hacer } from "./acciones";
-import { BarraMesa } from "./barra-mesa";
+import { BarraMesa, PestanaBarra } from "./barra-mesa";
 import { BocadillosFlotantes, useAtajosComunicacion } from "./chat";
+import { useConSalida } from "./con-salida";
 import { guardar, salir, suscribir, suscrito } from "./conexion";
 import { CapaDados } from "./dados/capa";
 import { DanoDeQuien } from "./dano-de-quien";
@@ -98,6 +99,10 @@ function Mesa({ deckIds }: { deckIds: string[] }) {
 	useSeguirTurno();
 	useAtajosComunicacion();
 	const enMovil = useMesaMovil();
+	const barraOculta = useUi((s) => s.mesa.barraOculta);
+	// Al esconderla, la barra sube y sale por arriba mientras baja la pestaña; al sacarla, al revés.
+	const barra = useConSalida(!barraOculta);
+	const pestana = useConSalida(barraOculta);
 	const [preguntaSalir, setPreguntaSalir] = useState(false);
 	const [preguntaReiniciar, setPreguntaReiniciar] = useState(false);
 	const [preguntaEditar, setPreguntaEditar] = useState(false);
@@ -199,18 +204,24 @@ function Mesa({ deckIds }: { deckIds: string[] }) {
 			{repitiendo ? (
 				<BarraRepeticion />
 			) : (
-				<BarraMesa
-					onSalir={() => {
-						if (papel === "anfitrion") {
-							call("red_estado")
-								.then((e) => setPuedeCeder(e.puedeCeder))
-								.catch(() => setPuedeCeder(false));
-						}
-						setPreguntaSalir(true);
-					}}
-					onEditarDeck={() => setPreguntaEditar(true)}
-					onReiniciar={() => setPreguntaReiniciar(true)}
-				/>
+				<>
+					{barra.montado && (
+						<BarraMesa
+							className={animacionArriba(barra)}
+							onSalir={() => {
+								if (papel === "anfitrion") {
+									call("red_estado")
+										.then((e) => setPuedeCeder(e.puedeCeder))
+										.catch(() => setPuedeCeder(false));
+								}
+								setPreguntaSalir(true);
+							}}
+							onEditarDeck={() => setPreguntaEditar(true)}
+							onReiniciar={() => setPreguntaReiniciar(true)}
+						/>
+					)}
+					{pestana.montado && <PestanaBarra className={animacionArriba(pestana)} />}
+				</>
 			)}
 			<SelectorTablero />
 			{enMovil && !repitiendo && (
@@ -294,4 +305,12 @@ function Mesa({ deckIds }: { deckIds: string[] }) {
 			/>
 		</div>
 	);
+}
+
+/** Entrar bajando desde arriba y salir subiendo, para la barra y su pestaña. */
+function animacionArriba(e: ReturnType<typeof useConSalida>): string {
+	if (e.saliendo) {
+		return "pointer-events-none animate-out fade-out slide-out-to-top-[150%] fill-mode-forwards duration-200";
+	}
+	return e.animar ? "animate-in fade-in slide-in-from-top-[150%] duration-200" : "";
 }

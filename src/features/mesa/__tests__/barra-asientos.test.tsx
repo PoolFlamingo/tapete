@@ -8,7 +8,10 @@ const hacer = vi.fn();
 const mirarJugador = vi.fn();
 vi.mock("../acciones", () => ({ hacer: (a: unknown) => hacer(a) }));
 vi.mock("../operaciones", () => ({ adjuntar: vi.fn() }));
-vi.mock("../mirar", () => ({ mirarJugador: (id: number) => mirarJugador(id) }));
+vi.mock("../mirar", () => ({
+	mirarJugador: (id: number) => mirarJugador(id),
+	useAjusteSeguir: () => [true, () => {}],
+}));
 vi.mock("sonner", () => ({ toast: { warning: vi.fn() } }));
 vi.mock("@/components/icono", () => ({ Icono: () => null }));
 vi.mock("@/components/ui/scroll-area", () => ({
@@ -23,6 +26,7 @@ vi.mock("@/components/language-provider", () => ({
 
 const { useMesa } = await import("@/stores/mesa-store");
 const { usePantalla } = await import("../pantalla");
+const { useUi } = await import("@/stores/ui-store");
 const { BarraAsientos } = await import("../movil/barra-asientos");
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -53,6 +57,8 @@ describe("la barra de asientos del móvil", () => {
 		});
 
 	beforeEach(() => {
+		// Sin animaciones, plegar quita la barra al momento (la salida animada tiene su test).
+		useUi.getState().setMesa({ reducirAnimaciones: true });
 		hacer.mockClear();
 		mirarJugador.mockClear();
 		usePantalla.getState().setModo(null);
@@ -114,6 +120,27 @@ describe("la barra de asientos del móvil", () => {
 		pulsar(fila("Bea"));
 		expect(mirarJugador).toHaveBeenCalledWith(2);
 		expect(usePantalla.getState().modo).not.toBeNull();
+	});
+
+	it("al plegarla, la barra sale animada y después queda solo el botón", () => {
+		vi.useFakeTimers();
+		try {
+			useUi.getState().setMesa({ reducirAnimaciones: false });
+			pintar();
+			const plegar = caja.querySelector('[aria-label="Plegar la barra de jugadores"]');
+			if (!plegar) throw new Error("no está el botón de plegar");
+			pulsar(plegar);
+			// Mientras sale siguen los dos: la barra encogiéndose y el botón creciendo.
+			expect(botones().some((b) => b.textContent?.includes("Bea"))).toBe(true);
+			expect(caja.querySelector('[aria-label="Enseñar los jugadores"]')).not.toBeNull();
+			act(() => vi.advanceTimersByTime(200));
+			expect(botones().some((b) => b.textContent?.includes("Bea"))).toBe(false);
+			pulsar(caja.querySelector('[aria-label="Enseñar los jugadores"]') as Element);
+			act(() => vi.advanceTimersByTime(200));
+			expect(caja.querySelector('[aria-label="Enseñar los jugadores"]')).toBeNull();
+		} finally {
+			vi.useRealTimers();
+		}
 	});
 
 	it("plegada, se abre sola al empezar una flecha", () => {
