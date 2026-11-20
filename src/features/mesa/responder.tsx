@@ -13,6 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { WithTooltip } from "@/components/ui/with-tooltip";
+import { cn } from "@/lib/utils";
 import { tableroDe, useMesa } from "@/stores/mesa-store";
 import { useRed } from "@/stores/red-store";
 import { responderComo, volverAlTurno } from "./mirar";
@@ -27,7 +28,14 @@ const ESTILO = "h-7 gap-1 px-2 text-xs text-white hover:bg-white/10 hover:text-w
  * al jugador del turno. No cambia nada de la partida: es solo qué jugador
  * mira la pantalla (el motor ya deja hacer con lo propio cuando se quiera).
  */
-export function BotonResponder({ compacto = false }: { compacto?: boolean }) {
+export function BotonResponder({
+	compacto = false,
+	className,
+}: {
+	compacto?: boolean;
+	/** En la barra del móvil, su tamaño (`BOTON_MOVIL`): el mínimo táctil la haría más alta. */
+	className?: string;
+}) {
 	const { t } = useLang();
 	// De pie, en el móvil, la frase entera no cabe en la barra: solo el icono, y su nombre al mantenerlo.
 	const propsDe = (texto: string) => (compacto ? { "aria-label": texto } : {});
@@ -53,7 +61,7 @@ export function BotonResponder({ compacto = false }: { compacto?: boolean }) {
 					<Button
 						size="sm"
 						variant="secondary"
-						className="h-7 gap-1 px-2 text-xs"
+						className={cn("h-7 gap-1 px-2 text-xs", className)}
 						onClick={() => void volverAlTurno()}
 						{...propsDe(t("Volver a {nombre}", { nombre: jugadores[activo]?.nombre ?? "" }))}
 					>
@@ -71,7 +79,7 @@ export function BotonResponder({ compacto = false }: { compacto?: boolean }) {
 						<Button
 							size="sm"
 							variant="secondary"
-							className="h-7 gap-1 px-2 text-xs"
+							className={cn("h-7 gap-1 px-2 text-xs", className)}
 							{...propsDe(
 								t("Respondiendo como {nombre}", { nombre: jugadores[viendo]?.nombre ?? "" }),
 							)}
@@ -103,7 +111,7 @@ export function BotonResponder({ compacto = false }: { compacto?: boolean }) {
 				<Button
 					size="sm"
 					variant="ghost"
-					className={ESTILO}
+					className={cn(ESTILO, className)}
 					onClick={() => void responderComo(primero)}
 					{...propsDe(t("Responder como {nombre}", { nombre: jugadores[primero]?.nombre ?? "" }))}
 				>
@@ -117,7 +125,12 @@ export function BotonResponder({ compacto = false }: { compacto?: boolean }) {
 		<DropdownMenu>
 			<WithTooltip content={t("Responder desde la mesa de otro jugador (Mayús+R)")}>
 				<DropdownMenuTrigger asChild>
-					<Button size="sm" variant="ghost" className={ESTILO} {...propsDe(t("Responder"))}>
+					<Button
+						size="sm"
+						variant="ghost"
+						className={cn(ESTILO, className)}
+						{...propsDe(t("Responder"))}
+					>
 						<Icono icon="lucide:reply" className="size-3.5" />
 						{texto(t("Responder"))}
 					</Button>

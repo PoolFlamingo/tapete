@@ -67,6 +67,8 @@ export function VidaJugador({
 	const trackers = useUi((s) => s.mesa.trackers);
 	// En el móvil, «Pasar turno» es el botón redondo de arriba (`movil/controles.tsx`).
 	const movil = useMesaMovil();
+	// Quien solo mira ve la vida y los contadores, sin −/+ ni menú: no puede cambiarlos.
+	const soloMira = useRed((s) => s.papel === "espectador");
 	const [pendiente, setPendiente] = useState(0);
 	const temporizador = useRef<number | null>(null);
 	const acumulado = useRef(0);
@@ -103,25 +105,29 @@ export function VidaJugador({
 							className="flex items-center gap-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] text-white"
 						>
 							{t(c.nombre)}
-							<button
-								type="button"
-								className={cn("px-0.5", movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL)}
-								onClick={() =>
-									void hacer({ que: "contadorJugador", jugador, tipo: c.tipo, delta: -1 })
-								}
-							>
-								−
-							</button>
+							{!soloMira && (
+								<button
+									type="button"
+									className={cn("px-0.5", movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL)}
+									onClick={() =>
+										void hacer({ que: "contadorJugador", jugador, tipo: c.tipo, delta: -1 })
+									}
+								>
+									−
+								</button>
+							)}
 							<b className="tabular-nums">{j.contadores[c.tipo] ?? 0}</b>
-							<button
-								type="button"
-								className={cn("px-0.5", movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL)}
-								onClick={() =>
-									void hacer({ que: "contadorJugador", jugador, tipo: c.tipo, delta: 1 })
-								}
-							>
-								+
-							</button>
+							{!soloMira && (
+								<button
+									type="button"
+									className={cn("px-0.5", movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL)}
+									onClick={() =>
+										void hacer({ que: "contadorJugador", jugador, tipo: c.tipo, delta: 1 })
+									}
+								>
+									+
+								</button>
+							)}
 						</span>
 					))}
 				</div>
@@ -154,18 +160,20 @@ export function VidaJugador({
 							movil ? "px-1 py-0" : "px-2 py-1",
 							vida <= 0 && "ring-2 ring-rose-500",
 						)}
-						onWheel={(e) => sumar(e.deltaY < 0 ? 1 : -1)}
+						onWheel={(e) => !soloMira && sumar(e.deltaY < 0 ? 1 : -1)}
 					>
-						<button
-							type="button"
-							className={cn(
-								"px-1.5 text-lg leading-none",
-								movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL,
-							)}
-							onClick={() => sumar(-1)}
-						>
-							−
-						</button>
+						{!soloMira && (
+							<button
+								type="button"
+								className={cn(
+									"px-1.5 text-lg leading-none",
+									movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL,
+								)}
+								onClick={() => sumar(-1)}
+							>
+								−
+							</button>
+						)}
 						<div
 							className={cn(
 								"flex flex-col items-center leading-none",
@@ -183,16 +191,18 @@ export function VidaJugador({
 								</span>
 							)}
 						</div>
-						<button
-							type="button"
-							className={cn(
-								"px-1.5 text-lg leading-none",
-								movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL,
-							)}
-							onClick={() => sumar(1)}
-						>
-							+
-						</button>
+						{!soloMira && (
+							<button
+								type="button"
+								className={cn(
+									"px-1.5 text-lg leading-none",
+									movil ? MAS_MENOS_MOVIL : MAS_MENOS_TACTIL,
+								)}
+								onClick={() => sumar(1)}
+							>
+								+
+							</button>
+						)}
 					</div>
 				</MenuJugador>
 			</div>

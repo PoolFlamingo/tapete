@@ -3,6 +3,7 @@ import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
 import { useFormato } from "@/lib/formato";
+import { cn } from "@/lib/utils";
 import { useUi } from "@/stores/ui-store";
 import { CapaAlta } from "../capa-alta";
 import { useMesaMovil } from "../formato-mesa";
@@ -56,7 +57,23 @@ export function VistaFantasma() {
 					...(panelLateral ? { right: ANCHO_PANEL + 20 } : {}),
 				}}
 			>
-				<div className="size-full overflow-hidden rounded-carta shadow-2xl">
+				<div
+					// Con el dedo, tocarla la cierra sin que el toque pase a lo de debajo.
+					{...(tactil
+						? {
+								"data-lee-cierra": "",
+								onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
+								onClick: (e: React.MouseEvent) => {
+									e.stopPropagation();
+									cerrarFantasma();
+								},
+							}
+						: {})}
+					className={cn(
+						"size-full overflow-hidden rounded-carta shadow-2xl",
+						tactil && "pointer-events-auto",
+					)}
+				>
 					<CartaFantasma nombre={nombre} ancho={488} className="size-full" />
 				</div>
 				{tactil && (
@@ -67,7 +84,7 @@ export function VistaFantasma() {
 						onClick={cerrarFantasma}
 						aria-label={t("Cerrar")}
 						data-lee-cierra=""
-						className="pointer-events-auto absolute -top-2 -left-2 rounded-full shadow-lg"
+						className="pointer-events-auto absolute -top-2 -left-2 !min-h-8 !min-w-8 rounded-full shadow-lg"
 					>
 						<Icono icon="lucide:x" className="size-4" />
 					</Button>

@@ -83,8 +83,28 @@ export function cerrarLectura() {
 export const SELECTOR_LEIBLE = "[data-lee],[data-carta],[data-lee-cierra]";
 
 /**
- * Con el dedo, tocar fuera de lo que se lee cierra la lectura. Los toques
- * sobre algo que se lee (`SELECTOR_LEIBLE`) no la cierran: la cambian ellos.
+ * El clic que llega tras el toque que cerró la lectura no hace nada: la carta
+ * grande tapaba lo de debajo («Pasar turno», la vida, robar) y la persona solo
+ * quería cerrarla. Un solo clic, y solo si llega pronto.
+ */
+function tragarElClic() {
+	const tragar = (e: MouseEvent) => {
+		e.stopPropagation();
+		e.preventDefault();
+		quitar();
+	};
+	const quitar = () => {
+		window.removeEventListener("click", tragar, true);
+		window.clearTimeout(plazo);
+	};
+	const plazo = window.setTimeout(quitar, 700);
+	window.addEventListener("click", tragar, true);
+}
+
+/**
+ * Con el dedo, tocar fuera de lo que se lee cierra la lectura, y ese toque no
+ * hace nada más (`tragarElClic`). Los toques sobre algo que se lee
+ * (`SELECTOR_LEIBLE`) no la cierran: la cambian ellos.
  */
 export function useCerrarAlTocarFuera(abierto: boolean, cerrar: () => void) {
 	useEffect(() => {
@@ -92,6 +112,7 @@ export function useCerrarAlTocarFuera(abierto: boolean, cerrar: () => void) {
 		const alBajar = (e: globalThis.PointerEvent) => {
 			if (hayEncima(e.pointerType)) return;
 			if (e.target instanceof Element && e.target.closest(SELECTOR_LEIBLE)) return;
+			tragarElClic();
 			cerrar();
 		};
 		window.addEventListener("pointerdown", alBajar, true);

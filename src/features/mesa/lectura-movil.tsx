@@ -80,9 +80,17 @@ export function LecturaMovil({
 			>
 				<div className={cn("flex gap-2", !horizontal && "justify-center")}>
 					{Array.from({ length: caras }, (_, i) => (
+						// Tocar la carta grande la cierra, y el toque no sigue: debajo están «Pasar
+						// turno», la vida o la biblioteca, que harían algo sin querer.
 						<div
 							key={i}
-							className="shrink-0 overflow-hidden rounded-carta shadow-2xl"
+							data-lee-cierra=""
+							onPointerDown={(e) => e.stopPropagation()}
+							onClick={(e) => {
+								e.stopPropagation();
+								onCerrar();
+							}}
+							className="pointer-events-auto shrink-0 overflow-hidden rounded-carta shadow-2xl"
 							style={{ width: ancho, height: alto }}
 						>
 							{cara(i, ancho, alto)}

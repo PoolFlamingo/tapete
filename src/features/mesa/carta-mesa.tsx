@@ -3,6 +3,7 @@ import type { IdCarta } from "@/bindings/IdCarta";
 import type { VistaCarta } from "@/bindings/VistaCarta";
 import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
+import { useFormato } from "@/lib/formato";
 import { cn } from "@/lib/utils";
 import { useMesa } from "@/stores/mesa-store";
 import { useRepeticion } from "@/stores/repeticion-store";
@@ -66,6 +67,7 @@ export const CartaMesa = memo(function CartaMesa({
 	const elegida = useMesa((s) => s.seleccion.includes(id));
 	// La única elegida lleva el botón «⋯» del menú (con el dedo no hay clic derecho).
 	const unicaElegida = useMesa((s) => s.seleccion.length === 1 && s.seleccion[0] === id);
+	const { tactil } = useFormato();
 	// Con el dedo, leer en grande es un toque (lo gestiona `tablero.tsx`); entrar y salir, del ratón.
 	const leer = useLeerEnGrande(id, false);
 	const tipoPuntero = useRef("mouse");
@@ -129,7 +131,10 @@ export const CartaMesa = memo(function CartaMesa({
 				style={{
 					width: w,
 					height: h,
-					zIndex: z ?? c.z,
+					// Con el dedo, la única elegida sube por encima de sus vecinas: su «⋯» sobresale
+					// y, tapado por la de al lado (el abanico de la mano), el toque leería esa otra.
+					// +1000 la deja aún bajo la cortina de la mano (5000) y lo de encima de la mesa.
+					zIndex: (z ?? c.z) + (unicaElegida && tactil ? 1000 : 0),
 					transform: `translate(${x - w / 2}px, ${y - h / 2}px)`,
 				}}
 			>

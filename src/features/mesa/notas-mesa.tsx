@@ -21,6 +21,7 @@ import { NINGUNA, useMesa } from "@/stores/mesa-store";
 import { useRepeticion } from "@/stores/repeticion-store";
 import { hacer } from "./acciones";
 import { MAX_NOTA } from "./cuentas-notas";
+import { useMesaMovil } from "./formato-mesa";
 import { usePantalla } from "./pantalla";
 
 const cerrar = () => usePantalla.getState().abrir(null);
@@ -142,51 +143,75 @@ export function NotasSueltas() {
 	const jugadores = useMesa((s) => s.jugadores);
 	const repitiendo = useRepeticion((s) => s.activa !== null);
 	const atando = usePantalla((s) => (s.modo?.tipo === "nota" ? s.modo.nota : null));
+	// En el móvil la izquierda es de la barra de jugadores y de la pila: van a la derecha,
+	// bajo «Pasar turno», más estrechas y plegables a una pastilla (tapan el campo).
+	const movil = useMesaMovil();
+	const [plegadas, setPlegadas] = useState(false);
 	if (notas.length === 0) return null;
 	return (
 		<div
-			className="absolute top-14 left-3 flex max-h-[55%] w-44 flex-col gap-1.5 overflow-hidden"
+			className={cn(
+				"absolute flex max-h-[55%] flex-col gap-1.5 overflow-hidden",
+				movil ? "top-14 right-1 w-32 items-end" : "top-14 left-3 w-44",
+			)}
 			style={{ zIndex: 5500 }}
 		>
-			{notas.map((n) => {
-				const mia = n.autor === yo && !repitiendo;
-				const color = jugadores[n.autor]?.color ?? "#facc15";
-				const pegote = (
-					<button
-						type="button"
-						disabled={!mia}
-						onClick={() => mia && atarNota(n.id)}
-						className={cn(
-							"flex w-full items-start gap-1 rounded-md bg-amber-100 px-2 py-1 text-left text-[11px] leading-snug text-stone-900 shadow-md ring-1 ring-black/10 dark:bg-amber-200",
-							mia && "cursor-pointer hover:ring-2 hover:ring-primary",
-							atando === n.id && "ring-2 ring-primary",
-						)}
-						style={{ borderLeft: `4px solid ${color}` }}
-					>
-						<span className="line-clamp-3 min-w-0 flex-1 break-words whitespace-pre-wrap">
-							{n.texto}
-						</span>
-						<span className="flex shrink-0 flex-col items-center gap-0.5 pt-0.5 opacity-60">
-							{n.temporal && <Icono icon="game-icons:hourglass" className="size-3" />}
-							{n.privada && <Icono icon="lucide:lock" className="size-3" />}
-						</span>
-					</button>
-				);
-				if (!mia)
-					return (
-						<WithTooltip key={n.id} content={jugadores[n.autor]?.nombre ?? ""}>
-							{pegote}
-						</WithTooltip>
+			{movil && (
+				<button
+					type="button"
+					aria-expanded={!plegadas}
+					onClick={() => setPlegadas(!plegadas)}
+					className="flex h-8 shrink-0 items-center gap-1 rounded-full border border-white/10 bg-black/60 px-2.5 text-[11px] text-white shadow-lg backdrop-blur-md"
+				>
+					<Icono icon="lucide:sticky-note" className="size-3.5" />
+					{t("Notas")}
+					<span className="tabular-nums opacity-70">{notas.length}</span>
+					<Icono
+						icon={plegadas ? "lucide:chevron-down" : "lucide:chevron-up"}
+						className="size-3.5"
+					/>
+				</button>
+			)}
+			{!(movil && plegadas) &&
+				notas.map((n) => {
+					const mia = n.autor === yo && !repitiendo;
+					const color = jugadores[n.autor]?.color ?? "#facc15";
+					const pegote = (
+						<button
+							type="button"
+							disabled={!mia}
+							onClick={() => mia && atarNota(n.id)}
+							className={cn(
+								"flex w-full items-start gap-1 rounded-md bg-amber-100 px-2 py-1 text-left text-[11px] leading-snug text-stone-900 shadow-md ring-1 ring-black/10 dark:bg-amber-200",
+								mia && "cursor-pointer hover:ring-2 hover:ring-primary",
+								atando === n.id && "ring-2 ring-primary",
+							)}
+							style={{ borderLeft: `4px solid ${color}` }}
+						>
+							<span className="line-clamp-3 min-w-0 flex-1 break-words whitespace-pre-wrap">
+								{n.texto}
+							</span>
+							<span className="flex shrink-0 flex-col items-center gap-0.5 pt-0.5 opacity-60">
+								{n.temporal && <Icono icon="game-icons:hourglass" className="size-3" />}
+								{n.privada && <Icono icon="lucide:lock" className="size-3" />}
+							</span>
+						</button>
 					);
-				return (
-					<ContextMenu key={n.id}>
-						<WithTooltip content={t("Pulsa y elige una carta para atarla")}>
-							<ContextMenuTrigger asChild>{pegote}</ContextMenuTrigger>
-						</WithTooltip>
-						<MenuNota nota={n} />
-					</ContextMenu>
-				);
-			})}
+					if (!mia)
+						return (
+							<WithTooltip key={n.id} content={jugadores[n.autor]?.nombre ?? ""}>
+								{pegote}
+							</WithTooltip>
+						);
+					return (
+						<ContextMenu key={n.id}>
+							<WithTooltip content={t("Pulsa y elige una carta para atarla")}>
+								<ContextMenuTrigger asChild>{pegote}</ContextMenuTrigger>
+							</WithTooltip>
+							<MenuNota nota={n} />
+						</ContextMenu>
+					);
+				})}
 		</div>
 	);
 }

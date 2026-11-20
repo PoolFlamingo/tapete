@@ -3,6 +3,7 @@ import { Icono } from "@/components/icono";
 import { useLang } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
 import { useFormato } from "@/lib/formato";
+import { cn } from "@/lib/utils";
 import { NINGUNA, useMesa } from "@/stores/mesa-store";
 import { useUi } from "@/stores/ui-store";
 import { CapaAlta } from "./capa-alta";
@@ -200,7 +201,8 @@ export function VistaGrande() {
 							onClick={cerrarLectura}
 							aria-label={t("Cerrar")}
 							data-lee-cierra=""
-							className="pointer-events-auto absolute -top-2 -left-2 z-10 rounded-full shadow-lg"
+							// Sin el mínimo táctil (2,5 rem) tapaba la esquina del título.
+							className="pointer-events-auto absolute -top-2 -left-2 z-10 !min-h-8 !min-w-8 rounded-full shadow-lg"
 						>
 							<Icono icon="lucide:x" className="size-4" />
 						</Button>
@@ -208,7 +210,22 @@ export function VistaGrande() {
 					{imagenes.map((imagen, i) => (
 						<div
 							key={i}
-							className="overflow-hidden rounded-carta shadow-2xl"
+							// Con el dedo (tableta), tocarla la cierra y el toque no pasa a lo de debajo;
+							// con el ratón no recoge nada (se lee al pasar por encima).
+							{...(tactil
+								? {
+										"data-lee-cierra": "",
+										onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
+										onClick: (e: React.MouseEvent) => {
+											e.stopPropagation();
+											cerrarLectura();
+										},
+									}
+								: {})}
+							className={cn(
+								"overflow-hidden rounded-carta shadow-2xl",
+								tactil && "pointer-events-auto",
+							)}
 							style={{ width: ancho, height: alto }}
 						>
 							<ImagenCarta imagen={imagen} ancho={488} nombre={c.origen?.nombre} />
