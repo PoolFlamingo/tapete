@@ -54,6 +54,39 @@ pub fn guardar_para_historial(state: &AppState, shas: &[String]) {
     }
 }
 
+/// Si una imagen propia se puede enseñar sin red: está en la caché o en la
+/// copia del historial.
+pub fn disponible(state: &AppState, sha: &str) -> bool {
+    es_huella(sha) && (ruta_propia(state, sha).exists() || ruta_historial(state, sha).exists())
+}
+
+/// Las impresiones de Scryfall (`OrigenCarta.scryfall_id`) de las cartas de
+/// estas partidas que tienen alguna cara propia que no se puede enseñar: la
+/// repetición las pinta con su original en vez de con un reverso. Las cartas
+/// sin vínculo no tienen nada mejor que enseñar.
+pub fn sin_imagen(state: &AppState, partidas: &[&mesa::modelo::Partida]) -> Vec<String> {
+    sin_imagen_con(partidas, |sha| disponible(state, sha))
+}
+
+/// `sin_imagen` con la pregunta de si una imagen está (para probarla sin disco).
+fn sin_imagen_con(partidas: &[&mesa::modelo::Partida], esta: impl Fn(&str) -> bool) -> Vec<String> {
+    let mut ids: Vec<String> = partidas
+        .iter()
+        .flat_map(|p| p.cartas.values())
+        .filter_map(|c| {
+            let id = c.origen.scryfall_id.as_ref()?;
+            let falta = c.origen.caras.iter().any(|r| match r {
+                RefImagen::Propia { sha256, .. } => !esta(sha256),
+                _ => false,
+            });
+            (falta && es_id_scryfall(id)).then(|| id.clone())
+        })
+        .collect();
+    ids.sort();
+    ids.dedup();
+    ids
+}
+
 /// Borra la copia de una imagen que ya no usa ninguna partida del historial.
 pub fn olvidar_de_historial(state: &AppState, sha: &str) {
     if es_huella(sha) {
@@ -199,4 +232,36 @@ pub fn servir(state: &AppState, img: &ImagenMesa, ancho: u32) -> AppResult<Vec<u
     let out = proxy_core::imaging::encode::jpeg(&r, CALIDAD)?;
     let _ = escribir_atomico(&reducida, &out);
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::mesa::sesion::tests::{config, mazo};
+    use crate::mesa::sesion::Sesion;
+
+    const SCRY: &str = "0000579f-7b35-4ed3-b44c-db2a538066fe";
+
+    #[test]
+    fn sin_imagen_da_las_cartas_vinculadas_cuya_imagen_propia_no_esta() {
+        let mut m = mazo();
+        let propia = |sha: &str| RefImagen::Propia {
+            sha256: sha.into(),
+            ancho: 745,
+            alto: 1040,
+        };
+        let a = "a".repeat(64);
+        let b = "b".repeat(64);
+        // Vinculada y sin su imagen: sale.
+        m.cartas[0].origen.caras = vec![propia(&a)];
+        m.cartas[0].origen.scryfall_id = Some(SCRY.into());
+        // Vinculada con su imagen: no.
+        m.cartas[1].origen.caras = vec![propia(&b)];
+        m.cartas[1].origen.scryfall_id = Some("1111579f-7b35-4ed3-b44c-db2a538066fe".into());
+        // Sin vínculo: nada mejor que enseñar.
+        m.cartas[2].origen.caras = vec![propia(&a)];
+        let s = Sesion::nueva(config(), vec![m]).unwrap();
+        let ids = sin_imagen_con(&[s.partida(), s.partida()], |sha| sha == b);
+        assert_eq!(ids, vec![SCRY.to_string()]);
+    }
 }

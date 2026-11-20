@@ -426,6 +426,40 @@ pub async fn precargar_invitado<M: Mesa>(mesa: M, conn: Connection) {
         .await;
 }
 
+/// En el anfitrión: lo mismo que `precargar_invitado`, pero cada imagen se pide
+/// a su dueño. Sin esto, el anfitrión solo tenía las que había llegado a ver, y
+/// la repetición de la partida enseñaba un reverso en lugar de las cartas de los
+/// demás que nunca salieron (el historial solo copia lo que hay en la caché). Las
+/// imágenes se guardan por su huella: el mismo deck otra vez no ocupa más.
+pub async fn precargar_anfitrion<M: Mesa>(mesa: M, anf: Arc<Anfitrion>) {
+    let carpeta = mesa.carpeta();
+    let faltan: Vec<(String, bool, IdJugador)> = mesa.con(|s| {
+        s.as_ref()
+            .map(|s| {
+                let p = s.partida();
+                propias_de(p)
+                    .into_iter()
+                    .filter(|(sha, _)| !la_tengo(&carpeta, sha))
+                    .filter_map(|(sha, tapete)| en_partida(p, &sha).map(|d| (sha, tapete, d.dueno)))
+                    .collect()
+            })
+            .unwrap_or_default()
+    });
+    use futures::StreamExt;
+    futures::stream::iter(faltan)
+        .for_each_concurrent(A_LA_VEZ, |(sha, tapete, dueno)| {
+            // Si su dueño no está conectado, se pedirá cuando la pantalla la pida.
+            let conn = anf.conexion_de(dueno);
+            let carpeta = carpeta.clone();
+            async move {
+                if let Some(conn) = conn {
+                    let _ = traer(&conn, &carpeta, &sha, tapete).await;
+                }
+            }
+        })
+        .await;
+}
+
 /// Lo que hace falta para traer una imagen propia: la conexión por la que
 /// pedirla.
 pub enum Por {

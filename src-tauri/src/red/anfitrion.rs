@@ -965,6 +965,12 @@ pub fn empezar_partida<M: Mesa>(
     mesa.con(|m| *m = Some(sesion));
     anf.bienvenidas(&partida, yo);
     vigilar_ausentes(anf, mesa.clone(), ESPERA_MULLIGAN);
+    // Las imágenes de los demás, de antemano: las que nunca salgan también
+    // hacen falta para la repetición del historial.
+    tauri::async_runtime::spawn(super::imagenes::precargar_anfitrion(
+        mesa.clone(),
+        anf.clone(),
+    ));
     Ok(())
 }
 

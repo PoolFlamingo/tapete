@@ -379,6 +379,7 @@ pub fn run() {
             commands::mesa::partida_borrar,
             commands::mesa::repeticion_abrir,
             commands::mesa::repeticion_actual,
+            commands::mesa::repeticion_sin_imagen,
             commands::mesa::repeticion_ir,
             commands::mesa::repeticion_salir,
             commands::mesa::mesa_banquillo,

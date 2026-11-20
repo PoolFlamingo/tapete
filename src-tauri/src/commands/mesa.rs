@@ -659,6 +659,23 @@ pub fn repeticion_abrir(state: State<'_, AppState>, id: String) -> AppResult<Vis
     Ok(v)
 }
 
+/// Las impresiones de Scryfall de las cartas de la repetición sin imagen
+/// propia (no llegó a esta app antes de guardarse la partida): la pantalla
+/// las pinta con su original (`mesa_originales`). Con una sala abierta no hace
+/// falta: lo que falte se pide por la red.
+#[tauri::command]
+pub fn repeticion_sin_imagen(state: State<'_, AppState>) -> AppResult<Vec<String>> {
+    if state.red.con_sala(|s| s.is_some()) {
+        return Ok(Vec::new());
+    }
+    con_sesion(&state, |s| {
+        Ok(crate::mesa::imagenes::sin_imagen(
+            &state,
+            &[&s.registro.inicial, s.partida()],
+        ))
+    })
+}
+
 /// Repite la partida que acaba de terminar, en su sitio.
 #[tauri::command]
 pub fn repeticion_actual(state: State<'_, AppState>) -> AppResult<VistaRepeticion> {
