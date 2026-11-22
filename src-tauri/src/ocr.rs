@@ -5,8 +5,9 @@
 //!
 //! Motor: `ocrs` (Rust puro, sin librerías del sistema). Sus dos modelos
 //! (~12 MB) no van dentro de la app: se descargan la primera vez que se usa
-//! el OCR a `app_data_dir/modelos/` y se quedan ahí. Sin OCR la app no los
-//! necesita para nada.
+//! el OCR a `app_data_dir/modelos/` (en ONNX, con su SHA-256; los `.rten`
+//! que se bajaban antes siguen valiendo) y se quedan ahí. Sin OCR la app no
+//! los necesita para nada.
 
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
@@ -18,16 +19,36 @@ use rten::Model;
 use crate::error::{AppError, AppResult, ErrorCode};
 use crate::store::blobs::escribir_atomico;
 
-const MODELOS: [(&str, &str); 2] = [
-    (
-        "text-detection.rten",
-        "https://ocrs-models.s3-accelerate.amazonaws.com/text-detection.rten",
-    ),
-    (
-        "text-recognition.rten",
-        "https://ocrs-models.s3-accelerate.amazonaws.com/text-recognition.rten",
-    ),
+/// Un modelo del OCR: el fichero, de dónde se baja y su SHA-256.
+struct Modelo {
+    nombre: &'static str,
+    url: &'static str,
+    sha256: &'static str,
+}
+
+/// Los modelos que se bajan. 🛑 El proyecto `ocrs` dejó de publicar los
+/// `.rten` (desde noviembre de 2026 dan 403) y ahora publica los mismos en
+/// ONNX, que `rten` lee con la feature `onnx` de `ocrs`. Con su SHA-256: si
+/// el fichero cambia, no se usa.
+const MODELOS: [Modelo; 2] = [
+    Modelo {
+        nombre: "text-detection.onnx",
+        url: "https://ocrs-models.s3-accelerate.amazonaws.com/text-detection.onnx",
+        sha256: "a917b23dbd9524b465df7e922641b3ff2981623df4ded5a0234004ef2fee7cfe",
+    },
+    Modelo {
+        nombre: "text-recognition.onnx",
+        url: "https://ocrs-models.s3-accelerate.amazonaws.com/text-recognition.onnx",
+        sha256: "86c145c2edb96c8caed5b1ebb8f44d706408922211451c309c625157dd6061c5",
+    },
 ];
+
+/// Los `.rten` que bajaba la app antes: si ya están, siguen valiendo (son
+/// los mismos modelos) y no se baja nada.
+const MODELOS_RTEN: [&str; 2] = ["text-detection.rten", "text-recognition.rten"];
+
+/// Lo más que puede pesar un modelo (los dos andan por 2,5 y 9,7 MB).
+const TOPE_MODELO: usize = 32 * 1024 * 1024;
 
 /// Proporción de la altura que se lee: el nombre y, en muchas cartas propias,
 /// el nombre original en pequeño justo debajo.
@@ -47,39 +68,74 @@ pub fn carpeta_modelos(datos: &Path) -> PathBuf {
     datos.join("modelos")
 }
 
-/// ¿Están ya los modelos en disco?
-pub fn modelos_listos(datos: &Path) -> bool {
-    let dir = carpeta_modelos(datos);
-    MODELOS.iter().all(|(n, _)| {
+fn completo(dir: &Path, nombres: &[&str]) -> bool {
+    nombres.iter().all(|n| {
         std::fs::metadata(dir.join(n))
             .map(|m| m.len() > 0)
             .unwrap_or(false)
     })
 }
 
-/// Descarga los modelos que falten.
+/// Los dos ficheros que se cargan: los `.rten` de antes si están; si no, los
+/// `.onnx`. `None` si no hay un juego entero.
+fn ficheros(datos: &Path) -> Option<[PathBuf; 2]> {
+    let dir = carpeta_modelos(datos);
+    let onnx = MODELOS.map(|m| m.nombre);
+    [MODELOS_RTEN, onnx]
+        .into_iter()
+        .find(|nombres| completo(&dir, nombres))
+        .map(|nombres| nombres.map(|n| dir.join(n)))
+}
+
+/// ¿Están ya los modelos en disco?
+pub fn modelos_listos(datos: &Path) -> bool {
+    ficheros(datos).is_some()
+}
+
+fn huella(bytes: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+    Sha256::digest(bytes)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect()
+}
+
+/// Descarga los modelos que falten (comprobando su SHA-256).
 pub async fn descargar_modelos(datos: &Path) -> AppResult<()> {
+    if modelos_listos(datos) {
+        return Ok(());
+    }
     let dir = carpeta_modelos(datos);
     let http = crate::tls::reqwest(reqwest::Client::builder())
         .user_agent(crate::tls::AGENTE)
         .build()
         .map_err(crate::error::red)?;
-    for (nombre, url) in MODELOS {
-        let destino = dir.join(nombre);
+    for m in &MODELOS {
+        let destino = dir.join(m.nombre);
         if destino.exists() {
             continue;
         }
-        let r = http.get(url).send().await.map_err(crate::error::red)?;
+        let mut r = http.get(m.url).send().await.map_err(crate::error::red)?;
         tracing::info!(
             host = "ocrs-models",
-            modelo = nombre,
+            modelo = m.nombre,
             estado = r.status().as_u16(),
             "red"
         );
         if !r.status().is_success() {
             return Err(crate::error::estado_http(r.status()));
         }
-        let bytes = r.bytes().await.map_err(crate::error::red)?;
+        let mut bytes = Vec::new();
+        while let Some(trozo) = r.chunk().await.map_err(crate::error::red)? {
+            bytes.extend_from_slice(&trozo);
+            if bytes.len() > TOPE_MODELO {
+                return Err(AppError::new(ErrorCode::Network).with("motivo", "tamano"));
+            }
+        }
+        // Justo el modelo esperado: otro (o uno a medias) no se guarda.
+        if huella(&bytes) != m.sha256 {
+            return Err(AppError::new(ErrorCode::Network).with("motivo", "huella"));
+        }
         escribir_atomico(&destino, &bytes)?;
     }
     Ok(())
@@ -89,9 +145,9 @@ fn motor(datos: &Path) -> AppResult<&'static OcrEngine> {
     if let Some(m) = MOTOR.get() {
         return Ok(m);
     }
-    let dir = carpeta_modelos(datos);
-    let deteccion = Model::load_file(dir.join(MODELOS[0].0)).map_err(fallo)?;
-    let reconocimiento = Model::load_file(dir.join(MODELOS[1].0)).map_err(fallo)?;
+    let [deteccion, reconocimiento] = ficheros(datos).ok_or_else(|| fallo("sin modelos"))?;
+    let deteccion = Model::load_file(deteccion).map_err(fallo)?;
+    let reconocimiento = Model::load_file(reconocimiento).map_err(fallo)?;
     let m = OcrEngine::new(OcrEngineParams {
         detection_model: Some(deteccion),
         recognition_model: Some(reconocimiento),
@@ -367,6 +423,34 @@ pub fn limpiar(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn sirven_los_rten_de_antes_o_los_onnx_y_nunca_un_juego_a_medias() {
+        let dir = tempfile::tempdir().expect("tmp");
+        let modelos = carpeta_modelos(dir.path());
+        std::fs::create_dir_all(&modelos).expect("carpeta");
+        let poner = |n: &str| std::fs::write(modelos.join(n), b"x").expect("escribir");
+        assert!(!modelos_listos(dir.path()));
+        // Uno solo de cada juego no basta.
+        poner("text-detection.onnx");
+        poner("text-recognition.rten");
+        assert!(!modelos_listos(dir.path()));
+        poner("text-recognition.onnx");
+        let [d, r] = ficheros(dir.path()).expect("onnx");
+        assert!(d.ends_with("text-detection.onnx") && r.ends_with("text-recognition.onnx"));
+        // Con los dos `.rten` de antes, se usan esos (no se baja nada).
+        poner("text-detection.rten");
+        let [d, _] = ficheros(dir.path()).expect("rten");
+        assert!(d.ends_with("text-detection.rten"));
+    }
+
+    #[test]
+    fn la_huella_es_el_sha256_en_hexadecimal() {
+        assert_eq!(
+            huella(b"abc"),
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
+    }
 
     #[test]
     fn el_ruido_no_parece_un_nombre() {

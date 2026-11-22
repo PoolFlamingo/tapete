@@ -239,18 +239,38 @@ async fn identificar(
         .filter(|h| h.len() >= 3)
         .into_iter()
         .collect();
-    let mut leido = ocr::Lectura::default();
-    if ocr {
-        let datos = state.paths.data.clone();
-        if !ocr::modelos_listos(&datos) {
-            ocr::descargar_modelos(&datos).await?;
-        }
+    let leido = if ocr {
         let (bytes, _) = state.leer_blob(blob)?;
         let img = proxy_core::imaging::decode::decode(&bytes)?;
-        leido = tauri::async_runtime::spawn_blocking(move || ocr::leer_carta(&datos, &img))
-            .await
-            .map_err(|e| AppError::new(ErrorCode::Internal).with("detalle", e))??;
+        leer_imagen(state, img).await?
+    } else {
+        ocr::Lectura::default()
+    };
+    proponer(state, leido, &pista, escrito).await
+}
+
+/// Lee con el OCR una carta entera (baja los modelos la primera vez). Pesado:
+/// va en un hilo aparte.
+pub async fn leer_imagen(state: &AppState, img: image::RgbaImage) -> AppResult<ocr::Lectura> {
+    let datos = state.paths.data.clone();
+    if !ocr::modelos_listos(&datos) {
+        ocr::descargar_modelos(&datos).await?;
     }
+    tauri::async_runtime::spawn_blocking(move || ocr::leer_carta(&datos, &img))
+        .await
+        .map_err(|e| AppError::new(ErrorCode::Internal).with("detalle", e))?
+}
+
+/// Propone la carta real para lo leído (`leido`) y la pista (el nombre del
+/// fichero o lo escrito, ya limpia). `escrito`: la pista la ha escrito quien
+/// busca, así que además se buscan todas las cartas que la llevan en el nombre.
+pub async fn proponer(
+    state: &AppState,
+    leido: ocr::Lectura,
+    pista: &[String],
+    escrito: bool,
+) -> AppResult<CardIdentify> {
+    let pista: Vec<String> = pista.to_vec();
     // El pie primero: cuando trae el nombre original, es el inglés exacto (el
     // título de una carta propia suele ser inventado).
     let principales: Vec<String> = pista

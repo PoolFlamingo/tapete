@@ -30,6 +30,7 @@ pub mod originales;
 pub mod package;
 pub mod pasar;
 pub mod protocol;
+pub mod reconocer;
 pub mod red;
 pub mod registro;
 pub mod render;
@@ -329,6 +330,10 @@ pub fn run() {
             commands::temas::theme_remove,
             commands::temas::themes_open_community,
             commands::identify::identify_batch,
+            commands::reconocer::reconocer_foto,
+            commands::reconocer::reconocer_vivo_abrir,
+            commands::reconocer::reconocer_vivo_cerrar,
+            commands::reconocer::reconocer_vivo_linterna,
             commands::diseno::design_draft,
             commands::diseno::collection_list,
             commands::diseno::collection_save,

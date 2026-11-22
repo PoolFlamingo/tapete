@@ -28,6 +28,10 @@ parley = { version = "0.12", default-features = false, features = ["std"] }
 tiny-skia = { version = "0.12", default-features = false, features = ["std", "simd"] }
 resvg = { version = "0.48", default-features = false }
 skrifa = { version = "0.44", default-features = false, features = ["std"] }
+# Contornos y polígonos para encontrar una carta en una foto (`foto`): la misma
+# versión que ya trae el OCR de la app (`ocrs` → `rten`).
+rten-imageproc = { version = "0.26", default-features = false }
+rten-tensor = { version = "0.26", default-features = false }
 
 [dev-dependencies]
 lopdf = "0.45"

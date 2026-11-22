@@ -18,6 +18,7 @@ pub mod layout;
 pub mod library;
 pub mod mesa;
 pub mod pasar;
+pub mod reconocer;
 pub mod red;
 pub mod sistema;
 pub mod stats;

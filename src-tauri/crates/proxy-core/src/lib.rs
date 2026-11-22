@@ -14,6 +14,7 @@
 pub mod compartir;
 pub mod decklist;
 pub mod diseno;
+pub mod foto;
 pub mod icono;
 pub mod imaging;
 pub mod layout;

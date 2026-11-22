@@ -233,7 +233,11 @@ fn consulta_busqueda(q: &str, lang: &Option<String>, highres_only: bool) -> Stri
 }
 
 /// La consulta de `card_prints`: todas las impresiones de un nombre exacto.
-fn consulta_impresiones(nombre: &str, lang: &Option<String>, highres_only: bool) -> String {
+pub(crate) fn consulta_impresiones(
+    nombre: &str,
+    lang: &Option<String>,
+    highres_only: bool,
+) -> String {
     let mut q = format!("!\"{}\"{}", escapar(nombre), filtro_idioma(lang));
     if highres_only {
         q.push_str(" is:hires");

@@ -98,6 +98,9 @@ pub struct ScryCard {
     pub legalities: BTreeMap<String, String>,
     pub printed_name: Option<String>,
     pub released_at: Option<String>,
+    /// La ilustración (la misma en todos los idiomas y reimpresiones con el
+    /// mismo arte): «Identificar por foto» compara una vez cada una.
+    pub illustration_id: Option<String>,
     // Para las estadísticas.
     pub mana_cost: Option<String>,
     pub oracle_text: Option<String>,

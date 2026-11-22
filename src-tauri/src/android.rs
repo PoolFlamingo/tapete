@@ -40,12 +40,62 @@ pub fn compartir(_app: &AppHandle, _ruta: &Path, _tipo: &str) -> AppResult<()> {
     Err(sin_android())
 }
 
+/// Un fallo al abrir la cámara: sin permiso o sin cámara, con su `motivo`
+/// (`lib/errores.ts`); lo demás, como cualquier fallo del plugin.
+#[cfg(target_os = "android")]
+fn de_camara(e: tauri::plugin::mobile::PluginInvokeError) -> AppError {
+    let texto = e.to_string();
+    if texto.contains("sin-permiso") {
+        AppError::new(ErrorCode::Unsupported).with("motivo", "permiso_camara")
+    } else if texto.contains("sin-camara") {
+        AppError::new(ErrorCode::Unsupported).with("motivo", "camara")
+    } else {
+        de_plugin(e)
+    }
+}
+
+/// Abre la cámara de «Identificar por foto» detrás de la vista web (pide el
+/// permiso si hace falta). Bloquea hasta que la persona contesta: desde un
+/// hilo aparte.
+#[cfg(target_os = "android")]
+pub fn escaner_abrir(app: &AppHandle) -> AppResult<()> {
+    plugin(app).escaner_abrir().map_err(de_camara)
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn escaner_abrir(_app: &AppHandle) -> AppResult<()> {
+    Err(AppError::new(ErrorCode::Unsupported).with("motivo", "camara"))
+}
+
+#[cfg(target_os = "android")]
+pub fn escaner_cerrar(app: &AppHandle) -> AppResult<()> {
+    plugin(app).escaner_cerrar().map_err(de_plugin)
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn escaner_cerrar(_app: &AppHandle) -> AppResult<()> {
+    Ok(())
+}
+
+/// Enciende o apaga la linterna; `false` si la cámara no tiene.
+#[cfg(target_os = "android")]
+pub fn escaner_linterna(app: &AppHandle, si: bool) -> AppResult<bool> {
+    plugin(app).escaner_linterna(si).map_err(de_plugin)
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn escaner_linterna(_app: &AppHandle, _si: bool) -> AppResult<bool> {
+    Ok(false)
+}
+
 /// Quién pide que la pantalla no se apague: una mesa abierta y un intercambio
 /// de decks pueden coincidir, y acabar uno no debe apagársela al otro.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum UsoPantalla {
     Mesa,
     Pasar,
+    /// El escáner en vivo de «Identificar por foto».
+    Escaner,
 }
 
 static USOS_PANTALLA: std::sync::Mutex<std::collections::BTreeSet<UsoPantalla>> =
