@@ -1,0 +1,41 @@
+{
+	"Identificar por foto": "Identify from a photo",
+	"Por foto": "From photo",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión para añadirlas al deck.": "Take or choose photos of real cards: each card and its printing are recognised so you can add them to the deck.",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión.": "Take or choose photos of real cards: each card and its printing are recognised.",
+	"Suelta aquí fotos de cartas (una carta por foto).": "Drop photos of cards here (one card per photo).",
+	"Escanear con la cámara": "Scan with the camera",
+	"Elegir de la galería": "Choose from gallery",
+	"Elegir imágenes…": "Choose images…",
+	"Aún no hay ninguna foto.": "No photos yet.",
+	"Vaciar": "Clear",
+	"Leyendo…": "Reading…",
+	"Leyendo la carta…": "Reading the card…",
+	"Sin reconocer": "Not recognised",
+	"No se ha reconocido: elige la carta.": "Not recognised: choose the card.",
+	"Revísala: el nombre no se leyó del todo.": "Check it: the name wasn't read completely.",
+	"Exacta: por la colección y el número del pie.": "Exact: from the set and number in the footer.",
+	"Por la ilustración: comprueba la impresión.": "From the illustration: check the printing.",
+	"Solo por el nombre: elige la impresión.": "From the name only: choose the printing.",
+	"Impresiones": "Printings",
+	"Otras cartas": "Other cards",
+	"Ver la ficha": "View card details",
+	"Escanear cartas": "Scan cards",
+	"Abriendo la cámara…": "Opening the camera…",
+	"Reconocida: {carta}": "Recognised: {carta}",
+	"Quieto un momento…": "Hold still a moment…",
+	"Apunta a una carta, de frente y con luz.": "Point at a card, straight on and in good light.",
+	"Apagar la linterna": "Turn off the flashlight",
+	"Encender la linterna": "Turn on the flashlight",
+	"Abrir los ajustes": "Open settings",
+	"Este dispositivo no tiene una cámara que se pueda usar aquí.": "This device has no camera that can be used here.",
+	"Tapete necesita permiso para usar la cámara. Dáselo en los ajustes de Android.": "Tapete needs permission to use the camera. Grant it in Android settings.",
+	"{n} cartas reconocidas": {
+		"one": "{n} card recognised",
+		"other": "{n} cards recognised"
+	},
+	"{n} cartas añadidas al deck": {
+		"one": "{n} card added to the deck",
+		"other": "{n} cards added to the deck"
+	}
+}

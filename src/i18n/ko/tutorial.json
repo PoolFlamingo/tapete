@@ -69,5 +69,7 @@
 	"Escribe un nombre, en cualquier idioma, o usa la sintaxis de Scryfall (t:dragon c:r).": "이름(모든 언어)을 입력하거나 Scryfall 구문(t:dragon c:r)을 사용하세요.",
 	"Afina por colores, tipo, rareza, formato, coste, set o idioma. Los resultados cambian solos.": "색상, 유형, 희귀도, 형식, 비용, 세트, 언어로 좁혀 보세요. 결과는 자동으로 바뀝니다.",
 	"Los resultados": "결과",
-	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "카드를 열면 상세 정보와 다른 인쇄판을 볼 수 있고, 원하면 열린 덱에 추가할 수 있습니다."
+	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "카드를 열면 상세 정보와 다른 인쇄판을 볼 수 있고, 원하면 열린 덱에 추가할 수 있습니다.",
+	"¿Tienes la carta delante? Suelta o elige una foto suya y se reconoce la carta y su impresión.": "카드가 앞에 있나요? 사진을 놓거나 고르면 카드와 판본을 알아봐요.",
+	"¿Tienes la carta delante? Apunta con la cámara y se reconoce sola, con su impresión; puedes escanear varias seguidas.": "카드가 앞에 있나요? 카메라를 비추면 판본까지 저절로 알아봐요. 여러 장을 이어서 스캔할 수 있어요."
 }

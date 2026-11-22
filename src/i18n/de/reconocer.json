@@ -1,0 +1,41 @@
+{
+	"Identificar por foto": "Per Foto erkennen",
+	"Por foto": "Per Foto",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión para añadirlas al deck.": "Mach oder wähle Fotos echter Karten: Jede Karte und ihr Druck werden erkannt, um sie zum Deck hinzuzufügen.",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión.": "Mach oder wähle Fotos echter Karten: Jede Karte und ihr Druck werden erkannt.",
+	"Suelta aquí fotos de cartas (una carta por foto).": "Zieh Fotos von Karten hierher (eine Karte pro Foto).",
+	"Escanear con la cámara": "Mit der Kamera scannen",
+	"Elegir de la galería": "Aus der Galerie wählen",
+	"Elegir imágenes…": "Bilder wählen…",
+	"Aún no hay ninguna foto.": "Noch keine Fotos.",
+	"Vaciar": "Leeren",
+	"Leyendo…": "Wird gelesen…",
+	"Leyendo la carta…": "Karte wird gelesen…",
+	"Sin reconocer": "Nicht erkannt",
+	"No se ha reconocido: elige la carta.": "Nicht erkannt: Wähle die Karte.",
+	"Revísala: el nombre no se leyó del todo.": "Prüf sie: Der Name wurde nicht ganz gelesen.",
+	"Exacta: por la colección y el número del pie.": "Genau: nach Set und Nummer in der Fußzeile.",
+	"Por la ilustración: comprueba la impresión.": "Nach der Illustration: Prüf den Druck.",
+	"Solo por el nombre: elige la impresión.": "Nur nach dem Namen: Wähle den Druck.",
+	"Impresiones": "Drucke",
+	"Otras cartas": "Andere Karten",
+	"Ver la ficha": "Kartendetails ansehen",
+	"Escanear cartas": "Karten scannen",
+	"Abriendo la cámara…": "Kamera wird geöffnet…",
+	"Reconocida: {carta}": "Erkannt: {carta}",
+	"Quieto un momento…": "Einen Moment still halten…",
+	"Apunta a una carta, de frente y con luz.": "Richte die Kamera gerade auf eine Karte, bei gutem Licht.",
+	"Apagar la linterna": "Taschenlampe ausschalten",
+	"Encender la linterna": "Taschenlampe einschalten",
+	"Abrir los ajustes": "Einstellungen öffnen",
+	"Este dispositivo no tiene una cámara que se pueda usar aquí.": "Dieses Gerät hat keine Kamera, die hier genutzt werden kann.",
+	"Tapete necesita permiso para usar la cámara. Dáselo en los ajustes de Android.": "Tapete braucht die Berechtigung, die Kamera zu nutzen. Erteile sie in den Android-Einstellungen.",
+	"{n} cartas reconocidas": {
+		"one": "{n} Karte erkannt",
+		"other": "{n} Karten erkannt"
+	},
+	"{n} cartas añadidas al deck": {
+		"one": "{n} Karte zum Deck hinzugefügt",
+		"other": "{n} Karten zum Deck hinzugefügt"
+	}
+}

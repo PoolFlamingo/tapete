@@ -69,5 +69,7 @@
 	"Escribe un nombre, en cualquier idioma, o usa la sintaxis de Scryfall (t:dragon c:r).": "輸入名稱(任意語言),或使用 Scryfall 語法(t:dragon c:r)。",
 	"Afina por colores, tipo, rareza, formato, coste, set o idioma. Los resultados cambian solos.": "可按顏色、類別、稀有度、賽制、費用、系列或語言篩選。結果會自動更新。",
 	"Los resultados": "結果",
-	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "打開卡牌可查看詳情和其他版本,也可以將其加入目前開啟的套牌。"
+	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "打開卡牌可查看詳情和其他版本,也可以將其加入目前開啟的套牌。",
+	"¿Tienes la carta delante? Suelta o elige una foto suya y se reconoce la carta y su impresión.": "手邊有這張牌嗎？拖入或選擇它的照片，即可識別牌及其版本。",
+	"¿Tienes la carta delante? Apunta con la cámara y se reconoce sola, con su impresión; puedes escanear varias seguidas.": "手邊有這張牌嗎？用相機對準它，即可自動識別牌及其版本；可以連續掃描多張。"
 }

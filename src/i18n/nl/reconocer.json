@@ -1,0 +1,41 @@
+{
+	"Identificar por foto": "Herkennen via foto",
+	"Por foto": "Via foto",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión para añadirlas al deck.": "Maak of kies foto's van echte kaarten: elke kaart en de druk ervan worden herkend om ze aan het deck toe te voegen.",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión.": "Maak of kies foto's van echte kaarten: elke kaart en de druk ervan worden herkend.",
+	"Suelta aquí fotos de cartas (una carta por foto).": "Sleep hier foto's van kaarten naartoe (één kaart per foto).",
+	"Escanear con la cámara": "Scannen met de camera",
+	"Elegir de la galería": "Kiezen uit galerij",
+	"Elegir imágenes…": "Afbeeldingen kiezen…",
+	"Aún no hay ninguna foto.": "Nog geen foto's.",
+	"Vaciar": "Leegmaken",
+	"Leyendo…": "Lezen…",
+	"Leyendo la carta…": "Kaart lezen…",
+	"Sin reconocer": "Niet herkend",
+	"No se ha reconocido: elige la carta.": "Niet herkend: kies de kaart.",
+	"Revísala: el nombre no se leyó del todo.": "Controleer hem: de naam is niet helemaal gelezen.",
+	"Exacta: por la colección y el número del pie.": "Exact: op basis van de set en het nummer in de voettekst.",
+	"Por la ilustración: comprueba la impresión.": "Op basis van de illustratie: controleer de druk.",
+	"Solo por el nombre: elige la impresión.": "Alleen op naam: kies de druk.",
+	"Impresiones": "Drukken",
+	"Otras cartas": "Andere kaarten",
+	"Ver la ficha": "Kaartgegevens bekijken",
+	"Escanear cartas": "Kaarten scannen",
+	"Abriendo la cámara…": "Camera openen…",
+	"Reconocida: {carta}": "Herkend: {carta}",
+	"Quieto un momento…": "Even stilhouden…",
+	"Apunta a una carta, de frente y con luz.": "Richt op een kaart, recht van voren en met goed licht.",
+	"Apagar la linterna": "Zaklamp uitzetten",
+	"Encender la linterna": "Zaklamp aanzetten",
+	"Abrir los ajustes": "Instellingen openen",
+	"Este dispositivo no tiene una cámara que se pueda usar aquí.": "Dit apparaat heeft geen camera die hier gebruikt kan worden.",
+	"Tapete necesita permiso para usar la cámara. Dáselo en los ajustes de Android.": "Tapete heeft toestemming nodig om de camera te gebruiken. Geef die in de Android-instellingen.",
+	"{n} cartas reconocidas": {
+		"one": "{n} kaart herkend",
+		"other": "{n} kaarten herkend"
+	},
+	"{n} cartas añadidas al deck": {
+		"one": "{n} kaart aan het deck toegevoegd",
+		"other": "{n} kaarten aan het deck toegevoegd"
+	}
+}

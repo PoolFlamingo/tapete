@@ -69,5 +69,7 @@
 	"Escribe un nombre, en cualquier idioma, o usa la sintaxis de Scryfall (t:dragon c:r).": "Scrivi un nome, in qualsiasi lingua, o usa la sintassi di Scryfall (t:dragon c:r).",
 	"Afina por colores, tipo, rareza, formato, coste, set o idioma. Los resultados cambian solos.": "Affina per colori, tipo, rarità, formato, costo, espansione o lingua. I risultati si aggiornano da soli.",
 	"Los resultados": "I risultati",
-	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "Apri una carta per vederne la scheda e le altre stampe, e aggiungila al mazzo aperto se vuoi."
+	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "Apri una carta per vederne la scheda e le altre stampe, e aggiungila al mazzo aperto se vuoi.",
+	"¿Tienes la carta delante? Suelta o elige una foto suya y se reconoce la carta y su impresión.": "Hai la carta davanti? Trascina o scegli una sua foto e vengono riconosciute la carta e la sua stampa.",
+	"¿Tienes la carta delante? Apunta con la cámara y se reconoce sola, con su impresión; puedes escanear varias seguidas.": "Hai la carta davanti? Inquadrala con la fotocamera e viene riconosciuta da sola, con la sua stampa; puoi scansionarne diverse di seguito."
 }

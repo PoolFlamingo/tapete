@@ -69,5 +69,7 @@
 	"Escribe un nombre, en cualquier idioma, o usa la sintaxis de Scryfall (t:dragon c:r).": "名前(どの言語でも可)を入力するか、Scryfall の構文(t:dragon c:r)を使います。",
 	"Afina por colores, tipo, rareza, formato, coste, set o idioma. Los resultados cambian solos.": "色、タイプ、レアリティ、フォーマット、コスト、セット、言語で絞り込めます。結果は自動で更新されます。",
 	"Los resultados": "結果",
-	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "カードを開くと詳細と他の版が表示され、開いているデッキに追加することもできます。"
+	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "カードを開くと詳細と他の版が表示され、開いているデッキに追加することもできます。",
+	"¿Tienes la carta delante? Suelta o elige una foto suya y se reconoce la carta y su impresión.": "手元にカードがありますか？写真をドロップするか選ぶと、カードとその版を識別します。",
+	"¿Tienes la carta delante? Apunta con la cámara y se reconoce sola, con su impresión; puedes escanear varias seguidas.": "手元にカードがありますか？カメラを向けるだけで版まで自動で識別します。続けて何枚もスキャンできます。"
 }

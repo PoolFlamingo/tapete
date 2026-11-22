@@ -159,6 +159,11 @@
 		"many": "{n} cartas añadidas",
 		"other": "{n} cartas añadidas"
 	},
+	"{n} cartas añadidas al deck": {
+		"one": "{n} carta añadida al deck",
+		"many": "{n} cartas añadidas al deck",
+		"other": "{n} cartas añadidas al deck"
+	},
 	"{n} cartas cargadas": {
 		"one": "{n} carta cargada",
 		"many": "{n} cartas cargadas",
@@ -213,6 +218,11 @@
 		"one": "{n} carta propia vinculada",
 		"many": "{n} cartas propias vinculadas",
 		"other": "{n} cartas propias vinculadas"
+	},
+	"{n} cartas reconocidas": {
+		"one": "{n} carta reconocida",
+		"many": "{n} cartas reconocidas",
+		"other": "{n} cartas reconocidas"
 	},
 	"{n} cartas renumeradas": {
 		"one": "{n} carta renumerada",

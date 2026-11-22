@@ -69,5 +69,7 @@
 	"Escribe un nombre, en cualquier idioma, o usa la sintaxis de Scryfall (t:dragon c:r).": "Gib einen Namen in beliebiger Sprache ein oder nutze die Scryfall-Syntax (t:dragon c:r).",
 	"Afina por colores, tipo, rareza, formato, coste, set o idioma. Los resultados cambian solos.": "Verfeinere nach Farben, Typ, Seltenheit, Format, Kosten, Set oder Sprache. Die Ergebnisse aktualisieren sich von selbst.",
 	"Los resultados": "Die Ergebnisse",
-	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "Öffne eine Karte, um ihre Details und anderen Drucke zu sehen, und füge sie auf Wunsch dem geöffneten Deck hinzu."
+	"Abre una carta para ver su ficha y sus otras impresiones, y añádela al deck abierto si quieres.": "Öffne eine Karte, um ihre Details und anderen Drucke zu sehen, und füge sie auf Wunsch dem geöffneten Deck hinzu.",
+	"¿Tienes la carta delante? Suelta o elige una foto suya y se reconoce la carta y su impresión.": "Hast du die Karte vor dir? Zieh ein Foto davon her oder wähle eines, und Karte und Druck werden erkannt.",
+	"¿Tienes la carta delante? Apunta con la cámara y se reconoce sola, con su impresión; puedes escanear varias seguidas.": "Hast du die Karte vor dir? Richte die Kamera darauf, und sie wird samt Druck von selbst erkannt; du kannst mehrere nacheinander scannen."
 }

@@ -1,0 +1,43 @@
+{
+	"Identificar por foto": "Identifica da foto",
+	"Por foto": "Da foto",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión para añadirlas al deck.": "Scatta o scegli foto di carte reali: ogni carta e la sua stampa vengono riconosciute per aggiungerle al mazzo.",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión.": "Scatta o scegli foto di carte reali: ogni carta e la sua stampa vengono riconosciute.",
+	"Suelta aquí fotos de cartas (una carta por foto).": "Trascina qui le foto delle carte (una carta per foto).",
+	"Escanear con la cámara": "Scansiona con la fotocamera",
+	"Elegir de la galería": "Scegli dalla galleria",
+	"Elegir imágenes…": "Scegli immagini…",
+	"Aún no hay ninguna foto.": "Ancora nessuna foto.",
+	"Vaciar": "Svuota",
+	"Leyendo…": "Lettura…",
+	"Leyendo la carta…": "Lettura della carta…",
+	"Sin reconocer": "Non riconosciuta",
+	"No se ha reconocido: elige la carta.": "Non riconosciuta: scegli la carta.",
+	"Revísala: el nombre no se leyó del todo.": "Controllala: il nome non è stato letto del tutto.",
+	"Exacta: por la colección y el número del pie.": "Esatta: dall'espansione e dal numero nel piè di pagina.",
+	"Por la ilustración: comprueba la impresión.": "Dall'illustrazione: controlla la stampa.",
+	"Solo por el nombre: elige la impresión.": "Solo dal nome: scegli la stampa.",
+	"Impresiones": "Stampe",
+	"Otras cartas": "Altre carte",
+	"Ver la ficha": "Vedi la scheda",
+	"Escanear cartas": "Scansiona carte",
+	"Abriendo la cámara…": "Apertura della fotocamera…",
+	"Reconocida: {carta}": "Riconosciuta: {carta}",
+	"Quieto un momento…": "Tieni fermo un momento…",
+	"Apunta a una carta, de frente y con luz.": "Inquadra una carta, di fronte e con buona luce.",
+	"Apagar la linterna": "Spegni la torcia",
+	"Encender la linterna": "Accendi la torcia",
+	"Abrir los ajustes": "Apri le impostazioni",
+	"Este dispositivo no tiene una cámara que se pueda usar aquí.": "Questo dispositivo non ha una fotocamera utilizzabile qui.",
+	"Tapete necesita permiso para usar la cámara. Dáselo en los ajustes de Android.": "Tapete ha bisogno del permesso per usare la fotocamera. Concedilo nelle impostazioni di Android.",
+	"{n} cartas reconocidas": {
+		"one": "{n} carta riconosciuta",
+		"many": "{n} di carte riconosciute",
+		"other": "{n} carte riconosciute"
+	},
+	"{n} cartas añadidas al deck": {
+		"one": "{n} carta aggiunta al mazzo",
+		"many": "{n} di carte aggiunte al mazzo",
+		"other": "{n} carte aggiunte al mazzo"
+	}
+}

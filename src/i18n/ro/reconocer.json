@@ -1,0 +1,43 @@
+{
+	"Identificar por foto": "Identifică după fotografie",
+	"Por foto": "După foto",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión para añadirlas al deck.": "Fă sau alege fotografii cu cărți reale: fiecare carte și tipărirea ei sunt recunoscute ca să le adaugi în pachet.",
+	"Haz o elige fotos de cartas reales: se reconoce cada una y su impresión.": "Fă sau alege fotografii cu cărți reale: fiecare carte și tipărirea ei sunt recunoscute.",
+	"Suelta aquí fotos de cartas (una carta por foto).": "Trage aici fotografii cu cărți (o carte pe fotografie).",
+	"Escanear con la cámara": "Scanează cu camera",
+	"Elegir de la galería": "Alege din galerie",
+	"Elegir imágenes…": "Alege imagini…",
+	"Aún no hay ninguna foto.": "Încă nu există nicio fotografie.",
+	"Vaciar": "Golește",
+	"Leyendo…": "Se citește…",
+	"Leyendo la carta…": "Se citește cartea…",
+	"Sin reconocer": "Nerecunoscută",
+	"No se ha reconocido: elige la carta.": "Nerecunoscută: alege cartea.",
+	"Revísala: el nombre no se leyó del todo.": "Verific-o: numele nu a fost citit complet.",
+	"Exacta: por la colección y el número del pie.": "Exactă: după set și numărul din subsol.",
+	"Por la ilustración: comprueba la impresión.": "După ilustrație: verifică tipărirea.",
+	"Solo por el nombre: elige la impresión.": "Doar după nume: alege tipărirea.",
+	"Impresiones": "Tipăriri",
+	"Otras cartas": "Alte cărți",
+	"Ver la ficha": "Vezi fișa",
+	"Escanear cartas": "Scanează cărți",
+	"Abriendo la cámara…": "Se deschide camera…",
+	"Reconocida: {carta}": "Recunoscută: {carta}",
+	"Quieto un momento…": "Ține nemișcat o clipă…",
+	"Apunta a una carta, de frente y con luz.": "Îndreaptă camera spre o carte, din față și cu lumină.",
+	"Apagar la linterna": "Stinge lanterna",
+	"Encender la linterna": "Aprinde lanterna",
+	"Abrir los ajustes": "Deschide setările",
+	"Este dispositivo no tiene una cámara que se pueda usar aquí.": "Acest dispozitiv nu are o cameră care să poată fi folosită aici.",
+	"Tapete necesita permiso para usar la cámara. Dáselo en los ajustes de Android.": "Tapete are nevoie de permisiune pentru a folosi camera. Acord-o în setările Android.",
+	"{n} cartas reconocidas": {
+		"one": "{n} carte recunoscută",
+		"few": "{n} cărți recunoscute",
+		"other": "{n} de cărți recunoscute"
+	},
+	"{n} cartas añadidas al deck": {
+		"one": "{n} carte adăugată în pachet",
+		"few": "{n} cărți adăugate în pachet",
+		"other": "{n} de cărți adăugate în pachet"
+	}
+}
