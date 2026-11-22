@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { WithTooltip } from "@/components/ui/with-tooltip";
 import { RaizScroll, useVisible } from "@/features/preview/visibilidad";
+import { BotonReconocer } from "@/features/reconocer/boton-reconocer";
 import { RejillaCartas } from "@/features/variants/rejilla-cartas";
 import { useSugerencias } from "@/features/variants/sugerencias";
 import { useFormato } from "@/lib/formato";
@@ -139,6 +140,7 @@ export function BuscarScreen() {
 						)}
 						<span className="max-sm:sr-only">{t("Buscar")}</span>
 					</Button>
+					<BotonReconocer modo={{ tipo: "buscar" }} conTexto />
 					{!conLateral && (
 						<Button
 							size="sm"

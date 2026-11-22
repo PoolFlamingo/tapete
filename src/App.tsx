@@ -12,6 +12,8 @@ import { LibraryScreen } from "@/features/library/library-screen";
 import { MesaScreen } from "@/features/mesa/mesa-screen";
 import { MoverADialog } from "@/features/preview/mover-a-dialog";
 import { PreviewPane } from "@/features/preview/preview-pane";
+import { EscanerVivo } from "@/features/reconocer/escaner-vivo";
+import { ReconocerDialog } from "@/features/reconocer/reconocer-dialog";
 import { SetBrowserDialog } from "@/features/set-browser/set-browser-dialog";
 import { SincronizarTemas } from "@/features/settings/temas-tweakcn";
 import {
@@ -42,6 +44,8 @@ export default function App() {
 				mesa={<MesaScreen />}
 			/>
 			<AddCardDialog />
+			<ReconocerDialog />
+			<EscanerVivo />
 			<VariantDialog />
 			<VincularDialog />
 			<VincularLoteDialog />

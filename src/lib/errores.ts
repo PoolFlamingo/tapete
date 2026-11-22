@@ -117,6 +117,11 @@ const MOTIVOS: Partial<Record<ErrorCode, Record<string, string>>> = {
 		),
 		// Android: se ha abierto su ajuste de «instalar apps desconocidas»
 		// (`android::instalar_apk`).
+		// «Identificar por foto»: el escáner en vivo (`reconocer::vivo`).
+		camara: paraTraducir("Este dispositivo no tiene una cámara que se pueda usar aquí."),
+		permiso_camara: paraTraducir(
+			"Tapete necesita permiso para usar la cámara. Dáselo en los ajustes de Android.",
+		),
 		instalar_permiso: paraTraducir(
 			"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.",
 		),

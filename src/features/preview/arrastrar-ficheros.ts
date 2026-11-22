@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useLang } from "@/components/language-provider";
 import { anadirPropias, EXTENSIONES_IMAGEN, type T } from "@/features/decklist/acciones";
 import { esMovil } from "@/lib/plataforma";
+import { useReconocer } from "@/stores/reconocer-store";
 import { reemplazarConFichero } from "./acciones-carta";
 
 /** De lo que se arrastra, solo las imágenes que la app sabe leer. */
@@ -40,7 +41,8 @@ function cartaEnPantalla(x: number, y: number): string | undefined {
  * reemplaza (la primera imagen); fuera de las cartas, se añaden todas como
  * cartas propias. Tauri da la posición en píxeles físicos. Solo en
  * escritorio: en móvil no se sueltan ficheros sobre la app («Añadir
- * imágenes» abre el selector del sistema).
+ * imágenes» abre el selector del sistema). Con «Identificar por foto»
+ * abierto no hace nada: las fotos que se sueltan son para ese diálogo.
  */
 export function useArrastrarFicheros() {
 	const { t, mensaje } = useLang();
@@ -52,6 +54,8 @@ export function useArrastrarFicheros() {
 			getCurrentWebview()
 				.onDragDropEvent((ev) => {
 					if (ev.payload.type !== "drop") return;
+					// Con «Identificar por foto» abierto, las fotos son para él.
+					if (useReconocer.getState().abierto) return;
 					const hecho = soltarFicheros(
 						ev.payload.paths,
 						ev.payload.position,

@@ -39,6 +39,7 @@ import type { Envio } from "@/bindings/Envio";
 import type { EquipoCerca } from "@/bindings/EquipoCerca";
 import type { EstadoAmigos } from "@/bindings/EstadoAmigos";
 import type { EstadoEmisor } from "@/bindings/EstadoEmisor";
+import type { EstadoEscaner } from "@/bindings/EstadoEscaner";
 import type { EstadoMesa } from "@/bindings/EstadoMesa";
 import type { EstadoReceptor } from "@/bindings/EstadoReceptor";
 import type { EstadoRed } from "@/bindings/EstadoRed";
@@ -81,6 +82,7 @@ import type { Plataforma } from "@/bindings/Plataforma";
 import type { Preset } from "@/bindings/Preset";
 import type { PresetKind } from "@/bindings/PresetKind";
 import type { PrintSettings } from "@/bindings/PrintSettings";
+import type { Reconocida } from "@/bindings/Reconocida";
 import type { ReglasCarta } from "@/bindings/ReglasCarta";
 import type { ResolucionPasar } from "@/bindings/ResolucionPasar";
 import type { ResolveOptions } from "@/bindings/ResolveOptions";
@@ -193,6 +195,10 @@ export interface Commands {
 	};
 	card_link_externa: { args: { fuente: FuenteCarta; id: string }; result: CardMeta };
 	identify_batch: { args: { items: IdentifyRequest[]; ocr: boolean }; result: number };
+	reconocer_foto: { args: { ruta: string }; result: Reconocida };
+	reconocer_vivo_abrir: { args: { canal: Channel<EstadoEscaner> }; result: null };
+	reconocer_vivo_cerrar: { args: Record<string, never>; result: null };
+	reconocer_vivo_linterna: { args: { si: boolean }; result: boolean };
 	design_draft: {
 		args: { card: DeckCard; usados: string[]; collection: string | null; lang: DesignLang };
 		result: DesignDraft;

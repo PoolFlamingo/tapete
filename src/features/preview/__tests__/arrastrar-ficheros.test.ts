@@ -52,6 +52,7 @@ vi.mock("@/features/decklist/acciones", async (original) => ({
 
 import { toast } from "sonner";
 import { anadirPropias } from "@/features/decklist/acciones";
+import { useReconocer } from "@/stores/reconocer-store";
 import { reemplazarConFichero } from "../acciones-carta";
 import { soloImagenes, soltarFicheros, useArrastrarFicheros } from "../arrastrar-ficheros";
 
@@ -130,6 +131,7 @@ describe("useArrastrarFicheros", () => {
 		tauri.esperar = false;
 		plataforma.movil = false;
 		efecto.limpiar = null;
+		useReconocer.setState({ abierto: false });
 		vi.stubGlobal("window", { devicePixelRatio: 2 });
 		vi.stubGlobal("document", {
 			elementFromPoint: (x: number, y: number) =>
@@ -157,6 +159,16 @@ describe("useArrastrarFicheros", () => {
 		await esperarVuelta();
 		soltar(["/a/1.png"], 10, 10);
 		expect(anadirPropias).toHaveBeenCalledWith(["/a/1.png"], expect.any(Function));
+	});
+
+	it("con «Identificar por foto» abierto no añade nada: las fotos son para él", async () => {
+		useReconocer.setState({ abierto: true });
+		useArrastrarFicheros();
+		await esperarVuelta();
+		soltar(["/a/1.png"], 10, 10);
+		soltar(["/a/1.png"], 50, 25);
+		expect(anadirPropias).not.toHaveBeenCalled();
+		expect(reemplazarConFichero).not.toHaveBeenCalled();
 	});
 
 	it("con la escala sin definir usa 1", async () => {

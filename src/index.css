@@ -888,3 +888,14 @@ html[data-formato="movil"] [data-slot="context-menu-sub-content"] {
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+/* «Identificar por foto»: el escáner en vivo (Android). La cámara va DETRÁS de la vista web
+   (`EscanerCartas.kt`): mientras está abierto, `html` y `body` son transparentes y la app se
+   oculta sin desmontarse; el escáner va en un portal fuera de `#root` (`escaner-vivo.tsx`). */
+html[data-escaner],
+html[data-escaner] body {
+  background: transparent !important;
+}
+html[data-escaner] #root {
+  visibility: hidden;
+}

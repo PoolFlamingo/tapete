@@ -186,6 +186,18 @@ export const PASOS: Record<Vista, Paso[]> = {
 			),
 		},
 		{
+			ancla: "identificar-foto",
+			titulo: paraTraducir("Identificar por foto"),
+			texto: paraTraducir(
+				"¿Tienes la carta delante? Suelta o elige una foto suya y se reconoce la carta y su impresión.",
+			),
+			tactil: {
+				texto: paraTraducir(
+					"¿Tienes la carta delante? Apunta con la cámara y se reconoce sola, con su impresión; puedes escanear varias seguidas.",
+				),
+			},
+		},
+		{
 			ancla: "buscar-filtros",
 			titulo: paraTraducir("Filtros"),
 			texto: paraTraducir(

@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { scryfallDe } from "@/features/disenar/grupos";
 import { cartaPorId } from "@/features/preview/acciones-carta";
 import { RaizScroll } from "@/features/preview/visibilidad";
+import { BotonReconocer } from "@/features/reconocer/boton-reconocer";
 import { insertar, nuevoId, quitar } from "@/lib/deck-ops";
 import { useFormato } from "@/lib/formato";
 import { call } from "@/lib/ipc";
@@ -208,6 +209,12 @@ function Contenido({ en, hueco, cambiar }: { en?: number; hueco?: string; cambia
 						)}
 						{t("Buscar")}
 					</Button>
+					{!vieja && (
+						<BotonReconocer
+							modo={{ tipo: "deck", en, hueco }}
+							antes={() => useUi.getState().abrir(null)}
+						/>
+					)}
 				</div>
 				<FiltrosBusqueda lang={lang} onLang={setLang} altaRes={altaRes} onAltaRes={setAltaRes} />
 			</div>
