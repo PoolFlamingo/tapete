@@ -31,5 +31,12 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.0")
     // Los avisos de mensajes con la app cerrada (`AvisosAmigos.kt`).
     implementation("androidx.work:work-runtime:2.10.1")
+    // La cámara de «Identificar por foto» (`EscanerCartas.kt`): la misma versión de CameraX que
+    // trae `tauri-plugin-barcode-scanner` (el lector de QR), para que Gradle no mezcle dos.
+    val camerax = "1.5.1"
+    implementation("androidx.camera:camera-core:$camerax")
+    implementation("androidx.camera:camera-camera2:$camerax")
+    implementation("androidx.camera:camera-lifecycle:$camerax")
+    implementation("androidx.camera:camera-view:$camerax")
     implementation(project(":tauri-android"))
 }

@@ -1,5 +1,6 @@
 package com.estigio.proxybuilder.extra
 
+import android.Manifest
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -17,8 +18,11 @@ import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import app.tauri.PermissionState
 import app.tauri.annotation.Command
 import app.tauri.annotation.InvokeArg
+import app.tauri.annotation.Permission
+import app.tauri.annotation.PermissionCallback
 import app.tauri.annotation.TauriPlugin
 import app.tauri.plugin.Channel
 import app.tauri.plugin.Invoke
@@ -129,10 +133,15 @@ internal object Cofre {
  * comparten o instalan están en la caché de la app, que el `FileProvider` de la
  * plantilla (`res/xml/file_paths.xml`, `<cache-path>`) ya expone.
  */
-@TauriPlugin
+@TauriPlugin(
+    permissions = [
+        Permission(strings = [Manifest.permission.CAMERA], alias = "camera"),
+    ],
+)
 class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
     private var multicastLock: WifiManager.MulticastLock? = null
     private var canal: Channel? = null
+    private var escaner: EscanerCartas? = null
 
     /** El último fichero que otra app ha abierto con esta y nadie ha recogido. */
     private var pendiente: String? = null
@@ -281,6 +290,58 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
         synchronized(this) {
             if (multicastLock?.isHeld == true) multicastLock?.release()
         }
+        activity.runOnUiThread { escaner?.cerrar() }
+    }
+
+    // ── La cámara de «Identificar por foto» (`EscanerCartas`) ───────────
+
+    @Command
+    fun escanerAbrir(invoke: Invoke) {
+        if (getPermissionState("camera") != PermissionState.GRANTED) {
+            requestPermissionForAlias("camera", invoke, "trasPedirCamara")
+            return
+        }
+        abrirCamara(invoke)
+    }
+
+    @PermissionCallback
+    fun trasPedirCamara(invoke: Invoke) {
+        if (getPermissionState("camera") == PermissionState.GRANTED) {
+            abrirCamara(invoke)
+        } else {
+            invoke.reject("sin-permiso")
+        }
+    }
+
+    private fun abrirCamara(invoke: Invoke) {
+        activity.runOnUiThread {
+            try {
+                val e = escaner ?: EscanerCartas(activity, vistaWeb ?: run {
+                    invoke.reject("sin-vista")
+                    return@runOnUiThread
+                }).also { escaner = it }
+                e.abrir({ invoke.resolve() }, { motivo -> invoke.reject(motivo) })
+            } catch (ex: Exception) {
+                invoke.reject(ex.message ?: "camara")
+            }
+        }
+    }
+
+    @Command
+    fun escanerCerrar(invoke: Invoke) {
+        activity.runOnUiThread {
+            escaner?.cerrar()
+            invoke.resolve()
+        }
+    }
+
+    @Command
+    fun escanerLinterna(invoke: Invoke) {
+        val args = invoke.parseArgs(SiArgs::class.java)
+        activity.runOnUiThread {
+            val encendida = escaner?.linterna(args.si) ?: false
+            invoke.resolve(JSObject().put("encendida", encendida))
+        }
     }
 
     // ── Instalar un APK ─────────────────────────────────────────────────
@@ -407,8 +468,12 @@ class AndroidExtraPlugin(private val activity: Activity) : Plugin(activity) {
         invoke.resolve()
     }
 
+    /** La vista web de la app: el escáner pone la cámara detrás de ella. */
+    private var vistaWeb: android.webkit.WebView? = null
+
     override fun load(webView: android.webkit.WebView) {
         super.load(webView)
+        vistaWeb = webView
         // Al volver desde «Recientes» tras morir el proceso, Android entrega otra
         // vez el intent con el que se abrió: ese `.pbdeck` ya se importó.
         val intent = activity.intent

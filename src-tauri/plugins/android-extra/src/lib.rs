@@ -11,6 +11,9 @@
 //! - `nombre_equipo`: el nombre del dispositivo, para presentarse a otros equipos.
 //! - `compartir_texto`: `ACTION_SEND` de un texto.
 //! - `cofre_sellar`, `cofre_abrir`: AES-GCM con una clave del Android Keystore.
+//! - `escaner_abrir`, `escaner_cerrar`, `escaner_linterna`: la cámara de «Identificar por
+//!   foto» (CameraX detrás de la vista web transparente; los fotogramas van a Rust por JNI,
+//!   `Nativo.fotograma`, que implementa `reconocer::vivo` de la app).
 //! - Abrir un fichero desde otra app (`ACTION_VIEW`): la URI llega aquí.
 //! - `avisos_amigos`: programa o cancela el `Worker` de WorkManager (`AvisosAmigos.kt`) que
 //!   avisa de mensajes con la app cerrada; llama por JNI a `amigos::fondo` de la app.

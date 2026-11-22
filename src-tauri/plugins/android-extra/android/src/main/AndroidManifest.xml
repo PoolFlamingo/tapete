@@ -5,4 +5,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <!-- Instalar la versión nueva de la app (el aviso del sistema lo confirma la persona). -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- La cámara de «Identificar por foto» (`EscanerCartas.kt`). La declara también el lector de QR;
+         aquí por si un día se quita aquel. No es obligatoria para instalar la app. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 </manifest>

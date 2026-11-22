@@ -22,13 +22,6 @@ import org.json.JSONArray
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-/** La parte de Rust (`amigos/fondo.rs` de la app, en `libproxy_builder_lib.so`). */
-object Nativo {
-    /** Los avisos que hay que enseñar, en JSON (`[{ amigo, titulo, cuerpo }]`), o `null`. */
-    @JvmStatic
-    external fun comprobar(datos: String, clave: ByteArray): String?
-}
-
 /**
  * **Avisos de mensajes con la app cerrada** (plan Tapete, D4b). WorkManager lo despierta cada
  * ~15 minutos, solo con red; Rust mira el servidor sin recoger nada (los mensajes se quedan hasta

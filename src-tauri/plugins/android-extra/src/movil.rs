@@ -66,6 +66,12 @@ struct AvisoAmigo<'a> {
 }
 
 #[derive(Deserialize)]
+struct Linterna {
+    /// `false`: la cámara no tiene flash.
+    encendida: bool,
+}
+
+#[derive(Deserialize)]
 struct Nombre {
     nombre: Option<String>,
 }
@@ -177,6 +183,24 @@ impl<R: Runtime> AndroidExtra<R> {
                 cuerpo,
             },
         )
+    }
+
+    /// Abre la cámara detrás de la vista web (que se vuelve transparente) y
+    /// empieza a mandar fotogramas a Rust por JNI (`Nativo.fotograma`). Pide
+    /// el permiso si hace falta: sin él, falla con «sin-permiso».
+    pub fn escaner_abrir(&self) -> Resultado<()> {
+        self.0.run_mobile_plugin("escanerAbrir", ())
+    }
+
+    /// Cierra la cámara y devuelve el fondo a la vista web.
+    pub fn escaner_cerrar(&self) -> Resultado<()> {
+        self.0.run_mobile_plugin("escanerCerrar", ())
+    }
+
+    /// Enciende o apaga la linterna; `false` si no se pudo (sin flash).
+    pub fn escaner_linterna(&self, si: bool) -> Resultado<bool> {
+        let r: Linterna = self.0.run_mobile_plugin("escanerLinterna", Si { si })?;
+        Ok(r.encendida)
     }
 
     /// Avisa de cada fichero que otra app abre con esta (`ACTION_VIEW`),
