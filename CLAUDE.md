@@ -241,7 +241,8 @@ le falta una cadena le sale la inglesa.
   (el recorrido guiado de cada pantalla: pasos con su ancla `data-tutorial`;
   sale solo la primera vez y con el botón de ayuda de la barra), `mesa`
   (la pestaña «Jugar»: entrada, tablero, menús, diálogos, atajos, `red/`
-  para el código directo), `amigos` (amigos, mensajes cifrados e invitaciones), `pasar` (enviar y recibir decks entre equipos).
+  para el código directo), `amigos` (amigos, mensajes cifrados e invitaciones), `pasar` (enviar y recibir decks entre equipos), `reconocer` (identificar
+  cartas reales por foto y el escáner en vivo de Android).
 - `src/stores/`: `deck-store` (deck, historial, autoguardado), `plan-store`
   (el `PagePlan` de Rust con 100 ms de espera), `ui-store` (zoom, selección,
   diálogos, preferencias, `mesa` = Ajustes > Mesa), `trabajo-store` (el
@@ -249,7 +250,8 @@ le falta una cadena le sale la inglesa.
   selectores con referencias estables: `NINGUNA` o `useShallow`),
   `chat-store` (silenciados, bocadillos, sin leer), `repeticion-store`,
   `red-store` (código directo y estado de la red), `amigos-store`,
-  `originales-store`, `vivo-store` (movimiento en vivo de los demás).
+  `originales-store`, `vivo-store` (movimiento en vivo de los demás),
+  `reconocer-store` (la bandeja de «Identificar por foto»).
 - `src/lib/trabajos.ts`: lanzar un trabajo de Rust con eventos de progreso
   (escucha antes de lanzar). `src/lib/image-url.ts`: URLs de `pbimg://`.
 - Diálogos de ficheros SOLO por `src/lib/dialogos.ts` (`abrirParaImportar`,
@@ -508,6 +510,21 @@ le falta una cadena le sale la inglesa.
   `scryfall/fichas_auto.rs` saca las fichas de las impresiones inglesas
   (`all_parts` solo está completo ahí); «Detectar fichas» en el panel de la
   lista (`fichas-dialog`).
+- **Identificar por foto** (Pablo, 21/11/2026; plan `plans/20261121 - identificar-por-foto/`): cartas
+  **reales** por una foto, con su impresión, como ManaBox. Botón «Identificar por foto» en Buscar (abre la
+  ficha) y en «Añadir carta» (al deck, con `en`/`hueco`). Motor puro en `proxy-core::foto` (`detectar`: las
+  cuatro esquinas, Douglas-Peucker empezando por una esquina y proporción de carta ±20 % sin la banda del contorno —con ella una tele de 16:9 pasaba—; `enderezar` a
+  630×880; `Firma` de la ilustración y de la carta entera); la app en `src-tauri/src/reconocer/`
+  (`reconocer` → OCR con `identify::{leer_imagen, proponer}`, boca abajo se lee girada; `impresion.rs`: el
+  pie si es de la misma carta, si no la ilustración más parecida, umbral `UMBRAL_IMAGEN` 0,30 —por encima,
+  «solo por el nombre»— y dentro del arte ganador el idioma y el marco; miniaturas en
+  `app_cache_dir/reconocer/`). 🛑 **Escáner en vivo solo en Android**: `EscanerCartas.kt` pone CameraX
+  **detrás** de la vista web transparente (como el `windowed` del lector de QR, misma CameraX 1.5.1) y
+  da los fotogramas a Rust **por JNI** (`Nativo.quiere`/`Nativo.fotograma`, `reconocer/vivo.rs`: un hueco
+  de un fotograma, `Seguimiento` decide cuándo leer y que la misma carta no se cuente dos veces hasta que
+  salga); nunca por IPC ni `getUserMedia`. La pantalla, en un portal fuera de `#root` con
+  `html[data-escaner]` (`index.css`). Pantalla en `features/reconocer/`, store `reconocer-store.ts`; con
+  el diálogo abierto el arrastre global no añade propias. Escritorio: soltar o elegir fotos, sin webcam.
 - OCR: `originales.rs` busca el nombre original en cualquier línea leída
   (n-gramas contra el índice local de nombres, puntuados por zona) y
   `pie_leido` saca set, número e idioma del pie.
