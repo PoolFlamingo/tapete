@@ -57,7 +57,6 @@
 	"Apagado": "Estompat",
 	"Tema «{nombre}» instalado": "Tema „{nombre}” a fost instalată",
 	"Más temas de tweakcn": "Mai multe teme tweakcn",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "Caută o temă în galeria comunității tweakcn, copiază-i linkul și lipește-l aici. Se descarcă împreună cu fonturile și apare în lista de teme.",
 	"Enlace o id del tema en tweakcn": "Linkul sau id-ul temei tweakcn",
 	"Ver": "Previzualizează",
 	"Abrir la galería": "Deschide galeria",
@@ -98,5 +97,7 @@
 	"Instalar la {version}": "Instalează {version}",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android are nevoie de permisiunea ta ca să instaleze actualizarea: setarea a fost deschisă. Permite instalarea de aplicații din Tapete, revino și apasă din nou «Instalează».",
 	"Descargado": "Descărcat",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo și pictograme de joc: game-icons.net (CC BY 3.0)"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo și pictograme de joc: game-icons.net (CC BY 3.0)",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "Deschide o temă în galeria tweakcn, apasă butonul de partajare și lipește aici linkul: merge Ctrl+V oriunde în fereastră. Se descarcă împreună cu fonturile și apare în lista de teme.",
+	"Galería de la comunidad de tweakcn": "Galeria comunității tweakcn"
 }

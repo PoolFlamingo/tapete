@@ -56,7 +56,6 @@
 	"Apagado": "Muted",
 	"Tema «{nombre}» instalado": "Theme “{nombre}” installed",
 	"Más temas de tweakcn": "More tweakcn themes",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "Find a theme in the tweakcn community gallery, copy its link and paste it here. It's downloaded with its fonts and added to the theme list.",
 	"Enlace o id del tema en tweakcn": "tweakcn theme link or id",
 	"Ver": "Preview",
 	"Abrir la galería": "Open the gallery",
@@ -97,5 +96,7 @@
 	"Instalar la {version}": "Install {version}",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android needs your permission to install the update: its setting has been opened. Allow installing apps from Tapete, come back and tap “Install” again.",
 	"Descargado": "Downloaded",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo and game icons: game-icons.net (CC BY 3.0)"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo and game icons: game-icons.net (CC BY 3.0)",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "Open a theme in the tweakcn gallery, press its share button and paste the link here: Ctrl+V anywhere in this dialog works. It's downloaded with its fonts and added to the theme list.",
+	"Galería de la comunidad de tweakcn": "tweakcn community gallery"
 }

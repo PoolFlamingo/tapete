@@ -57,7 +57,6 @@
 	"Apagado": "Discreta",
 	"Tema «{nombre}» instalado": "Tema “{nombre}” instalado",
 	"Más temas de tweakcn": "Mais temas do tweakcn",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "Procure um tema na galeria da comunidade do tweakcn, copie o link e cole aqui. Ele é baixado com as fontes e fica na lista de temas.",
 	"Enlace o id del tema en tweakcn": "Link ou id do tema no tweakcn",
 	"Ver": "Visualizar",
 	"Abrir la galería": "Abrir a galeria",
@@ -98,5 +97,7 @@
 	"Instalar la {version}": "Instalar a {version}",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "O Android precisa da sua permissão para instalar a atualização: a configuração foi aberta. Permita instalar apps pelo Tapete, volte e toque em «Instalar» de novo.",
 	"Descargado": "Baixado",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logótipo e ícones de jogo: game-icons.net (CC BY 3.0)"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logótipo e ícones de jogo: game-icons.net (CC BY 3.0)",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "Abra um tema na galeria do tweakcn, toque no botão de partilhar e cole aqui a ligação: basta Ctrl+V em qualquer parte da janela. É transferido com as suas letras e fica na lista de temas.",
+	"Galería de la comunidad de tweakcn": "Galeria da comunidade do tweakcn"
 }

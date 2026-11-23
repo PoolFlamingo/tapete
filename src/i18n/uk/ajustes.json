@@ -58,7 +58,6 @@
 	"Apagado": "Приглушений",
 	"Tema «{nombre}» instalado": "Тему «{nombre}» встановлено",
 	"Más temas de tweakcn": "Більше тем tweakcn",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "Знайдіть тему в галереї спільноти tweakcn, скопіюйте посилання й вставте сюди. Її буде завантажено разом зі шрифтами й додано до списку тем.",
 	"Enlace o id del tema en tweakcn": "Посилання або id теми tweakcn",
 	"Ver": "Переглянути",
 	"Abrir la galería": "Відкрити галерею",
@@ -99,5 +98,7 @@
 	"Instalar la {version}": "Встановити {version}",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android потрібен ваш дозвіл на встановлення оновлення: його налаштування відкрито. Дозвольте Tapete встановлювати застосунки, поверніться й знову натисніть «Встановити».",
 	"Descargado": "Завантажено",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Логотип та ігрові значки: game-icons.net (CC BY 3.0)"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Логотип та ігрові значки: game-icons.net (CC BY 3.0)",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "Відкрийте тему в галереї tweakcn, натисніть її кнопку «Поділитися» і вставте посилання сюди: підійде Ctrl+V будь-де у вікні. Тема завантажиться разом зі шрифтами й з'явиться у списку тем.",
+	"Galería de la comunidad de tweakcn": "Галерея спільноти tweakcn"
 }

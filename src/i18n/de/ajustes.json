@@ -56,7 +56,6 @@
 	"Apagado": "Gedämpft",
 	"Tema «{nombre}» instalado": "Theme „{nombre}“ installiert",
 	"Más temas de tweakcn": "Weitere Themes von tweakcn",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "Such dir ein Theme in der Community-Galerie von tweakcn aus, kopiere den Link und füge ihn hier ein. Es wird mit seinen Schriften heruntergeladen und erscheint in der Theme-Liste.",
 	"Enlace o id del tema en tweakcn": "Link oder ID des tweakcn-Themes",
 	"Ver": "Vorschau",
 	"Abrir la galería": "Galerie öffnen",
@@ -97,5 +96,7 @@
 	"Instalar la {version}": "{version} installieren",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android braucht deine Erlaubnis, um das Update zu installieren: Die Einstellung wurde geöffnet. Erlaube Tapete, Apps zu installieren, komm zurück und tippe erneut auf „Installieren“.",
 	"Descargado": "Heruntergeladen",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo und Spielsymbole: game-icons.net (CC BY 3.0)"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "Logo und Spielsymbole: game-icons.net (CC BY 3.0)",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "Öffne ein Theme in der tweakcn-Galerie, tippe auf seine Teilen-Schaltfläche und füge den Link hier ein: Strg+V an einer beliebigen Stelle im Dialog genügt. Es wird mit seinen Schriften heruntergeladen und zur Theme-Liste hinzugefügt.",
+	"Galería de la comunidad de tweakcn": "Galerie der tweakcn-Community"
 }

@@ -53,7 +53,6 @@
 	"Apagado": "控えめ",
 	"Tema «{nombre}» instalado": "テーマ「{nombre}」をインストールしました",
 	"Más temas de tweakcn": "tweakcn のその他のテーマ",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "tweakcn のコミュニティギャラリーでテーマを探し、リンクをコピーしてここに貼り付けてください。フォントと一緒にダウンロードされ、テーマ一覧に追加されます。",
 	"Enlace o id del tema en tweakcn": "tweakcn のテーマのリンクまたは ID",
 	"Ver": "プレビュー",
 	"Abrir la galería": "ギャラリーを開く",
@@ -94,5 +93,7 @@
 	"Instalar la {version}": "{version} をインストール",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "アップデートをインストールするには Android の許可が必要です。設定画面を開きました。Tapete からのアプリのインストールを許可して戻り、もう一度「インストール」をタップしてください。",
 	"Descargado": "ダウンロード済み",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "ロゴとゲームアイコン：game-icons.net（CC BY 3.0）"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "ロゴとゲームアイコン：game-icons.net（CC BY 3.0）",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "tweakcn のギャラリーでテーマを開き、共有ボタンを押してリンクをここに貼り付けてください。このダイアログのどこでも Ctrl+V で貼り付けられます。フォントと一緒にダウンロードされ、テーマ一覧に追加されます。",
+	"Galería de la comunidad de tweakcn": "tweakcn コミュニティのギャラリー"
 }

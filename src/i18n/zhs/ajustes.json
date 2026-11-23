@@ -53,7 +53,6 @@
 	"Apagado": "弱化",
 	"Tema «{nombre}» instalado": "主题“{nombre}”已安装",
 	"Más temas de tweakcn": "更多 tweakcn 主题",
-	"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.": "在 tweakcn 社区画廊中找到主题，复制其链接并粘贴到这里。主题会连同字体一起下载，并加入主题列表。",
 	"Enlace o id del tema en tweakcn": "tweakcn 主题链接或 ID",
 	"Ver": "预览",
 	"Abrir la galería": "打开画廊",
@@ -94,5 +93,7 @@
 	"Instalar la {version}": "安装 {version}",
 	"Android necesita tu permiso para instalar la actualización: se ha abierto su ajuste. Permite instalar apps desde Tapete, vuelve y pulsa «Instalar» otra vez.": "Android 需要你的许可才能安装更新：已打开相应设置。请允许 Tapete 安装应用，然后返回并再次点按“安装”。",
 	"Descargado": "已下载",
-	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "标志和游戏图标：game-icons.net（CC BY 3.0）"
+	"Logo e iconos de juego: game-icons.net (CC BY 3.0)": "标志和游戏图标：game-icons.net（CC BY 3.0）",
+	"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.": "在 tweakcn 图库中打开一个主题，点按其分享按钮，然后把链接粘贴到这里：在此对话框任意位置按 Ctrl+V 即可。主题会连同字体一起下载并加入主题列表。",
+	"Galería de la comunidad de tweakcn": "tweakcn 社区图库"
 }
