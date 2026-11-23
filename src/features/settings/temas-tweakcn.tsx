@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { TemaCatalogo } from "@/bindings/TemaCatalogo";
 import { DialogoAdaptable } from "@/components/dialogo-adaptable";
@@ -22,6 +22,12 @@ import { TEMA_FABRICA } from "@/lib/tema-inicial";
 import { esTemaInstalado, useTemasInstalados } from "@/lib/temas-instalados";
 import { THEMES, type ThemeName } from "@/lib/themes";
 import { cn } from "@/lib/utils";
+
+/** La galería de la comunidad, dentro del diálogo (CSP: `frame-src` en `tauri.conf.json`). */
+const GALERIA = "https://tweakcn.com/community";
+
+/** Solo un texto que nombre tweakcn: una palabra suelta copiada sin querer no se busca. */
+const esEnlaceTweakcn = (texto: string) => /tweakcn\.com\/\S/i.test(texto);
 
 /** El tema de fábrica cuando el elegido ya no está instalado (el verde de Tapete). */
 const DE_FABRICA: ThemeName = TEMA_FABRICA;
@@ -92,10 +98,12 @@ function Muestra({ tema }: { tema: TemaCatalogo }) {
 
 /**
  * **Más temas de tweakcn**: los del catálogo oficial que la app aún no trae y
- * cualquiera de la comunidad por su enlace (tweakcn no tiene un listado
- * público de la comunidad: se abre su galería en el navegador y se pega aquí
- * el enlace del tema). Rust lo baja con sus letras; aquí se ve, se instala y
- * se usa.
+ * cualquiera de la comunidad por su enlace. tweakcn no tiene un listado público
+ * de la comunidad, así que su galería va dentro del diálogo, en un iframe: su
+ * botón de compartir copia el enlace del tema (el iframe lleva
+ * `clipboard-write`) y pegarlo en cualquier parte del diálogo lo muestra (el
+ * iframe no dice qué tema está abierto: es de otro origen). Rust lo baja con
+ * sus letras; aquí se ve, se instala y se usa.
  */
 export function TemasTweakcn({ abierto, onCerrar }: { abierto: boolean; onCerrar: () => void }) {
 	const { t, mensaje } = useLang();
@@ -117,11 +125,11 @@ export function TemasTweakcn({ abierto, onCerrar }: { abierto: boolean; onCerrar
 			.catch(() => setCatalogo([]));
 	}, [abierto]);
 
-	const ver = async () => {
-		if (!enlace.trim()) return;
+	const ver = async (texto: string = enlace) => {
+		if (!texto.trim()) return;
 		setOcupado("ver");
 		try {
-			setViendo(await call("theme_fetch", { id: enlace }));
+			setViendo(await call("theme_fetch", { id: texto }));
 		} catch (e) {
 			if (esAppError(e) && e.params.motivo === "tema_enlace") {
 				toast.error(t("Eso no es un enlace ni un id de un tema de tweakcn."));
@@ -132,6 +140,26 @@ export function TemasTweakcn({ abierto, onCerrar }: { abierto: boolean; onCerrar
 			setOcupado(null);
 		}
 	};
+
+	// Pegar un enlace de tweakcn en cualquier parte del diálogo (fuera del campo,
+	// que lo hace en su `onPaste`) lo pone en el campo y lo enseña.
+	const verAhora = useRef(ver);
+	useEffect(() => {
+		verAhora.current = ver;
+	});
+	useEffect(() => {
+		if (!abierto) return;
+		const alPegar = (e: ClipboardEvent) => {
+			if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+			const texto = e.clipboardData?.getData("text").trim() ?? "";
+			if (!esEnlaceTweakcn(texto)) return;
+			e.preventDefault();
+			setEnlace(texto);
+			void verAhora.current(texto);
+		};
+		document.addEventListener("paste", alPegar);
+		return () => document.removeEventListener("paste", alPegar);
+	}, [abierto]);
 
 	const instalarYUsar = async (tema: TemaCatalogo) => {
 		setOcupado("instalar");
@@ -159,144 +187,164 @@ export function TemasTweakcn({ abierto, onCerrar }: { abierto: boolean; onCerrar
 
 	return (
 		<Dialog open={abierto} onOpenChange={(o) => !o && !ocupado && onCerrar()}>
-			<DialogoAdaptable className="sm:max-w-2xl" cambiosSinGuardar={false}>
+			<DialogoAdaptable className="flex h-[88vh] flex-col sm:max-w-6xl" cambiosSinGuardar={false}>
 				<DialogHeader>
 					<DialogTitle>{t("Más temas de tweakcn")}</DialogTitle>
 					<DialogDescription>
 						{t(
-							"Busca un tema en la galería de la comunidad de tweakcn, copia su enlace y pégalo aquí. Se descarga con sus letras y queda en la lista de temas.",
+							"Abre un tema en la galería de tweakcn, pulsa su botón de compartir y pega aquí el enlace: vale Ctrl+V en cualquier parte del diálogo. Se descarga con sus letras y queda en la lista de temas.",
 						)}
 					</DialogDescription>
 				</DialogHeader>
-				<DialogCuerpo className="min-h-64">
-					<div className="flex flex-col gap-2.5 p-1">
-						<div className="flex flex-col gap-2 sm:flex-row">
-							<Input
-								value={enlace}
-								onChange={(e) => setEnlace(e.target.value)}
-								onKeyDown={(e) => e.key === "Enter" && void ver()}
-								placeholder={t("Enlace o id del tema en tweakcn")}
-								className="h-8 text-xs"
-							/>
-							<div className="flex gap-2">
-								<Button size="sm" onClick={ver} disabled={!enlace.trim() || ocupado !== null}>
-									{ocupado === "ver" ? (
-										<Icono icon="lucide:loader-2" className="animate-spin" />
-									) : (
-										<Icono icon="lucide:eye" />
-									)}
-									{t("Ver")}
-								</Button>
-								<Button
-									size="sm"
-									variant="outline"
-									onClick={() =>
-										call("themes_open_community", {}).catch((e) => toast.error(mensaje(e)))
-									}
-								>
-									<Icono icon="lucide:external-link" />
-									{t("Abrir la galería")}
-								</Button>
-							</div>
-						</div>
-
-						{viendo && (
-							<div className="flex flex-col gap-2">
-								<Muestra tema={viendo} />
-								<div className="flex justify-end">
+				<div className="flex min-h-0 flex-1 flex-col gap-2.5 lg:flex-row">
+					<iframe
+						src={GALERIA}
+						title={t("Galería de la comunidad de tweakcn")}
+						allow="clipboard-write"
+						referrerPolicy="no-referrer"
+						className="h-[40dvh] w-full shrink-0 rounded-lg border bg-background lg:h-auto lg:min-h-0 lg:flex-1"
+					/>
+					<DialogCuerpo className="min-h-64 lg:w-[26rem] lg:flex-none">
+						<div className="flex flex-col gap-2.5 p-1">
+							<div className="flex flex-col gap-2 sm:flex-row">
+								<Input
+									value={enlace}
+									onChange={(e) => setEnlace(e.target.value)}
+									onPaste={(e) => {
+										const texto = e.clipboardData.getData("text").trim();
+										if (!esEnlaceTweakcn(texto)) return;
+										e.preventDefault();
+										setEnlace(texto);
+										void ver(texto);
+									}}
+									onKeyDown={(e) => e.key === "Enter" && void ver()}
+									placeholder={t("Enlace o id del tema en tweakcn")}
+									className="h-8 text-xs"
+								/>
+								<div className="flex gap-2">
 									<Button
 										size="sm"
-										onClick={() => instalarYUsar(viendo)}
-										disabled={ocupado !== null}
+										onClick={() => void ver()}
+										disabled={!enlace.trim() || ocupado !== null}
 									>
-										{ocupado === "instalar" ? (
+										{ocupado === "ver" ? (
 											<Icono icon="lucide:loader-2" className="animate-spin" />
 										) : (
-											<Icono icon="lucide:download" />
+											<Icono icon="lucide:eye" />
 										)}
-										{yaInstalado(viendo) ? t("Volver a descargar y usar") : t("Instalar y usar")}
+										{t("Ver")}
+									</Button>
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={() =>
+											call("themes_open_community", {}).catch((e) => toast.error(mensaje(e)))
+										}
+									>
+										<Icono icon="lucide:external-link" />
+										{t("Abrir la galería")}
 									</Button>
 								</div>
 							</div>
-						)}
 
-						{catalogo && catalogo.length > 0 && (
-							<section className="flex flex-col gap-1.5">
-								<h3 className="text-xs font-semibold">{t("Nuevos en el catálogo de tweakcn")}</h3>
-								<div className="grid grid-cols-2 gap-2 p-1 sm:grid-cols-3">
-									{catalogo.map((c) => (
-										<button
-											key={c.id}
-											type="button"
-											onClick={() => setViendo(c)}
-											className={cn(
-												"soft-hover flex items-center gap-2 rounded-md border px-2.5 py-2 text-left",
-												viendo?.id === c.id && "border-primary ring-1 ring-primary",
+							{viendo && (
+								<div className="flex flex-col gap-2">
+									<Muestra tema={viendo} />
+									<div className="flex justify-end">
+										<Button
+											size="sm"
+											onClick={() => instalarYUsar(viendo)}
+											disabled={ocupado !== null}
+										>
+											{ocupado === "instalar" ? (
+												<Icono icon="lucide:loader-2" className="animate-spin" />
+											) : (
+												<Icono icon="lucide:download" />
 											)}
-										>
-											<span className="flex shrink-0">
-												{c.oscuro.slice(0, 3).map((color) => (
-													<span
-														key={color}
-														className="-ml-1 size-3.5 rounded-full border first:ml-0"
-														style={{ background: color }}
-													/>
-												))}
-											</span>
-											<span className="truncate text-xs font-medium">{c.nombre}</span>
-										</button>
-									))}
+											{yaInstalado(viendo) ? t("Volver a descargar y usar") : t("Instalar y usar")}
+										</Button>
+									</div>
 								</div>
-							</section>
-						)}
-
-						<section className="flex flex-col gap-1.5">
-							<h3 className="text-xs font-semibold">{t("Instalados")}</h3>
-							{instalados.length === 0 ? (
-								<p className="text-xs text-muted-foreground">{t("Aún no hay ninguno.")}</p>
-							) : (
-								<ul className="flex flex-col gap-1 p-1">
-									{instalados.map((i) => (
-										<li
-											key={i.id}
-											className="flex items-center gap-2 rounded-md border px-2.5 py-1.5"
-										>
-											<span
-												className="size-3.5 shrink-0 rounded-full border"
-												style={{ background: i.muestra }}
-											/>
-											<span className="truncate text-xs font-medium">{i.nombre}</span>
-											<span className="ml-auto flex items-center gap-1">
-												{theme === i.id ? (
-													<Icono icon="lucide:check" className="size-3.5 text-primary" />
-												) : (
-													<Button
-														size="sm"
-														variant="ghost"
-														onClick={() => setTheme(i.id as ThemeName)}
-													>
-														{t("Usar")}
-													</Button>
-												)}
-												<WithTooltip content={t("Quitar")}>
-													<Button
-														size="icon"
-														variant="ghost"
-														className="size-7"
-														onClick={() => quitarTema(i.id)}
-														aria-label={t("Quitar")}
-													>
-														<Icono icon="lucide:trash-2" />
-													</Button>
-												</WithTooltip>
-											</span>
-										</li>
-									))}
-								</ul>
 							)}
-						</section>
-					</div>
-				</DialogCuerpo>
+
+							{catalogo && catalogo.length > 0 && (
+								<section className="flex flex-col gap-1.5">
+									<h3 className="text-xs font-semibold">{t("Nuevos en el catálogo de tweakcn")}</h3>
+									<div className="grid grid-cols-2 gap-2 p-1 sm:grid-cols-3">
+										{catalogo.map((c) => (
+											<button
+												key={c.id}
+												type="button"
+												onClick={() => setViendo(c)}
+												className={cn(
+													"soft-hover flex items-center gap-2 rounded-md border px-2.5 py-2 text-left",
+													viendo?.id === c.id && "border-primary ring-1 ring-primary",
+												)}
+											>
+												<span className="flex shrink-0">
+													{c.oscuro.slice(0, 3).map((color) => (
+														<span
+															key={color}
+															className="-ml-1 size-3.5 rounded-full border first:ml-0"
+															style={{ background: color }}
+														/>
+													))}
+												</span>
+												<span className="truncate text-xs font-medium">{c.nombre}</span>
+											</button>
+										))}
+									</div>
+								</section>
+							)}
+
+							<section className="flex flex-col gap-1.5">
+								<h3 className="text-xs font-semibold">{t("Instalados")}</h3>
+								{instalados.length === 0 ? (
+									<p className="text-xs text-muted-foreground">{t("Aún no hay ninguno.")}</p>
+								) : (
+									<ul className="flex flex-col gap-1 p-1">
+										{instalados.map((i) => (
+											<li
+												key={i.id}
+												className="flex items-center gap-2 rounded-md border px-2.5 py-1.5"
+											>
+												<span
+													className="size-3.5 shrink-0 rounded-full border"
+													style={{ background: i.muestra }}
+												/>
+												<span className="truncate text-xs font-medium">{i.nombre}</span>
+												<span className="ml-auto flex items-center gap-1">
+													{theme === i.id ? (
+														<Icono icon="lucide:check" className="size-3.5 text-primary" />
+													) : (
+														<Button
+															size="sm"
+															variant="ghost"
+															onClick={() => setTheme(i.id as ThemeName)}
+														>
+															{t("Usar")}
+														</Button>
+													)}
+													<WithTooltip content={t("Quitar")}>
+														<Button
+															size="icon"
+															variant="ghost"
+															className="size-7"
+															onClick={() => quitarTema(i.id)}
+															aria-label={t("Quitar")}
+														>
+															<Icono icon="lucide:trash-2" />
+														</Button>
+													</WithTooltip>
+												</span>
+											</li>
+										))}
+									</ul>
+								)}
+							</section>
+						</div>
+					</DialogCuerpo>
+				</div>
 				<DialogFooter>
 					<Button size="sm" variant="outline" onClick={onCerrar} disabled={ocupado !== null}>
 						{t("Cerrar")}

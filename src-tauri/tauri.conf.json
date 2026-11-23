@@ -31,6 +31,7 @@
 				"style-src": "'self' 'unsafe-inline'",
 				"font-src": "'self' data: pbimg: http://pbimg.localhost",
 				"connect-src": "ipc: http://ipc.localhost",
+				"frame-src": "https://tweakcn.com",
 				"object-src": "'none'",
 				"base-uri": "'self'",
 				"form-action": "'none'"
