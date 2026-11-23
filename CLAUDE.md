@@ -55,7 +55,9 @@ imagen y PDF). Antes de tocar algo grande, leer el paso del plan que le toca.
   los vuelca en `src/bindings/` (no se editan a mano).
 - La pantalla habla con Rust SOLO por `src/lib/ipc.ts` (`call()`), nunca con
   `invoke` suelto.
-- La vista web no sale a internet: toda red la hace Rust.
+- La vista web no sale a internet: toda red la hace Rust. Excepción: la galería de la comunidad de
+  tweakcn va en un iframe del diálogo de temas (Pablo, 23/11/2026; `frame-src https://tweakcn.com` en
+  la CSP); el tema se sigue bajando por Rust.
 - 🛑 **El TLS va en un solo sitio**, `src-tauri/src/tls.rs` (Pablo, 02/11/2026): ningún
   `reqwest::Client::builder()`, `with_platform_verifier` ni `CaTlsConfig::` fuera de él
   (lo vigila un test). En escritorio, el verificador del sistema; en móvil, los
@@ -544,8 +546,9 @@ le falta una cadena le sale la inglesa.
 - Idioma del deck a mano: `decks.lang_override` (migración 0004; no toca
   `updated_at`), `deck_lang_set`, submenú «Idioma» de la biblioteca.
 - **Temas de tweakcn** (Pablo, 19/10/2026): `temas.rs` baja un tema por id o
-  enlace (`tweakcn.com/r/themes/<id>`; la comunidad no tiene API, se abre en
-  el navegador y se pega el enlace), lo pasa a CSS con el formato de
+  enlace (`tweakcn.com/r/themes/<id>`; la comunidad no tiene API: su galería va en
+  un iframe dentro del diálogo, su botón de compartir copia el enlace y Ctrl+V en
+  cualquier parte del diálogo lo muestra), lo pasa a CSS con el formato de
   `themes.css` (`[data-theme="tw-<id>"]`, solo variables con nombre y valor
   comprobados) y baja sus letras de Google Fonts a `app_data_dir/temas/`,
   servidas por `pbimg://…/f/<huella>.woff2`. En pantalla,
