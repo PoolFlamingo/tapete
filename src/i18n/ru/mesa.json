@@ -1403,5 +1403,13 @@
 	"Quitar la bolita (doble toque)": "Убрать метку (двойное касание)",
 	"Desplegar {panel}": "Развернуть: {panel}",
 	"Plegar {panel}": "Свернуть: {panel}",
-	"Plegar el aviso": "Свернуть уведомление"
+	"Plegar el aviso": "Свернуть уведомление",
+	"{quien} cambia su tapete": "{quien} меняет свой коврик",
+	"Ajustes de la mesa": "Настройки стола",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "Изменения применяются сразу. Другие игроки тоже увидят твой коврик.",
+	"Cambiar el tapete…": "Сменить коврик…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D-эффект: перетаскиваемая карта приподнимается, а рука получает глубину",
+	"Intensa": "Сильная",
+	"Extrema": "Экстремальная",
+	"Profundidad del efecto 3D": "Глубина 3D-эффекта"
 }

@@ -1300,5 +1300,13 @@
 	"Quitar la bolita (doble toque)": "マーカーを外す（ダブルタップ）",
 	"Desplegar {panel}": "{panel}を開く",
 	"Plegar {panel}": "{panel}をたたむ",
-	"Plegar el aviso": "お知らせをたたむ"
+	"Plegar el aviso": "お知らせをたたむ",
+	"{quien} cambia su tapete": "{quien} がプレイマットを変更した",
+	"Ajustes de la mesa": "テーブルの設定",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "変更はすぐに反映されます。あなたのプレイマットは他のプレイヤーにも表示されます。",
+	"Cambiar el tapete…": "プレイマットを変更…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D効果：ドラッグしたカードが浮き上がり、手札に奥行きが出ます",
+	"Intensa": "強め",
+	"Extrema": "最大",
+	"Profundidad del efecto 3D": "3D効果の深さ"
 }

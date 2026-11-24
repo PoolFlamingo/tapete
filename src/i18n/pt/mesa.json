@@ -1378,5 +1378,13 @@
 	"Quitar la bolita (doble toque)": "Remover o marcador (toque duplo)",
 	"Desplegar {panel}": "Expandir {panel}",
 	"Plegar {panel}": "Recolher {panel}",
-	"Plegar el aviso": "Recolher o aviso"
+	"Plegar el aviso": "Recolher o aviso",
+	"{quien} cambia su tapete": "{quien} muda o seu playmat",
+	"Ajustes de la mesa": "Definições da mesa",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "As alterações aplicam-se de imediato. Os outros jogadores também verão o teu playmat.",
+	"Cambiar el tapete…": "Mudar o playmat…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "Efeito 3D: a carta arrastada levanta-se e a mão tem profundidade",
+	"Intensa": "Forte",
+	"Extrema": "Extrema",
+	"Profundidad del efecto 3D": "Profundidade do efeito 3D"
 }

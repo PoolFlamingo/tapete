@@ -1300,5 +1300,13 @@
 	"Quitar la bolita (doble toque)": "移除标记（双击）",
 	"Desplegar {panel}": "展开{panel}",
 	"Plegar {panel}": "收起{panel}",
-	"Plegar el aviso": "收起提示"
+	"Plegar el aviso": "收起提示",
+	"{quien} cambia su tapete": "{quien} 更换了游戏垫",
+	"Ajustes de la mesa": "牌桌设置",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "更改立即生效。其他玩家也会看到你的游戏垫。",
+	"Cambiar el tapete…": "更换游戏垫…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D 效果：拖动的卡牌会抬起，手牌更有立体感",
+	"Intensa": "强烈",
+	"Extrema": "极致",
+	"Profundidad del efecto 3D": "3D 效果深度"
 }

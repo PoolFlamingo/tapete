@@ -1361,5 +1361,13 @@
 	"Quitar la bolita (doble toque)": "Remove the marker (double tap)",
 	"Desplegar {panel}": "Expand {panel}",
 	"Plegar {panel}": "Collapse {panel}",
-	"Plegar el aviso": "Collapse the notice"
+	"Plegar el aviso": "Collapse the notice",
+	"{quien} cambia su tapete": "{quien} changes their playmat",
+	"Ajustes de la mesa": "Table settings",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "Changes apply right away. The other players will also see your playmat.",
+	"Cambiar el tapete…": "Change playmat…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D effect: dragged cards lift off and your hand has depth",
+	"Intensa": "Strong",
+	"Extrema": "Extreme",
+	"Profundidad del efecto 3D": "3D effect depth"
 }

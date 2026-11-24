@@ -1361,5 +1361,13 @@
 	"Quitar la bolita (doble toque)": "Markering verwijderen (dubbeltikken)",
 	"Desplegar {panel}": "{panel} uitklappen",
 	"Plegar {panel}": "{panel} inklappen",
-	"Plegar el aviso": "Melding inklappen"
+	"Plegar el aviso": "Melding inklappen",
+	"{quien} cambia su tapete": "{quien} verandert de speelmat",
+	"Ajustes de la mesa": "Tafelinstellingen",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "Wijzigingen gelden meteen. De andere spelers zien ook je speelmat.",
+	"Cambiar el tapete…": "Speelmat wijzigen…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D-effect: gesleepte kaarten komen omhoog en je hand heeft diepte",
+	"Intensa": "Sterk",
+	"Extrema": "Extreem",
+	"Profundidad del efecto 3D": "Diepte van het 3D-effect"
 }

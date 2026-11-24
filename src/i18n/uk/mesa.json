@@ -1408,5 +1408,13 @@
 	"Quitar la bolita (doble toque)": "Прибрати мітку (подвійний дотик)",
 	"Desplegar {panel}": "Розгорнути: {panel}",
 	"Plegar {panel}": "Згорнути: {panel}",
-	"Plegar el aviso": "Згорнути сповіщення"
+	"Plegar el aviso": "Згорнути сповіщення",
+	"{quien} cambia su tapete": "{quien} змінює свій плеймат",
+	"Ajustes de la mesa": "Налаштування столу",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "Зміни застосовуються одразу. Інші гравці теж побачать твій плеймат.",
+	"Cambiar el tapete…": "Змінити плеймат…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D-ефект: перетягувана карта піднімається, а рука має глибину",
+	"Intensa": "Сильна",
+	"Extrema": "Екстремальна",
+	"Profundidad del efecto 3D": "Глибина 3D-ефекту"
 }

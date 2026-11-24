@@ -1300,5 +1300,13 @@
 	"Quitar la bolita (doble toque)": "마커 제거(두 번 탭)",
 	"Desplegar {panel}": "{panel} 펼치기",
 	"Plegar {panel}": "{panel} 접기",
-	"Plegar el aviso": "알림 접기"
+	"Plegar el aviso": "알림 접기",
+	"{quien} cambia su tapete": "{quien} 님이 플레이매트를 바꿨습니다",
+	"Ajustes de la mesa": "테이블 설정",
+	"Cambian al momento. Tu tapete lo verán también los demás jugadores.": "변경 사항은 바로 적용됩니다. 내 플레이매트는 다른 플레이어에게도 보입니다.",
+	"Cambiar el tapete…": "플레이매트 바꾸기…",
+	"Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad": "3D 효과: 끌어온 카드가 떠오르고 손패에 깊이감이 생깁니다",
+	"Intensa": "강하게",
+	"Extrema": "최대",
+	"Profundidad del efecto 3D": "3D 효과 깊이"
 }
