@@ -1,20 +1,37 @@
 import type { Intensidad } from "@/bindings/Intensidad";
 import { Fila, FilaDeslizador, FilaInterruptor, Seccion, Selector } from "@/components/campos";
 import { Icono } from "@/components/icono";
-import { useLang } from "@/components/language-provider";
+import { paraTraducir, useLang } from "@/components/language-provider";
 import { useMesaMovil } from "@/features/mesa/formato-mesa";
 import { MODO_RENDIMIENTO } from "@/features/mesa/fps";
+import { INTENSIDADES_3D, type Intensidad3d } from "@/features/mesa/profundidad";
 import { INTENSIDADES } from "@/features/mesa/sparring/textos";
 import { type NivelDados, useUi } from "@/stores/ui-store";
 import { AjustesDados } from "./aspecto-dados";
 import { IdentidadRed } from "./identidad-red";
+
+/** El nombre de cada nivel del efecto 3D (cadenas fuente para `t()`). */
+const NOMBRES_3D: Record<Intensidad3d, string> = {
+	suave: paraTraducir("Suave"),
+	media: paraTraducir("Media"),
+	intensa: paraTraducir("Intensa"),
+	extrema: paraTraducir("Extrema"),
+};
 
 /**
  * **Ajustes > Mesa** (`capturas/pablo/19.jpg`): jugar, tablero, dados y
  * monedas (aspecto, `aspecto-dados.tsx`), sonidos (cada tipo con su interruptor
  * y un volumen) y rendimiento.
  */
-export function AjustesMesa({ fija = false }: { fija?: boolean }) {
+export function AjustesMesa({
+	fija = false,
+	enPartida = false,
+}: {
+	fija?: boolean;
+	/** Dentro de la partida (`mesa/dialogos/ajustes.tsx`): sin la identidad de
+	 *  red, que no se puede cambiar con una partida abierta. */
+	enPartida?: boolean;
+}) {
 	const { t } = useLang();
 	const m = useUi((s) => s.mesa);
 	const set = useUi((s) => s.setMesa);
@@ -91,6 +108,20 @@ export function AjustesMesa({ fija = false }: { fija?: boolean }) {
 				valor={m.panelEstado}
 				onChange={(v) => set({ panelEstado: v })}
 			/>
+			<FilaInterruptor
+				etiqueta={t("Efecto 3D: la carta arrastrada se levanta y la mano tiene profundidad")}
+				valor={m.efecto3d}
+				onChange={(v) => set({ efecto3d: v })}
+			/>
+			{m.efecto3d && (
+				<Fila etiqueta={t("Profundidad del efecto 3D")}>
+					<Selector<Intensidad3d>
+						valor={m.intensidad3d}
+						onChange={(v) => set({ intensidad3d: v })}
+						opciones={INTENSIDADES_3D.map((i) => ({ valor: i, etiqueta: t(NOMBRES_3D[i]) }))}
+					/>
+				</Fila>
+			)}
 			<AjustesDados />
 			<h4 className="text-[11px] font-semibold text-muted-foreground uppercase">{t("Sonidos")}</h4>
 			<FilaInterruptor
@@ -127,7 +158,7 @@ export function AjustesMesa({ fija = false }: { fija?: boolean }) {
 				paso={5}
 				sufijo=" %"
 			/>
-			<IdentidadRed />
+			{!enPartida && <IdentidadRed />}
 			<h4 className="text-[11px] font-semibold text-muted-foreground uppercase">
 				{t("Rendimiento")}
 			</h4>

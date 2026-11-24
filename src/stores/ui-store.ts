@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { ImagePolicy } from "@/bindings/ImagePolicy";
 import type { Intensidad } from "@/bindings/Intensidad";
 import type { ConfigDisposicion } from "@/features/mesa/disposicion";
+import type { Intensidad3d } from "@/features/mesa/profundidad";
 import { formatoActual } from "@/lib/formato";
 import type { AnchoMiniatura } from "@/lib/image-url";
 
@@ -46,6 +47,10 @@ export type PreferenciasMesa = {
 	panelEstado: boolean;
 	reducirAnimaciones: boolean;
 	sombras: boolean;
+	/** Efecto 3D: la carta arrastrada se levanta e inclina, y la mano tiene profundidad. */
+	efecto3d: boolean;
+	/** Cuánto se nota el efecto 3D (`PRESETS_3D` de `mesa/profundidad.ts`). */
+	intensidad3d: Intensidad3d;
 	/** Contador de fotogramas (depuración). */
 	fps: boolean;
 	/** Cómo se pintan las tiradas. */
@@ -101,6 +106,8 @@ export const MESA_DE_FABRICA: PreferenciasMesa = {
 	panelEstado: true,
 	reducirAnimaciones: false,
 	sombras: true,
+	efecto3d: false,
+	intensidad3d: "media",
 	fps: false,
 	dados: "auto",
 	volumen: 60,

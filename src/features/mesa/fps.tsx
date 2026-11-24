@@ -60,7 +60,7 @@ export function VigiaFps() {
 		lentos.current = fps < FPS_MINIMO ? lentos.current + 1 : 0;
 		if (lentos.current < SEGUNDOS_LENTA) return;
 		const m = useUi.getState().mesa;
-		if (m.calidad === 146 && !m.sombras && m.reducirAnimaciones) return;
+		if (m.calidad === 146 && !m.sombras && !m.efecto3d && m.reducirAnimaciones) return;
 		avisado.current = true;
 		toast(t("La mesa va lenta en este equipo."), {
 			duration: 15_000,
@@ -77,6 +77,7 @@ export function VigiaFps() {
 export const MODO_RENDIMIENTO = {
 	calidad: 146,
 	sombras: false,
+	efecto3d: false,
 	reducirAnimaciones: true,
 	panelEstado: false,
 } as const;

@@ -2,6 +2,7 @@ import { useMesa } from "@/stores/mesa-store";
 import { NotaDialog } from "../notas-mesa";
 import { usePantalla } from "../pantalla";
 import { TapeteDialog } from "../tapete-dialog";
+import { AjustesMesaDialog } from "./ajustes";
 import { AzarDialog } from "./azar";
 import { BuscarDialog, VerZonaDialog } from "./buscar";
 import { DanoComandanteDialog } from "./dano-comandante";
@@ -45,10 +46,12 @@ export function DialogosMesa({ deckId }: { deckId: string | null }) {
 			{d?.tipo === "atajos" && <AtajosDialog />}
 			{d?.tipo === "nota" && <NotaDialog carta={d.carta} nota={d.nota} />}
 			{d?.tipo === "flechas" && <MisFlechasDialog />}
+			{d?.tipo === "ajustes" && <AjustesMesaDialog />}
 			<TapeteDialog
 				abierto={d?.tipo === "tapete"}
 				onCerrar={() => usePantalla.getState().abrir(null)}
 				deckId={deckId}
+				enPartida
 			/>
 		</>
 	);

@@ -30,6 +30,8 @@ export type DialogoMesa =
 	/** Escribir una nota (suelta o atada a `carta`) o cambiar `nota`. */
 	| { tipo: "nota"; carta: IdCarta | null; nota?: Nota }
 	| { tipo: "tapete" }
+	/** Los ajustes de la mesa sin salir de la partida. */
+	| { tipo: "ajustes" }
 	/** Mis flechas, para quitar solo una (clic derecho en el campo vacío). */
 	| { tipo: "flechas" };
 

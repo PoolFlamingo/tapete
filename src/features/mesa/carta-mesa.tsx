@@ -17,8 +17,21 @@ import { Insignias } from "./insignias";
 import { hayEncima, useLeerEnGrande } from "./leer-en-grande";
 import { MenuCarta } from "./menus/menu-carta";
 import { usePantalla } from "./pantalla";
+import { PRESETS_3D, varsMano } from "./profundidad";
 
 export type AlPulsar = (e: React.PointerEvent, c: VistaCarta) => void;
+
+/**
+ * El efecto 3D en la mano (Ajustes > Mesa > «Efecto 3D»): la carta, echada hacia
+ * atrás sobre su borde de abajo como si se sostuviera sobre la mesa, con su
+ * sombra en el tapete. Clases enteras para Tailwind; la profundidad sale de las
+ * variables del preset (`varsMano` en `profundidad.ts`).
+ */
+export const MANO_3D =
+	"origin-bottom [transform:perspective(var(--mano-persp,550px))_rotateX(var(--mano-giro,14deg))] [box-shadow:0_calc(var(--mano-sombra,1)*16px)_calc(var(--mano-sombra,1)*18px)_-6px_rgba(0,0,0,0.7)]";
+/** Al señalarla, se endereza y sube hacia quien mira; la sombra se aleja. */
+const MANO_3D_ENCIMA =
+	"group-hover:[transform:perspective(var(--mano-persp,550px))_rotateX(0deg)_translateY(-38%)_translateZ(calc(var(--mano-sombra,1)*40px))_scale(1.12)] group-hover:[box-shadow:0_calc(var(--mano-sombra,1)*34px)_calc(var(--mano-sombra,1)*38px)_-8px_rgba(0,0,0,0.6)]";
 
 /**
  * El ancho de imagen de una carta del campo que mide `w` px: el mismo para la
@@ -47,6 +60,7 @@ export const CartaMesa = memo(function CartaMesa({
 	alDobleClic,
 	insignias = true,
 	levantar = false,
+	profundidad = false,
 }: {
 	id: IdCarta;
 	x: number;
@@ -61,6 +75,8 @@ export const CartaMesa = memo(function CartaMesa({
 	insignias?: boolean;
 	/** Se levanta al pasar el ratón (la mano). */
 	levantar?: boolean;
+	/** Con el efecto 3D (la mano): perspectiva y sombra, y al levantarse sube hacia quien mira. */
+	profundidad?: boolean;
 }) {
 	const c = useMesa((s) => s.cartas[id]);
 	const yo = useMesa((s) => s.yo);
@@ -78,6 +94,7 @@ export const CartaMesa = memo(function CartaMesa({
 	const animarRep = useRepeticion((s) => s.animarMs);
 	const saltos = useRepeticion((s) => s.saltos);
 	const sombras = useUi((s) => s.mesa.sombras);
+	const preset3d = useUi((s) => PRESETS_3D[s.mesa.intensidad3d] ?? PRESETS_3D.media);
 	// Mientras se lleva en la mano. Ya soltada, la oculta `enVueloAjeno` hasta que llega.
 	const arrastrando = usePantalla(
 		(s) => !s.arrastre?.soltado && (s.arrastre?.ids.includes(id) ?? false),
@@ -136,6 +153,7 @@ export const CartaMesa = memo(function CartaMesa({
 					// +1000 la deja aún bajo la cortina de la mano (5000) y lo de encima de la mesa.
 					zIndex: (z ?? c.z) + (unicaElegida && tactil ? 1000 : 0),
 					transform: `translate(${x - w / 2}px, ${y - h / 2}px)`,
+					...(profundidad ? varsMano(preset3d) : null),
 				}}
 			>
 				{/* El giro va aparte del sitio: girar siempre se anima, aunque la carta
@@ -146,9 +164,18 @@ export const CartaMesa = memo(function CartaMesa({
 				>
 					<div
 						className={cn(
-							"relative size-full rounded-carta transition-transform",
-							levantar && "group-hover:-translate-y-[35%] group-hover:scale-110",
-							sombras && "shadow-[0_3px_10px_rgba(0,0,0,0.55)]",
+							"relative size-full rounded-carta",
+							profundidad
+								? cn(
+										"transition-[transform,box-shadow] duration-200 ease-out",
+										MANO_3D,
+										levantar && MANO_3D_ENCIMA,
+									)
+								: cn(
+										"transition-transform",
+										levantar && "group-hover:-translate-y-[35%] group-hover:scale-110",
+										sombras && "shadow-[0_3px_10px_rgba(0,0,0,0.55)]",
+									),
 							c.faseFuera && "opacity-40",
 							elegida && "ring-2 ring-primary ring-offset-1 ring-offset-black/40",
 						)}

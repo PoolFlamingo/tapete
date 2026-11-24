@@ -20,7 +20,7 @@ import { colocar, destino, hacer, mover, sitio, zonaComun, zonaDe } from "./acci
 import { destinoDeSoltar, pasaUmbral } from "./arrastre";
 import { cartaDeArribaRevelada } from "./arriba-biblioteca";
 import { atajoDe, teclaDe } from "./atajos";
-import { type AlPulsar, anchoDeCarta, CartaMesa } from "./carta-mesa";
+import { type AlPulsar, anchoDeCarta, CartaMesa, MANO_3D } from "./carta-mesa";
 import { COLORES } from "./colores";
 import { abanico, type Disposicion, disponer, posAPx, pxAPos, type Rect } from "./disposicion";
 import * as vivo from "./en-vivo/emitir";
@@ -28,6 +28,7 @@ import { FantasmasVivos } from "./en-vivo/fantasmas";
 import { Flechas } from "./flechas";
 import { marcarArrastradas } from "./flip";
 import { useMesaMovil } from "./formato-mesa";
+import { useSinAnimaciones } from "./fps";
 import {
 	conVista,
 	crearDobleToque,
@@ -47,6 +48,7 @@ import { elegirCarta } from "./objetivo";
 import * as op from "./operaciones";
 import { usePantalla } from "./pantalla";
 import { campoAjeno, manoOcultaPorTurno } from "./privacidad";
+import { ESTILO_LEVANTADA, PRESETS_3D, useInclinacion, varsMano } from "./profundidad";
 import { acompanantes, conLasAjenas, puestosDelCampo } from "./puestos-campo";
 import { VidaFantasma } from "./vida-fantasma";
 
@@ -855,6 +857,9 @@ function Mano({
 	const { w, h } = disp.cartaPequena;
 	const n = ids.length + ocultasTotal;
 	const pos = abanico(disp.mano, n, { w, h });
+	// El efecto 3D: la mano, inclinada sobre la mesa y con su sombra en el tapete.
+	const profundidad = useUi((s) => s.mesa.efecto3d);
+	const preset3d = useUi((s) => PRESETS_3D[s.mesa.intensidad3d] ?? PRESETS_3D.media);
 	return (
 		<>
 			<div
@@ -907,6 +912,7 @@ function Mano({
 						alDobleClic={alDobleClic}
 						insignias={false}
 						levantar
+						profundidad={profundidad}
 					/>
 				);
 			})}
@@ -924,9 +930,12 @@ function Mano({
 							height: h,
 							transform: `rotate(${p.giro}deg)`,
 							zIndex: 1000 + i,
+							...(profundidad ? varsMano(preset3d) : null),
 						}}
 					>
-						{dorso ? <ImagenCarta imagen={dorso} ancho={244} /> : <DorsoGenerico />}
+						<div className={cn("size-full rounded-carta", profundidad && MANO_3D)}>
+							{dorso ? <ImagenCarta imagen={dorso} ancho={244} /> : <DorsoGenerico />}
+						</div>
 					</div>
 				);
 			})}
@@ -948,6 +957,7 @@ function Mano({
 						alDobleClic={alDobleClic}
 						insignias={false}
 						levantar
+						profundidad={profundidad}
 					/>
 				);
 			})}
@@ -1274,6 +1284,20 @@ function Arrastrado({ disp }: { disp: Disposicion }) {
 	const yo = useMesa(tableroDe);
 	const delCampo = useMesa((s) => cartasDe(s, zonaDe(yo, "campo")));
 	const calidad = useUi((s) => s.mesa.calidad);
+	// El efecto 3D: lo que se lleva se levanta y se inclina con el movimiento (`profundidad.ts`).
+	const efecto3d = useUi((s) => s.mesa.efecto3d);
+	const reducir = useSinAnimaciones();
+	const en3d = efecto3d && !reducir;
+	const preset3d = useUi((s) => PRESETS_3D[s.mesa.intensidad3d] ?? PRESETS_3D.media);
+	const capa = useRef<HTMLDivElement>(null);
+	useInclinacion(
+		capa,
+		a?.x ?? 0,
+		a?.y ?? 0,
+		a !== null && !a.soltado,
+		en3d && a !== null,
+		preset3d,
+	);
 	// Ya soltada, cuando todas han llegado se quita en el mismo fotograma en que
 	// las reales (y sus adjuntas) ocupan su sitio; si el movimiento no llega, al
 	// rato.
@@ -1303,7 +1327,7 @@ function Arrastrado({ disp }: { disp: Disposicion }) {
 		disp,
 	);
 	return (
-		<div className="pointer-events-none absolute inset-0" style={{ zIndex: 9000 }}>
+		<div ref={capa} className="pointer-events-none absolute inset-0" style={{ zIndex: 9000 }}>
 			{a.con.map((id) => {
 				const c = cartas[id];
 				const p = puestos.get(id);
@@ -1320,7 +1344,8 @@ function Arrastrado({ disp }: { disp: Disposicion }) {
 						key={id}
 						className={cn(
 							"absolute top-0 left-0 will-change-transform",
-							!a.soltado && "opacity-90 shadow-2xl",
+							// Con el efecto 3D va opaca: la levanta la sombra, no la transparencia.
+							!a.soltado && !en3d && "opacity-90 shadow-2xl",
 						)}
 						style={{
 							width: w,
@@ -1328,7 +1353,9 @@ function Arrastrado({ disp }: { disp: Disposicion }) {
 							transform: `translate(${p.x + dx - w / 2}px, ${p.y + dy - h / 2}px) rotate(${c.girada ? 90 : 0}deg)`,
 						}}
 					>
-						<ImagenCarta imagen={caraVisible(c)} ancho={anchoDeCarta(w, calidad)} />
+						<Levantada en3d={en3d}>
+							<ImagenCarta imagen={caraVisible(c)} ancho={anchoDeCarta(w, calidad)} />
+						</Levantada>
 					</div>
 				);
 			})}
@@ -1349,7 +1376,8 @@ function Arrastrado({ disp }: { disp: Disposicion }) {
 						key={id}
 						className={cn(
 							"absolute top-0 left-0 will-change-transform",
-							!a.soltado && "opacity-90 shadow-2xl",
+							// Con el efecto 3D va opaca: la levanta la sombra, no la transparencia.
+							!a.soltado && !en3d && "opacity-90 shadow-2xl",
 						)}
 						style={{
 							width: w,
@@ -1357,10 +1385,22 @@ function Arrastrado({ disp }: { disp: Disposicion }) {
 							transform: `translate(${centro.x + dx - w / 2}px, ${centro.y + dy - h / 2}px) rotate(${c.girada ? 90 : 0}deg)`,
 						}}
 					>
-						<ImagenCarta imagen={caraVisible(c)} ancho={ancho} />
+						<Levantada en3d={en3d}>
+							<ImagenCarta imagen={caraVisible(c)} ancho={ancho} />
+						</Levantada>
 					</div>
 				);
 			})}
+		</div>
+	);
+}
+
+/** Con el efecto 3D, la carta llevada con su perspectiva, inclinación y sombra. */
+function Levantada({ en3d, children }: { en3d: boolean; children: React.ReactNode }) {
+	if (!en3d) return children;
+	return (
+		<div className="size-full rounded-carta" style={ESTILO_LEVANTADA}>
+			{children}
 		</div>
 	);
 }

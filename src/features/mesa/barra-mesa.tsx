@@ -260,6 +260,9 @@ function BarraEscritorio({ className, onSalir, onEditarDeck, onReiniciar }: Prop
 					<Icono icon="lucide:image" className="size-4" />
 				</Boton>
 			)}
+			<Boton ayuda={t("Ajustes de la mesa")} onClick={() => abrir({ tipo: "ajustes" })}>
+				<Icono icon="lucide:settings-2" className="size-4" />
+			</Boton>
 			{/* Con el dedo no hay teclado: el botón de los atajos no se enseña. */}
 			<Boton
 				ayuda={t("Atajos de teclado (?)")}
@@ -570,6 +573,10 @@ function BarraMovil({ className, onSalir, onEditarDeck, onReiniciar }: PropsBarr
 							{t("Tapete")}
 						</DropdownMenuItem>
 					)}
+					<DropdownMenuItem onSelect={() => abrir({ tipo: "ajustes" })}>
+						<Icono icon="lucide:settings-2" />
+						{t("Ajustes de la mesa")}
+					</DropdownMenuItem>
 					{!enAndroid && (
 						<DropdownMenuItem onSelect={() => void alternarPantallaCompleta()}>
 							<Icono icon="lucide:expand" />
