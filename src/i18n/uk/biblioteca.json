@@ -224,5 +224,11 @@
 	"Optimizar y borrar los originales": "Оптимізувати й видалити оригінали",
 	"Optimización cancelada: no ha cambiado nada.": "Оптимізацію скасовано: нічого не змінилося.",
 	"Imágenes optimizadas: {mb} liberados": "Зображення оптимізовано: звільнено {mb}",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Видалити невикористані зображення й оптимізувати зображення колод."
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Видалити невикористані зображення й оптимізувати зображення колод.",
+	"Formato de los {n}": {
+		"one": "Формат {n} колоди",
+		"few": "Формат {n} колод",
+		"many": "Формат {n} колод",
+		"other": "Формат {n} колоди"
+	}
 }

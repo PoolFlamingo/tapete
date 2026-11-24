@@ -169,5 +169,6 @@
 	"Optimizar y borrar los originales": "최적화하고 원본 삭제",
 	"Optimización cancelada: no ha cambiado nada.": "최적화를 취소했습니다. 변경된 내용은 없습니다.",
 	"Imágenes optimizadas: {mb} liberados": "이미지 최적화 완료: {mb} 확보",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "사용하지 않는 이미지를 삭제하고 덱 이미지를 최적화합니다."
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "사용하지 않는 이미지를 삭제하고 덱 이미지를 최적화합니다.",
+	"Formato de los {n}": "덱 {n}개의 포맷"
 }

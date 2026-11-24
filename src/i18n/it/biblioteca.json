@@ -201,5 +201,6 @@
 	"Optimizar y borrar los originales": "Ottimizza ed elimina gli originali",
 	"Optimización cancelada: no ha cambiado nada.": "Ottimizzazione annullata: non è cambiato nulla.",
 	"Imágenes optimizadas: {mb} liberados": "Immagini ottimizzate: {mb} liberati",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Elimina le immagini inutilizzate e ottimizza quelle dei tuoi deck."
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Elimina le immagini inutilizzate e ottimizza quelle dei tuoi deck.",
+	"Formato de los {n}": "Formato dei {n}"
 }

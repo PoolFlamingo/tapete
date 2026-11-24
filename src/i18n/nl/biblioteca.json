@@ -196,5 +196,6 @@
 	"Optimizar y borrar los originales": "Optimaliseren en originelen verwijderen",
 	"Optimización cancelada: no ha cambiado nada.": "Optimalisatie geannuleerd: er is niets veranderd.",
 	"Imágenes optimizadas: {mb} liberados": "Afbeeldingen geoptimaliseerd: {mb} vrijgemaakt",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Ongebruikte afbeeldingen verwijderen en die van je decks optimaliseren."
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Ongebruikte afbeeldingen verwijderen en die van je decks optimaliseren.",
+	"Formato de los {n}": "Formaat van de {n}"
 }

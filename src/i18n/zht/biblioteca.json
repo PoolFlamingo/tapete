@@ -169,5 +169,6 @@
 	"Optimizar y borrar los originales": "最佳化並刪除原始圖片",
 	"Optimización cancelada: no ha cambiado nada.": "已取消最佳化:沒有任何變更。",
 	"Imágenes optimizadas: {mb} liberados": "圖片已最佳化:釋放了 {mb}",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "刪除未使用的圖片並最佳化套牌中的圖片。"
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "刪除未使用的圖片並最佳化套牌中的圖片。",
+	"Formato de los {n}": "{n} 副套牌的賽制"
 }

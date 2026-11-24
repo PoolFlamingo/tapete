@@ -169,5 +169,6 @@
 	"Optimizar y borrar los originales": "Optimizar y borrar los originales",
 	"Optimización cancelada: no ha cambiado nada.": "Optimización cancelada: no ha cambiado nada.",
 	"Imágenes optimizadas: {mb} liberados": "Imágenes optimizadas: {mb} liberados",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Borrar las imágenes sin usar y optimizar las de tus decks."
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Borrar las imágenes sin usar y optimizar las de tus decks.",
+	"Formato de los {n}": "Formato de los {n}"
 }

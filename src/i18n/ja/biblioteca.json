@@ -169,5 +169,6 @@
 	"Optimizar y borrar los originales": "最適化して元の画像を削除",
 	"Optimización cancelada: no ha cambiado nada.": "最適化をキャンセルしました。何も変更されていません。",
 	"Imágenes optimizadas: {mb} liberados": "画像を最適化しました:{mb} を解放",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "未使用の画像を削除し、デッキの画像を最適化します。"
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "未使用の画像を削除し、デッキの画像を最適化します。",
+	"Formato de los {n}": "{n} 個のデッキのフォーマット"
 }

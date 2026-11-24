@@ -205,5 +205,6 @@
 	"Optimizar y borrar los originales": "Optimizează și șterge originalele",
 	"Optimización cancelada: no ha cambiado nada.": "Optimizare anulată: nu s-a schimbat nimic.",
 	"Imágenes optimizadas: {mb} liberados": "Imagini optimizate: {mb} eliberați",
-	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Șterge imaginile nefolosite și optimizează-le pe cele din deckuri."
+	"Borrar las imágenes sin usar y optimizar las de tus decks.": "Șterge imaginile nefolosite și optimizează-le pe cele din deckuri.",
+	"Formato de los {n}": "Formatul celor {n}"
 }
