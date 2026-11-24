@@ -164,6 +164,10 @@ pub struct Pasar {
     /// Sube cada vez que se pide abrir o cerrar «Recibir»: un `abrir` que aún
     /// espera a tener relé sabe así que ya no lo quiere nadie.
     pedido_recibir: AtomicU64,
+    /// Lo mismo para «Equipos cerca»: al abrir y cerrar «Enviar» seguido (React lo
+    /// monta dos veces en desarrollo), un `buscar` lento no debe guardar su
+    /// búsqueda después de un `parar` o de otro `buscar` más nuevo.
+    pedido_busqueda: AtomicU64,
 }
 
 impl Pasar {
@@ -177,6 +181,14 @@ impl Pasar {
 
     pub(crate) fn pedido_recibir(&self) -> u64 {
         self.pedido_recibir.load(Ordering::SeqCst)
+    }
+
+    pub(crate) fn nuevo_pedido_busqueda(&self) -> u64 {
+        self.pedido_busqueda.fetch_add(1, Ordering::SeqCst) + 1
+    }
+
+    pub(crate) fn pedido_busqueda(&self) -> u64 {
+        self.pedido_busqueda.load(Ordering::SeqCst)
     }
 }
 

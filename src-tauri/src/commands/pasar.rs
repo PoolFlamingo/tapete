@@ -101,19 +101,25 @@ pub async fn pasar_cerca_buscar(
     app: AppHandle,
     state: State<'_, AppState>,
 ) -> AppResult<Vec<Cerca>> {
+    let pedido = state.pasar.nuevo_pedido_busqueda();
     parar_busqueda(&app);
     let ep = state.red.nodo().await?;
-    app.multicast(crate::android::UsoMulticast::Buscar, true);
     let emisor = app.clone();
-    let b = match Busqueda::nueva(&ep, move |l| emisor.emitir_cerca(&l)).await {
-        Ok(b) => b,
-        Err(e) => {
-            app.multicast(crate::android::UsoMulticast::Buscar, false);
-            return Err(e);
-        }
-    };
+    let b = Busqueda::nueva(&ep, move |l| emisor.emitir_cerca(&l)).await?;
     let lista = b.lista();
-    *cerrojo(&state.pasar.busqueda) = Some(b);
+    let primera = {
+        let mut g = cerrojo(&state.pasar.busqueda);
+        // Si mientras tanto se paró o se volvió a buscar, esta ya sobra (al
+        // soltarla se para sola).
+        if state.pasar.pedido_busqueda() != pedido {
+            return Ok(lista);
+        }
+        g.replace(b).is_none()
+    };
+    if primera {
+        app.multicast(crate::android::UsoMulticast::Buscar, true);
+    }
+    app.emitir_cerca(&lista);
     Ok(lista)
 }
 
@@ -128,6 +134,7 @@ fn parar_busqueda(app: &AppHandle) {
 
 #[tauri::command]
 pub async fn pasar_cerca_parar(app: AppHandle) {
+    app.state::<AppState>().pasar.nuevo_pedido_busqueda();
     parar_busqueda(&app);
 }
 

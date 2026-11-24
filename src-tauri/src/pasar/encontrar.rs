@@ -26,7 +26,7 @@
 use std::collections::BTreeMap;
 use std::net::IpAddr;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use futures::StreamExt;
 use iroh::address_lookup::{AddressLookup, EndpointData};
@@ -212,74 +212,98 @@ impl Drop for Anuncio {
     }
 }
 
+/// Cada cuánto se rehace la búsqueda. Una búsqueda recién abierta ve enseguida a
+/// los que ya se anunciaban, pero una que lleva un rato abierta no siempre ve al
+/// que abre «Recibir» después: en una Wi-Fi de verdad (el móvil en ahorro de
+/// energía, un punto de acceso que filtra el multicast hasta que alguien vuelve
+/// a unirse al grupo) sus respuestas se pierden. Rehacerla (sockets nuevos, otra
+/// vez en el grupo) cada pocos segundos quita esa dependencia del orden.
+const RENOVAR: Duration = Duration::from_secs(5);
+/// Lo que se espera a quitar de la lista a un equipo que deja de responder: el
+/// multicast de la Wi-Fi pierde paquetes, y sin esto el equipo parpadea.
+const GRACIA: Duration = Duration::from_secs(4);
+/// Un equipo que no ha vuelto a aparecer en dos búsquedas seguidas ya no está
+/// (cada búsqueda nueva vuelve a avisar de todos los que ve).
+const VIDA: Duration = Duration::from_secs(12);
+
 /// Un equipo de la lista de «cerca».
 #[derive(Clone)]
 struct Encontrado {
     apodo: String,
     addr: EndpointAddr,
     pase: Option<String>,
+    /// La última vez que una búsqueda lo vio aparecer o cambiar.
+    visto: Instant,
+    /// Desde cuándo dice el mDNS que ha caducado, si lo dice.
+    caduca: Option<Instant>,
 }
 
 type Encontrados = Arc<Mutex<BTreeMap<EndpointId, Encontrado>>>;
 
 /// Los equipos que se anuncian cerca, mientras viva.
 pub struct Busqueda {
-    _mdns: MdnsAddressLookup,
     tarea: AbortHandle,
     encontrados: Encontrados,
 }
 
 impl Busqueda {
     /// Empieza a buscar; `alcambiar` recibe la lista entera cada vez que cambia.
+    /// Falla si no hay mDNS en este equipo; si luego falla una renovación, se
+    /// sigue con la lista que había y se prueba en la siguiente.
     pub async fn nueva(
         ep: &Endpoint,
         alcambiar: impl Fn(Vec<Cerca>) + Send + Sync + 'static,
     ) -> AppResult<Busqueda> {
-        let m = mdns(ep.id(), false)?;
-        let encontrados: Encontrados = Arc::default();
-        let mut eventos = m.subscribe().await;
-        let lista = encontrados.clone();
         let yo = ep.id();
+        let primera = mdns(yo, false)?;
+        let encontrados: Encontrados = Arc::default();
+        let lista = encontrados.clone();
         let tarea = tokio::spawn(async move {
-            while let Some(ev) = eventos.next().await {
-                let cambio = {
-                    let mut l = match lista.lock() {
-                        Ok(l) => l,
-                        Err(e) => e.into_inner(),
-                    };
-                    match ev {
-                        DiscoveryEvent::Discovered { endpoint_info, .. } => {
-                            let id = endpoint_info.endpoint_id;
-                            if id == yo {
-                                false
-                            } else {
-                                let (pase, apodo) = endpoint_info
-                                    .data
-                                    .user_data()
-                                    .map(|u| leer_anuncio(u.as_ref()))
-                                    .unwrap_or_default();
-                                l.insert(
-                                    id,
-                                    Encontrado {
-                                        apodo,
-                                        addr: endpoint_info.to_endpoint_addr(),
-                                        pase,
-                                    },
-                                );
-                                true
-                            }
+            let mut siguiente = Some(primera);
+            // La anterior se suelta cuando la nueva ya escucha: sin huecos.
+            let mut _anterior: Option<MdnsAddressLookup> = None;
+            let mut ultima: Vec<Cerca> = Vec::new();
+            loop {
+                let m = match siguiente.take() {
+                    Some(m) => Some(m),
+                    None => match mdns(yo, false) {
+                        Ok(m) => Some(m),
+                        Err(err) => {
+                            tracing::debug!(codigo = ?err.code, "pasar: no se pudo renovar el mDNS");
+                            None
                         }
-                        DiscoveryEvent::Expired { endpoint_id } => l.remove(&endpoint_id).is_some(),
-                        _ => false,
-                    }
+                    },
                 };
-                if cambio {
-                    alcambiar(lista_de(&lista));
+                let mut eventos = match &m {
+                    Some(m) => Some(m.subscribe().await),
+                    None => None,
+                };
+                _anterior = m;
+                let fin = tokio::time::Instant::now() + RENOVAR;
+                let mut tic = tokio::time::interval(Duration::from_secs(1));
+                loop {
+                    tokio::select! {
+                        ev = async {
+                            match eventos.as_mut() {
+                                Some(e) => e.next().await,
+                                None => std::future::pending().await,
+                            }
+                        } => match ev {
+                            Some(ev) => anotar(&lista, yo, ev, Instant::now()),
+                            None => eventos = None,
+                        },
+                        _ = tic.tick() => podar(&lista, Instant::now()),
+                        _ = tokio::time::sleep_until(fin) => break,
+                    }
+                    let ahora = lista_de(&lista);
+                    if ahora != ultima {
+                        alcambiar(ahora.clone());
+                        ultima = ahora;
+                    }
                 }
             }
         });
         Ok(Busqueda {
-            _mdns: m,
             tarea: tarea.abort_handle(),
             encontrados,
         })
@@ -301,15 +325,12 @@ impl Busqueda {
                     apodo: apodo.to_string(),
                     addr,
                     pase,
+                    visto: Instant::now(),
+                    caduca: None,
                 },
             );
         }
         Busqueda {
-            _mdns: MdnsAddressLookup::builder()
-                .service_name("pbdeck-prueba")
-                .advertise(false)
-                .build(iroh::SecretKey::generate().public())
-                .expect("mDNS de prueba"),
             tarea: tokio::spawn(async {}).abort_handle(),
             encontrados,
         }
@@ -317,10 +338,7 @@ impl Busqueda {
 
     /// La dirección con la que llamar a uno de la lista, y su pase.
     pub fn destino(&self, id: &str) -> Option<(EndpointAddr, Option<String>)> {
-        let l = match self.encontrados.lock() {
-            Ok(l) => l,
-            Err(e) => e.into_inner(),
-        };
+        let l = cerrojo(&self.encontrados);
         l.iter()
             .find(|(k, _)| k.to_string() == id)
             .map(|(_, e)| (e.addr.clone(), e.pase.clone()))
@@ -337,11 +355,52 @@ impl Drop for Busqueda {
     }
 }
 
+/// Apunta lo que dice el mDNS. Que caduque no lo quita aún (`GRACIA`).
+fn anotar(l: &Encontrados, yo: EndpointId, ev: DiscoveryEvent, ahora: Instant) {
+    let mut l = cerrojo(l);
+    match ev {
+        DiscoveryEvent::Discovered { endpoint_info, .. } => {
+            let id = endpoint_info.endpoint_id;
+            if id == yo {
+                return;
+            }
+            let (pase, apodo) = endpoint_info
+                .data
+                .user_data()
+                .map(|u| leer_anuncio(u.as_ref()))
+                .unwrap_or_default();
+            l.insert(
+                id,
+                Encontrado {
+                    apodo,
+                    addr: endpoint_info.to_endpoint_addr(),
+                    pase,
+                    visto: ahora,
+                    caduca: None,
+                },
+            );
+        }
+        DiscoveryEvent::Expired { endpoint_id } => {
+            if let Some(e) = l.get_mut(&endpoint_id) {
+                e.caduca.get_or_insert(ahora);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Quita los que caducaron hace más de `GRACIA` o llevan `VIDA` sin aparecer.
+fn podar(l: &Encontrados, ahora: Instant) {
+    cerrojo(l).retain(|_, e| {
+        let caducado = e
+            .caduca
+            .is_some_and(|c| ahora.saturating_duration_since(c) >= GRACIA);
+        !caducado && ahora.saturating_duration_since(e.visto) < VIDA
+    });
+}
+
 fn lista_de(l: &Encontrados) -> Vec<Cerca> {
-    let l = match l.lock() {
-        Ok(l) => l,
-        Err(e) => e.into_inner(),
-    };
+    let l = cerrojo(l);
     let mut v: Vec<Cerca> = l
         .iter()
         .map(|(id, e)| Cerca {
@@ -451,6 +510,69 @@ mod tests {
         // Un código de los de verdad cabe.
         let largo = format!("PBD1-{}", "a".repeat(900));
         assert!(qr_svg(&largo).is_ok());
+    }
+
+    #[tokio::test]
+    async fn el_que_abre_recibir_despues_tambien_sale() {
+        // El caso que fallaba: «Enviar» abierto primero y «Recibir» después.
+        let (a, b) = crate::red::nodo::tests::dos().await;
+        let Ok(busqueda) = Busqueda::nueva(&b, |_| {}).await else {
+            eprintln!("sin mDNS en esta máquina: se salta");
+            return;
+        };
+        tokio::time::sleep(RENOVAR + Duration::from_secs(1)).await;
+        let Ok(_anuncio) = Anuncio::nuevo(&a, "Ana", &"cd".repeat(16)) else {
+            eprintln!("sin mDNS en esta máquina: se salta");
+            return;
+        };
+        for _ in 0..60 {
+            tokio::time::sleep(Duration::from_millis(250)).await;
+            if busqueda.lista().iter().any(|c| c.id == a.id().to_string()) {
+                return;
+            }
+        }
+        eprintln!("el mDNS no llegó en 15 s: se salta");
+    }
+
+    #[test]
+    fn un_equipo_que_caduca_espera_la_gracia_y_uno_que_vuelve_se_queda() {
+        let yo = SecretKey::generate().public();
+        let otro = SecretKey::generate().public();
+        let l: Encontrados = Arc::default();
+        let t0 = Instant::now();
+        let visto = |id: EndpointId| DiscoveryEvent::Discovered {
+            endpoint_info: iroh::address_lookup::EndpointInfo::from_parts(
+                id,
+                EndpointData::new(Vec::<TransportAddr>::new()),
+            ),
+            last_updated: None,
+        };
+        anotar(&l, yo, visto(yo), t0);
+        assert!(lista_de(&l).is_empty(), "uno mismo no sale");
+        anotar(&l, yo, visto(otro), t0);
+        assert_eq!(lista_de(&l).len(), 1);
+
+        // Caduca, pero dentro de la gracia sigue en la lista.
+        let t1 = t0 + Duration::from_secs(1);
+        anotar(&l, yo, DiscoveryEvent::Expired { endpoint_id: otro }, t1);
+        podar(&l, t1 + GRACIA - Duration::from_millis(10));
+        assert_eq!(lista_de(&l).len(), 1);
+        // Vuelve a aparecer: ya no caduca.
+        anotar(&l, yo, visto(otro), t1 + Duration::from_secs(1));
+        podar(&l, t1 + GRACIA + Duration::from_secs(1));
+        assert_eq!(lista_de(&l).len(), 1);
+        // Caduca de nuevo y pasa la gracia: fuera.
+        let t2 = t1 + Duration::from_secs(3);
+        anotar(&l, yo, DiscoveryEvent::Expired { endpoint_id: otro }, t2);
+        podar(&l, t2 + GRACIA);
+        assert!(lista_de(&l).is_empty());
+
+        // Uno que ninguna búsqueda vuelve a ver se va al pasar su vida.
+        anotar(&l, yo, visto(otro), t2);
+        podar(&l, t2 + VIDA - Duration::from_millis(10));
+        assert_eq!(lista_de(&l).len(), 1);
+        podar(&l, t2 + VIDA);
+        assert!(lista_de(&l).is_empty());
     }
 
     #[tokio::test]
