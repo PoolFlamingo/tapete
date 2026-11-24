@@ -39,7 +39,8 @@ use crate::mesa::encuentro::VistaBanquillo;
 /// 6: catálogo v5 (frases amigables del chat).
 /// 7: catálogo v6 (más rivales imaginados en solitario).
 /// 8: catálogo v7 (quitar una sola flecha).
-pub const PROTOCOLO: u32 = 8;
+/// 9: catálogo v8 (cambiar el tapete a media partida).
+pub const PROTOCOLO: u32 = 9;
 pub const TOPE_GENERAL: usize = 64 * 1024;
 pub const TOPE_PREPARACION: usize = 2 * 1024 * 1024;
 pub const TOPE_PARTIDA: usize = 4 * 1024 * 1024;

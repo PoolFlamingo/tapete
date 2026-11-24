@@ -1013,6 +1013,30 @@ pub fn mesa_tapete_ajustes(
     Ok(())
 }
 
+/// Lleva a la partida abierta el tapete que tiene ahora este deck (el suyo o,
+/// sin él, el general) para que los demás lo vean: un `CambiarTapete` más.
+/// Sin partida o si no ha cambiado, no hace nada. El velo y el desenfoque son
+/// de cada pantalla y no viajan.
+#[tauri::command]
+pub async fn mesa_tapete_partida(state: State<'_, AppState>, deck: String) -> AppResult<()> {
+    if !state.hay_partida() {
+        return Ok(());
+    }
+    let nuevo = match tapete::de_deck(&state, &deck)? {
+        Some(t) => Some(tapete::para_mesa(&state, &t.blob)?),
+        None => None,
+    };
+    let igual = con_sesion(&state, |s| Ok(s.mi_tapete() == nuevo.as_ref()))?;
+    if igual {
+        return Ok(());
+    }
+    con_sesion(&state, |s| {
+        s.accion(Accion::CambiarTapete { tapete: nuevo }, None)
+    })?;
+    guardar_si_toca(&state, false);
+    Ok(())
+}
+
 /// El aspecto de los dados y la moneda de quien juega.
 #[tauri::command]
 pub fn mesa_dados_get(state: State<'_, AppState>) -> AppResult<VistaAspectoDados> {

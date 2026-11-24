@@ -57,7 +57,7 @@ pub struct Registro {
 
 fn deshacible(ev: &Evento) -> bool {
     match &ev.cambio {
-        Cambio::Accion { accion, .. } => !accion.es_comunicacion() && !accion.es_nota(),
+        Cambio::Accion { accion, .. } => !accion.fuera_del_juego(),
         Cambio::Restaurar { .. } => false,
         _ => true,
     }
@@ -232,9 +232,7 @@ impl Registro {
                     .iter()
                     .rev()
                     .find(|e| match &e.cambio {
-                        Cambio::Accion { accion, .. } => {
-                            !accion.es_comunicacion() && !accion.es_nota()
-                        }
+                        Cambio::Accion { accion, .. } => !accion.fuera_del_juego(),
                         _ => true,
                     })
                     .ok_or(Rechazo::NoSePuede)?;
@@ -255,8 +253,13 @@ impl Registro {
     ) -> Result<Hecho, Rechazo> {
         let k = self.a_deshacer(actor, hasta)?;
         let mut antes = self.en(k.saturating_sub(1))?;
-        // Las notas no son del juego: deshacer no se las lleva.
+        // Las notas y los tapetes no son del juego: deshacer no se los lleva.
         antes.notas = self.actual.notas.clone();
+        for j in &mut antes.jugadores {
+            if let Some(ahora) = self.actual.jugador(j.id) {
+                j.tapete = ahora.tapete.clone();
+            }
+        }
         let deshechas: Vec<Intencion> = self
             .vivos
             .iter()

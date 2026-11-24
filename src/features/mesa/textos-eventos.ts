@@ -38,6 +38,7 @@ export const FRASES: Record<Accion["que"], string> = {
 	colocar: paraTraducir("{quien} recoloca {cartas}"),
 	notaEnCarta: paraTraducir("{quien} apunta una nota en {carta}: «{texto}»"),
 	atarNota: paraTraducir("{quien} ata una nota a {carta}"),
+	cambiarTapete: paraTraducir("{quien} cambia su tapete"),
 	adjuntar: paraTraducir("{quien} adjunta {carta}"),
 	faseFuera: paraTraducir("{quien} cambia la fase de {cartas}"),
 	noEndereza: paraTraducir("{quien} cambia si {cartas} se endereza"),

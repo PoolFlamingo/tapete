@@ -2164,6 +2164,14 @@ fn accion_(q: &mut Partida, a: &Accion, ctx: &mut Ctx, seq: u64) -> Result<(), R
             privada,
             carta,
         } => poner_nota(q, ctx.actor()?, texto, *temporal, *privada, *carta),
+        // ── Aspecto ──
+        Accion::CambiarTapete { tapete } => {
+            if tapete.as_ref().is_some_and(|t| !tapete_valido(t)) {
+                return Err(Rechazo::NoSePuede);
+            }
+            q.jugador_mut(ctx.actor()?).ok_or(Rechazo::NoExiste)?.tapete = tapete.clone();
+            Ok(())
+        }
         Accion::AtarNota { id, carta } => {
             if let Some(c) = carta {
                 en_el_campo(q, *c)?;
@@ -2457,4 +2465,22 @@ fn dano_comandante_a(f: &mut VidaFantasma, comandante: IdCarta, d: i32) {
         f.dano_comandante.remove(&comandante);
     }
     f.vida = f.vida.saturating_sub(aplicado);
+}
+
+/// Un tapete que llega de otro jugador: solo una imagen propia (viaja por la
+/// red pedida por su huella) con una huella y unas medidas que tengan sentido.
+fn tapete_valido(r: &RefImagen) -> bool {
+    match r {
+        RefImagen::Propia {
+            sha256,
+            ancho,
+            alto,
+        } => {
+            sha256.len() == 64
+                && sha256.chars().all(|c| c.is_ascii_hexdigit())
+                && (1..=4096).contains(ancho)
+                && (1..=4096).contains(alto)
+        }
+        RefImagen::Scryfall { .. } | RefImagen::Generica => false,
+    }
 }

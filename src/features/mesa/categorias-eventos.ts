@@ -44,6 +44,7 @@ export const CATEGORIAS_DE_ACCION: Record<Accion["que"], CategoriaEvento> = {
 	notaEnCarta: "otro",
 	colocar: "mover",
 	atarNota: "otro",
+	cambiarTapete: "otro",
 	adjuntar: "mover",
 	faseFuera: "girar",
 	noEndereza: "girar",

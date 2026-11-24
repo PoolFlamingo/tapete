@@ -19,6 +19,7 @@ import type { ModoDescarte } from "./ModoDescarte";
 import type { ModoExilio } from "./ModoExilio";
 import type { OrigenFicha } from "./OrigenFicha";
 import type { Pos } from "./Pos";
+import type { RefImagen } from "./RefImagen";
 import type { RestoExcavar } from "./RestoExcavar";
 import type { Resultado } from "./Resultado";
 import type { Senal } from "./Senal";
@@ -38,4 +39,4 @@ dados: Array<[number, number]>, } | { "que": "moneda", cuantas: number, hastaPer
 /**
  * En un sacrificio, la que elige el jugador.
  */
-eleccion: IdCarta | null, } | { "que": "chat", texto: string, } | { "que": "aviso", tipo: AvisoRapido, } | { "que": "ponerNota", texto: string, temporal: boolean, privada: boolean, } | { "que": "editarNota", id: number, texto: string, temporal: boolean, privada: boolean, } | { "que": "quitarNota", id: number, } | { "que": "colocar", cartas: Array<[IdCarta, Pos]>, jugador: IdJugador | null, } | { "que": "notaEnCarta", texto: string, temporal: boolean, privada: boolean, carta: IdCarta | null, } | { "que": "atarNota", id: number, carta: IdCarta | null, } | { "que": "terminar", resultado: Resultado, } | { "que": "deshacer", hasta: number | null, } | { "que": "rehacer" };
+eleccion: IdCarta | null, } | { "que": "chat", texto: string, } | { "que": "aviso", tipo: AvisoRapido, } | { "que": "ponerNota", texto: string, temporal: boolean, privada: boolean, } | { "que": "editarNota", id: number, texto: string, temporal: boolean, privada: boolean, } | { "que": "quitarNota", id: number, } | { "que": "colocar", cartas: Array<[IdCarta, Pos]>, jugador: IdJugador | null, } | { "que": "notaEnCarta", texto: string, temporal: boolean, privada: boolean, carta: IdCarta | null, } | { "que": "atarNota", id: number, carta: IdCarta | null, } | { "que": "cambiarTapete", tapete: RefImagen | null, } | { "que": "terminar", resultado: Resultado, } | { "que": "deshacer", hasta: number | null, } | { "que": "rehacer" };

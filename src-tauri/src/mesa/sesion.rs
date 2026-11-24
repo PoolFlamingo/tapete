@@ -10,7 +10,7 @@
 use mesa::accion::{Accion, Evento, Intencion};
 use mesa::encuentro::Encuentro;
 use mesa::formato::{Formato, Opciones, Variantes};
-use mesa::modelo::{Equipo, Partida};
+use mesa::modelo::{Equipo, Partida, RefImagen};
 use mesa::preparar::{iniciar, Config, DeckDeMesa, JugadorNuevo};
 use mesa::sparring::Intensidad;
 use mesa::vista::{parche, vista, ParcheVista, VistaMesa};
@@ -463,6 +463,10 @@ impl Sesion {
         // encendido: la copia no sale gratis).
         let antes = (self.partida().sparring.intensidad != Intensidad::Apagado)
             .then(|| self.partida().clone());
+        let tapete_nuevo = match &accion {
+            Accion::CambiarTapete { tapete } => Some(tapete.clone()),
+            _ => None,
+        };
         let hecho = if accion == Accion::Reiniciar {
             let primero = self.primero();
             let p = partida(&self.config, &self.mazos, semilla(), primero)?;
@@ -474,6 +478,15 @@ impl Sesion {
         let reaccion = antes.and_then(|a| {
             mesa::sparring::reaccionar(&a, self.registro.partida(), &hecho.evento, &mut self.azar)
         });
+        // El tapete nuevo sigue en «Otra partida» y en la siguiente del
+        // encuentro: la partida nueva sale de los mazos.
+        if let Some(tapete) = tapete_nuevo {
+            if let Some(i) = self.partida().jugadores.iter().position(|j| j.id == actor) {
+                if let Some(m) = self.mazos.get_mut(i) {
+                    m.tapete = tapete;
+                }
+            }
+        }
         self.publicar(hecho, origen);
         // La reacción, como un evento más de la mesa justo detrás.
         if let Some(reaccion) = reaccion {
@@ -483,6 +496,13 @@ impl Sesion {
             self.publicar(h, None);
         }
         Ok(())
+    }
+
+    /// El tapete que tiene ahora en la partida quien juega aquí.
+    pub fn mi_tapete(&self) -> Option<&RefImagen> {
+        self.partida()
+            .jugador(self.yo)
+            .and_then(|j| j.tapete.as_ref())
     }
 
     /// En el invitado: un evento del anfitrión, en orden de `seq`.

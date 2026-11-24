@@ -53,6 +53,7 @@
 //! | `PonerNota`, `EditarNota`, `QuitarNota` | notas de cada jugador, públicas o privadas, fijas o temporales (v3) |
 //! | `Colocar` | soltar varias cartas del campo a la vez, cada una en su sitio: un solo evento y un solo «deshacer» (v4) |
 //! | `NotaEnCarta`, `AtarNota` | una nota atada a una carta del campo, y atarla o soltarla (v4) |
+//! | `CambiarTapete` | cambiar el tapete propio a media partida: no es del juego y no se deshace (v8) |
 //! | `Terminar` | «¿Quién ganó?» (`capturas/pablo/21`) |
 
 use serde::{Deserialize, Serialize};
@@ -60,13 +61,13 @@ use ts_rs::TS;
 
 use crate::ids::{IdCarta, IdJugador};
 use crate::modelo::{
-    DiaNoche, Etiqueta, Extremo, OrigenCarta, Partida, Pos, Resultado, Senal, Tamano, TipoFlecha,
-    Zona, ZonaComun,
+    DiaNoche, Etiqueta, Extremo, OrigenCarta, Partida, Pos, RefImagen, Resultado, Senal, Tamano,
+    TipoFlecha, Zona, ZonaComun,
 };
 use crate::sparring::{Decision, Intensidad, ReaccionSparring};
 
 /// Sube con cada variante nueva o cambiada de `Accion` o `Cambio`.
-pub const VERSION_CATALOGO: u32 = 7;
+pub const VERSION_CATALOGO: u32 = 8;
 
 impl Accion {
     /// Lo que se puede hacer por otro jugador (`PorJugador`): lo que afecta a
@@ -915,6 +916,11 @@ pub enum Accion {
         id: u32,
         carta: Option<IdCarta>,
     },
+    /// Cambia el tapete de quien lo pide (o lo quita con `None`) a media
+    /// partida: así lo ven los demás. Solo una imagen propia (catálogo v8).
+    CambiarTapete {
+        tapete: Option<RefImagen>,
+    },
     // ── Fin ──
     Terminar {
         resultado: Resultado,
@@ -944,5 +950,16 @@ impl Accion {
                 | Accion::NotaEnCarta { .. }
                 | Accion::AtarNota { .. }
         )
+    }
+
+    /// Lo que cambia el aspecto de la mesa y no el juego (el tapete): como las
+    /// notas, no se deshace ni cuenta como «la última acción».
+    pub fn es_aspecto(&self) -> bool {
+        matches!(self, Accion::CambiarTapete { .. })
+    }
+
+    /// Lo que deshacer se salta: la comunicación, las notas y el aspecto.
+    pub fn fuera_del_juego(&self) -> bool {
+        self.es_comunicacion() || self.es_nota() || self.es_aspecto()
     }
 }

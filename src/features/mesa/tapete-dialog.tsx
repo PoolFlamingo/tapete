@@ -26,10 +26,14 @@ export function TapeteDialog({
 	abierto,
 	onCerrar,
 	deckId,
+	enPartida = false,
 }: {
 	abierto: boolean;
 	onCerrar: () => void;
 	deckId: string | null;
+	/** Con la partida abierta, el tapete nuevo se lleva a ella para que lo vean
+	 *  los demás (`mesa_tapete_partida`: si el del deck que juego no cambió, nada). */
+	enPartida?: boolean;
 }) {
 	const { t, mensaje } = useLang();
 	const [general, setGeneral] = useState(false);
@@ -59,6 +63,7 @@ export function TapeteDialog({
 		try {
 			setTapete(await call("mesa_tapete_set", { deck, origen, velo, desenfoque }));
 			usePantalla.getState().avisarTapete();
+			if (enPartida && deckId) await call("mesa_tapete_partida", { deck: deckId });
 		} catch (e) {
 			toast.error(mensaje(e));
 		} finally {

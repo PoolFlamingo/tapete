@@ -113,6 +113,14 @@ fn eventos_de_ejemplo() -> Vec<Evento> {
             a: mesa::modelo::Extremo::Fantasma,
             tipo: mesa::modelo::TipoFlecha::Ataque,
         },
+        // v8: cambiar el tapete a media partida.
+        Accion::CambiarTapete {
+            tapete: Some(mesa::modelo::RefImagen::Propia {
+                sha256: "ab".repeat(32),
+                ancho: 1920,
+                alto: 1080,
+            }),
+        },
     ]
     .into_iter()
     .enumerate()

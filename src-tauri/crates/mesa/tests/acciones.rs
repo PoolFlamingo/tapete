@@ -124,6 +124,7 @@ fn nombre(a: &Accion) -> &'static str {
         Accion::Colocar { .. } => "Colocar",
         Accion::NotaEnCarta { .. } => "NotaEnCarta",
         Accion::AtarNota { .. } => "AtarNota",
+        Accion::CambiarTapete { .. } => "CambiarTapete",
         Accion::VenenoFantasma { .. } => "VenenoFantasma",
         Accion::Terminar { .. } => "Terminar",
         Accion::Deshacer { .. } => "Deshacer",
@@ -449,6 +450,8 @@ fn cada_accion_del_catalogo() {
     assert_eq!(m.como(OTRO, ajena), Err(Rechazo::NoExiste));
     assert_eq!(m.p().flechas.len(), 1);
     m.haz(Accion::QuitarFlechas { de: None });
+    // El tapete (v8): su prueba entera va aparte.
+    m.haz(Accion::CambiarTapete { tapete: None });
     // Dar el control: al campo del otro, sigue siendo mía.
     m.haz(Accion::DarControl {
         cartas: vec![copia],
@@ -1050,6 +1053,7 @@ const TODAS: &[&str] = &[
     "Colocar",
     "NotaEnCarta",
     "AtarNota",
+    "CambiarTapete",
     "VenenoFantasma",
     "Terminar",
     "Deshacer",
@@ -1659,4 +1663,54 @@ fn que_otro_ensene_vale_y_dejar_de_ensenar_es_suyo() {
     );
     assert!(m.como(OTRO, Accion::RevelarMano { si: false }).is_ok());
     assert!(m.como(OTRO, Accion::DeArribaRevelada { si: false }).is_ok());
+}
+
+/// El tapete se cambia a media partida (v8): cada uno el suyo, solo una imagen
+/// propia bien formada, y deshacer no se lo lleva.
+#[test]
+fn el_tapete_se_cambia_a_media_partida_y_deshacer_no_lo_toca() {
+    use mesa::modelo::RefImagen;
+    let mut m = Mesa::nueva(2);
+    let nuevo = RefImagen::Propia {
+        sha256: "ab".repeat(32),
+        ancho: 1920,
+        alto: 1080,
+    };
+    let al_campo = m.al_campo("Bear");
+    m.haz(Accion::CambiarTapete {
+        tapete: Some(nuevo.clone()),
+    });
+    assert_eq!(m.p().jugador(YO).unwrap().tapete, Some(nuevo.clone()));
+    assert_ne!(m.p().jugador(OTRO).unwrap().tapete, Some(nuevo.clone()));
+    // Deshacer se salta el tapete: deshace lo de antes y el tapete se queda.
+    m.haz(Accion::Deshacer { hasta: None });
+    assert!(!m.zona(YO, Zona::Campo).contains(&al_campo));
+    assert_eq!(m.p().jugador(YO).unwrap().tapete, Some(nuevo.clone()));
+    // Lo que no es una imagen propia con sentido se rechaza sin cambiar nada.
+    for malo in [
+        RefImagen::Generica,
+        RefImagen::Scryfall {
+            id: "x".into(),
+            cara: 0,
+            url: "https://cards.scryfall.io/x.jpg".into(),
+        },
+        RefImagen::Propia {
+            sha256: "zz".repeat(32),
+            ancho: 10,
+            alto: 10,
+        },
+        RefImagen::Propia {
+            sha256: "ab".repeat(32),
+            ancho: 0,
+            alto: 10,
+        },
+    ] {
+        assert_eq!(
+            m.como(YO, Accion::CambiarTapete { tapete: Some(malo) }),
+            Err(Rechazo::NoSePuede)
+        );
+    }
+    assert_eq!(m.p().jugador(YO).unwrap().tapete, Some(nuevo));
+    m.haz(Accion::CambiarTapete { tapete: None });
+    assert_eq!(m.p().jugador(YO).unwrap().tapete, None);
 }
