@@ -21,6 +21,7 @@ const MIGRACIONES: &[(i64, &str)] = &[
     (9, include_str!("migrations/0009_linaje.sql")),
     (10, include_str!("migrations/0010_amigos.sql")),
     (11, include_str!("migrations/0011_amigos_alias.sql")),
+    (12, include_str!("migrations/0012_clase_deck.sql")),
 ];
 
 /// La conexión, protegida por un candado (rusqlite no es `Sync`). Los

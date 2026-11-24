@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { DeckKind } from "@/bindings/DeckKind";
 import type { DeckSummary } from "@/bindings/DeckSummary";
 import type { Tag } from "@/bindings/Tag";
 import { call } from "@/lib/ipc";
@@ -32,6 +33,8 @@ type Store = {
 	favorito: (decks: string[], si: boolean) => Promise<void>;
 	/** El idioma elegido a mano (`null`: el que se calcula). */
 	idioma: (decks: string[], lang: string | null) => Promise<void>;
+	/** El formato elegido a mano (`null`: el que se deduce de las cartas). */
+	clase: (decks: string[], kind: DeckKind | null) => Promise<void>;
 	notas: (id: string, texto: string) => Promise<void>;
 	portada: (id: string, carta: string | null) => Promise<void>;
 };
@@ -82,6 +85,10 @@ export const useBiblioteca = create<Store>((set, get) => ({
 	},
 	idioma: async (decks, lang) => {
 		await call("deck_lang_set", { decks, lang });
+		await get().refrescar();
+	},
+	clase: async (decks, kind) => {
+		await call("deck_kind_set", { decks, kind });
 		await get().refrescar();
 	},
 	notas: async (id, notes) => {

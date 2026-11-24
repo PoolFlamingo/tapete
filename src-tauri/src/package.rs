@@ -115,6 +115,9 @@ struct Biblioteca {
     /// El idioma del deck elegido a mano (desde la 2.3).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     idioma: Option<String>,
+    /// El formato elegido a mano (desde la 4.2). Una app anterior lo ignora.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    clase: Option<proxy_core::stats::DeckKind>,
     /// Las listas para jugar (mesa de juego), con los ids de copias del deck.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     listas: Vec<ListaDeJuego>,
@@ -382,6 +385,7 @@ fn escribir<W: Write + Seek>(
             .collect(),
         notas: decks::notas_de(db, &deck.id)?,
         idioma: decks::idioma_de(db, &deck.id)?,
+        clase: decks::clase_de(db, &deck.id)?,
         listas: listas::de_deck(db, &deck.id)?,
         linaje: Some(lin.linaje),
         actualizado: Some(lin.actualizado),
@@ -808,6 +812,9 @@ pub fn import_con<R: Read + Seek>(
         // Un idioma que este equipo no conoce se ignora.
         if let Some(l) = b.idioma.as_deref() {
             let _ = etiquetas::idioma(db, std::slice::from_ref(&deck.id), Some(l));
+        }
+        if let Some(k) = b.clase {
+            etiquetas::clase(db, std::slice::from_ref(&deck.id), Some(k))?;
         }
         Ok(())
     })();
@@ -1329,6 +1336,12 @@ mod tests {
         etiquetas::etiquetar(&db, std::slice::from_ref(&d.id), &[t.id], &[]).unwrap();
         etiquetas::notas(&db, &d.id, "Mazo del viernes").unwrap();
         etiquetas::idioma(&db, std::slice::from_ref(&d.id), Some("es")).unwrap();
+        etiquetas::clase(
+            &db,
+            std::slice::from_ref(&d.id),
+            Some(proxy_core::stats::DeckKind::Commander),
+        )
+        .unwrap();
         let ruta = dir.path().join("x.pbdeck");
         export(&d, &ruta, &s, &db).unwrap();
 
@@ -1341,6 +1354,10 @@ mod tests {
         assert_eq!(r.tags, vec![ya.id]);
         assert_eq!(r.notes, "Mazo del viernes");
         assert_eq!(r.lang_override.as_deref(), Some("es"));
+        assert_eq!(
+            r.kind_override,
+            Some(proxy_core::stats::DeckKind::Commander)
+        );
         assert_eq!(etiquetas::list(&db2).unwrap().len(), 1);
     }
 

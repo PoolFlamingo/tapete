@@ -148,6 +148,8 @@ export interface Commands {
 	deck_notes_set: { args: { id: string; notes: string }; result: null };
 	deck_cover_set: { args: { id: string; card: string | null }; result: null };
 	deck_lang_set: { args: { decks: string[]; lang: string | null }; result: null };
+	deck_kind_set: { args: { decks: string[]; kind: DeckKind | null }; result: null };
+	deck_kind_get: { args: { id: string }; result: DeckKind | null };
 	blob_import_files: { args: { paths: string[] }; result: FaceImage[] };
 	blob_generic_back: { args: Record<string, never>; result: FaceImage };
 	blob_gc: { args: Record<string, never>; result: GcReport };
@@ -379,6 +381,7 @@ export interface Commands {
 		args: { deck: string | null; velo: number; desenfoque: number };
 		result: null;
 	};
+	mesa_tapete_partida: { args: { deck: string }; result: null };
 	mesa_dados_get: { args: Record<string, never>; result: VistaAspectoDados };
 	mesa_dados_set: { args: { aspecto: AspectoDados }; result: VistaAspectoDados };
 	mesa_dados_imagen: { args: { ruta: string | null }; result: VistaAspectoDados };

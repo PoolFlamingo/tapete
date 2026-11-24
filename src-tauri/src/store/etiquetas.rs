@@ -8,6 +8,7 @@ use ts_rs::TS;
 
 use super::db::Db;
 use crate::error::{AppError, AppResult, ErrorCode};
+use proxy_core::stats::DeckKind;
 
 /// Colores de etiqueta que entiende la pantalla.
 pub const COLORES: [&str; 10] = [
@@ -242,6 +243,22 @@ pub fn idioma(db: &Db, decks: &[String], lang: Option<&str>) -> AppResult<()> {
         let mut st = tx.prepare_cached("UPDATE decks SET lang_override = ?2 WHERE id = ?1")?;
         for d in decks {
             st.execute(params![d, lang])?;
+        }
+    }
+    tx.commit()?;
+    Ok(())
+}
+
+/// El formato de varios decks elegido a mano (`None`: el que se deduce). No
+/// toca `updated_at`: no cambia el deck.
+pub fn clase(db: &Db, decks: &[String], kind: Option<DeckKind>) -> AppResult<()> {
+    let texto = kind.map(crate::store::decks::clase_a_texto);
+    let mut c = db.conn()?;
+    let tx = c.transaction()?;
+    {
+        let mut st = tx.prepare_cached("UPDATE decks SET kind_override = ?2 WHERE id = ?1")?;
+        for d in decks {
+            st.execute(params![d, texto])?;
         }
     }
     tx.commit()?;

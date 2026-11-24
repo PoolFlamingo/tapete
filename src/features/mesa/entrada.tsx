@@ -46,7 +46,7 @@ import { useMesaMovil } from "./formato-mesa";
 import { HistorialGeneralDialog } from "./historial-general";
 import { ListaDialog } from "./listas/lista-dialog";
 import { MAX_NOMBRE, useNombre } from "./nombre";
-import { opcionesDeFabrica } from "./opciones-fabrica";
+import { formatoDeDeck, opcionesDeFabrica } from "./opciones-fabrica";
 import { PartidaLocalDialog } from "./partida-local";
 import { RedDialog } from "./red/red-dialog";
 import { VolverARed } from "./red/volver-red";
@@ -149,11 +149,15 @@ function Entrada() {
 	// El formato de fábrica, el que se deduce del deck.
 	useEffect(() => {
 		if (!elegido) return;
-		call("deck_details", { ids: [elegido] })
-			.then(([d]) => {
+		Promise.all([
+			call("deck_details", { ids: [elegido] }),
+			call("mesa_listas", { deck: elegido }).catch(() => null),
+		])
+			.then(([[d], l]) => {
 				if (!d) return;
-				const f: Formato =
-					d.kind === "commander" ? "commander" : d.kind === "limited" ? "limited" : "constructed";
+				const manual =
+					useBiblioteca.getState().decks?.find((x) => x.id === elegido)?.kindOverride ?? null;
+				const f = formatoDeDeck(d.kind, l?.listas ?? null, manual);
 				// Otro deck del mismo formato no deshace lo que se tocó (vidas, mulligan…).
 				if (f === formatoActual.current) return;
 				setFormato(f);

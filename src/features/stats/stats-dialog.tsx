@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useBiblioteca } from "@/features/library/store";
 import { useFormato } from "@/lib/formato";
 import { call } from "@/lib/ipc";
 import { volverConEscape } from "@/lib/seccion-movil";
@@ -62,7 +63,22 @@ export function StatsDialog() {
 function Contenido() {
 	const { t, mensaje } = useLang();
 	const cartas = useDeck((s) => s.deck?.cards);
-	const [kind, setKind] = useState<DeckKind | null>(null);
+	const deckId = useDeck((s) => s.deck?.id ?? null);
+	// El formato elegido a mano se guarda con el deck (como en la biblioteca).
+	const [kind, setKindEstado] = useState<DeckKind | null>(null);
+	useEffect(() => {
+		if (!deckId) return;
+		call("deck_kind_get", { id: deckId })
+			.then(setKindEstado)
+			.catch(() => {});
+	}, [deckId]);
+	const setKind = (k: DeckKind | null) => {
+		setKindEstado(k);
+		if (deckId)
+			call("deck_kind_set", { decks: [deckId], kind: k })
+				.then(() => useBiblioteca.getState().refrescar())
+				.catch(() => {});
+	};
 	const [s, setS] = useState<DeckStats | null>(null);
 	const [cargando, setCargando] = useState(true);
 	const [error, setError] = useState<unknown>(null);

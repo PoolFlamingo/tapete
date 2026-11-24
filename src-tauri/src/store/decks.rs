@@ -1,6 +1,7 @@
 //! **Los decks guardados**, con todas sus cartas.
 
 use proxy_core::model::{BackSpec, Deck, DeckCard, FaceImage, PrintSettings, DECK_SCHEMA_VERSION};
+use proxy_core::stats::DeckKind;
 use rusqlite::{params, OptionalExtension};
 use serde::Serialize;
 use ts_rs::TS;
@@ -35,6 +36,8 @@ pub struct DeckSummary {
     /// El idioma elegido a mano (código de Scryfall); manda sobre el que se
     /// calcula de las cartas.
     pub lang_override: Option<String>,
+    /// El formato elegido a mano; manda sobre el que se deduce de las cartas.
+    pub kind_override: Option<DeckKind>,
     /// Las etiquetas del deck (ids de `tags`).
     pub tags: Vec<String>,
 }
@@ -231,7 +234,7 @@ pub fn list(db: &Db) -> AppResult<Vec<DeckSummary>> {
     let mut st = c.prepare(
         "SELECT d.id, d.name, d.created_at, d.updated_at, d.opened_at, d.pinned, d.notes, d.cover_card_id,
                 (SELECT COUNT(*) FROM deck_cards WHERE deck_id = d.id),
-                p.front_blob, json_extract(p.card_json, '$.meta.name'), d.lang_override
+                p.front_blob, json_extract(p.card_json, '$.meta.name'), d.lang_override, d.kind_override
          FROM decks d
          LEFT JOIN deck_cards p ON p.deck_id = d.id AND p.id = COALESCE(
              (SELECT x.id FROM deck_cards x WHERE x.deck_id = d.id AND x.id = d.cover_card_id AND x.front_blob IS NOT NULL),
@@ -252,6 +255,7 @@ pub fn list(db: &Db) -> AppResult<Vec<DeckSummary>> {
             thumbnail: r.get(9)?,
             cover_name: r.get(10)?,
             lang_override: r.get(11)?,
+            kind_override: clase_de_texto(r.get::<_, Option<String>>(12)?.as_deref()),
             tags: Vec::new(),
         })
     })?;
@@ -288,6 +292,31 @@ pub fn idioma_de(db: &Db, id: &str) -> AppResult<Option<String>> {
         })
         .optional()?
         .flatten())
+}
+
+/// El formato guardado en la columna (`commander`…); uno que no se entiende, ninguno.
+pub fn clase_de_texto(s: Option<&str>) -> Option<DeckKind> {
+    s.and_then(|s| serde_json::from_value(serde_json::Value::String(s.to_string())).ok())
+}
+
+/// Lo que se guarda en la columna para un formato.
+pub fn clase_a_texto(k: DeckKind) -> String {
+    match serde_json::to_value(k) {
+        Ok(serde_json::Value::String(s)) => s,
+        _ => String::new(),
+    }
+}
+
+/// El formato elegido a mano.
+pub fn clase_de(db: &Db, id: &str) -> AppResult<Option<DeckKind>> {
+    let s: Option<String> = db
+        .conn()?
+        .query_row("SELECT kind_override FROM decks WHERE id = ?1", [id], |r| {
+            r.get(0)
+        })
+        .optional()?
+        .flatten();
+    Ok(clase_de_texto(s.as_deref()))
 }
 
 /// La carta elegida como portada (`None`: la primera con imagen).
@@ -341,18 +370,20 @@ pub fn duplicate(db: &Db, id: &str, name: &str) -> AppResult<Deck> {
     }
     save(db, &d)?;
     let c = db.conn()?;
-    let (notas, portada, idioma): (String, Option<String>, Option<String>) = c.query_row(
-        "SELECT notes, cover_card_id, lang_override FROM decks WHERE id = ?1",
-        [id],
-        |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
-    )?;
+    let (notas, portada, idioma, clase): (String, Option<String>, Option<String>, Option<String>) =
+        c.query_row(
+            "SELECT notes, cover_card_id, lang_override, kind_override FROM decks WHERE id = ?1",
+            [id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+        )?;
     c.execute(
-        "UPDATE decks SET notes = ?2, cover_card_id = ?3, lang_override = ?4 WHERE id = ?1",
+        "UPDATE decks SET notes = ?2, cover_card_id = ?3, lang_override = ?4, kind_override = ?5 WHERE id = ?1",
         (
             &d.id,
             notas,
             portada.and_then(|p| ids.get(&p).cloned()),
             idioma,
+            clase,
         ),
     )?;
     c.execute(

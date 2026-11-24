@@ -173,7 +173,11 @@ pub async fn detalles(
                 x
             }
         };
-        out.push(det);
+        // El elegido a mano manda (va aparte de la caché: no cambia `updated_at`).
+        out.push(match d.kind_override {
+            Some(kind) => DeckDetails { kind, ..det },
+            None => det,
+        });
     }
     Ok(out)
 }
@@ -272,6 +276,19 @@ mod tests {
         );
         // Queda en memoria con la fecha del deck.
         assert!(cache.m.lock().unwrap().contains_key(&deck.id));
+        // El formato elegido a mano manda sobre el deducido, aunque esté en la
+        // caché (no cambia `updated_at`), y quitarlo vuelve al deducido.
+        let deducido = d.kind;
+        let otro = if deducido == DeckKind::Commander {
+            DeckKind::Constructed
+        } else {
+            DeckKind::Commander
+        };
+        crate::store::etiquetas::clase(&db, std::slice::from_ref(&deck.id), Some(otro)).unwrap();
+        assert_eq!(detalles(&db, &cache, &[]).await.unwrap()[0].kind, otro);
+        assert_eq!(decks::clase_de(&db, &deck.id).unwrap(), Some(otro));
+        crate::store::etiquetas::clase(&db, std::slice::from_ref(&deck.id), None).unwrap();
+        assert_eq!(detalles(&db, &cache, &[]).await.unwrap()[0].kind, deducido);
         // Solo los pedidos.
         assert!(detalles(&db, &cache, &["otro".into()])
             .await

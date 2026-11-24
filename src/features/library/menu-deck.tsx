@@ -1,5 +1,6 @@
 import { Slot } from "radix-ui";
 import { type ComponentType, createContext, type ReactNode, useContext, useState } from "react";
+import type { DeckKind } from "@/bindings/DeckKind";
 import type { DeckSummary } from "@/bindings/DeckSummary";
 import { ContenidoContextual } from "@/components/contenido-contextual";
 import {
@@ -35,6 +36,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePasarUi } from "@/features/pasar/store";
+import { CLASES_MAZO } from "@/features/stats/textos";
 import { useFormato } from "@/lib/formato";
 import { useNombreDeck } from "@/lib/use-nombre-deck";
 import { IDIOMAS, PuntoEtiqueta } from "./piezas";
@@ -44,6 +46,10 @@ import { useBiblioteca } from "./store";
  * Lo que se puede hacer con los decks: lo pone la pantalla. Las acciones que
  * faltan no salen en el menú (la pestaña «Jugar» no renombra ni borra).
  */
+
+/** Los formatos que se pueden elegir a mano. */
+const CLASES: DeckKind[] = ["commander", "constructed", "limited"];
+
 export type Acciones = {
 	abrir: (id: string) => void;
 	propiedades: (id: string) => void;
@@ -195,6 +201,36 @@ function Items({ deck, M }: { deck: DeckSummary; M: Primitivas }) {
 							onSelect={() => void lib.idioma(ids, codigo)}
 						>
 							{t(nombre)}
+						</M.CheckboxItem>
+					))}
+				</M.SubContent>
+			</M.Sub>
+			<M.Sub>
+				<M.SubTrigger>
+					<Icono icon="lucide:swords" />
+					{varios ? t("Formato de los {n}", { n: ids.length }) : t("Formato")}
+				</M.SubTrigger>
+				<M.SubContent className="min-w-44 text-xs">
+					<M.CheckboxItem
+						checked={elegidos.every((d) => !d.kindOverride)}
+						onSelect={() => void lib.clase(ids, null)}
+					>
+						{t("Automático (según las cartas)")}
+					</M.CheckboxItem>
+					<M.Separator />
+					{CLASES.map((k) => (
+						<M.CheckboxItem
+							key={k}
+							checked={
+								elegidos.length > 0 && elegidos.every((d) => d.kindOverride === k)
+									? true
+									: elegidos.some((d) => d.kindOverride === k)
+										? "indeterminate"
+										: false
+							}
+							onSelect={() => void lib.clase(ids, k)}
+						>
+							{t(CLASES_MAZO[k] ?? k)}
 						</M.CheckboxItem>
 					))}
 				</M.SubContent>

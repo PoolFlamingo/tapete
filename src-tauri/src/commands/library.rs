@@ -121,6 +121,25 @@ pub fn deck_lang_set(
     etiquetas::idioma(&state.db, &decks, lang.as_deref())
 }
 
+/// El formato de varios decks elegido a mano (`None`: el que se deduce de las cartas).
+#[tauri::command]
+pub fn deck_kind_set(
+    state: State<'_, AppState>,
+    decks: Vec<String>,
+    kind: Option<proxy_core::stats::DeckKind>,
+) -> AppResult<()> {
+    etiquetas::clase(&state.db, &decks, kind)
+}
+
+/// El formato elegido a mano de un deck (`None`: automático).
+#[tauri::command]
+pub fn deck_kind_get(
+    state: State<'_, AppState>,
+    id: String,
+) -> AppResult<Option<proxy_core::stats::DeckKind>> {
+    crate::store::decks::clase_de(&state.db, &id)
+}
+
 #[tauri::command]
 pub fn deck_cover_set(
     state: State<'_, AppState>,

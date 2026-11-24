@@ -443,23 +443,31 @@ fn contador(m: BTreeMap<String, u32>, max: usize) -> Vec<Contador> {
     v
 }
 
-/// La clase de mazo que parece: 90-110 cartas sin repetir (salvo básicas) es
-/// Commander; menos de 50, limitado; si no, construido.
+/// La clase de mazo que parece: 90 cartas o más casi sin repetir (salvo básicas)
+/// es Commander; menos de 50, limitado; si no, construido.
+///
+/// Sin tope por arriba: un deck de Commander con sus alternativas (variantes de
+/// diseño, cartas para cambiar según la mesa, que se eligen con una lista para
+/// jugar) pasa de 100 y sigue siendo de Commander. Lo que lo distingue de un
+/// construido grande es que es singleton: un construido lleva varias copias de
+/// casi todo.
 pub fn deducir(entrada: &[StatInput]) -> DeckKind {
     let mazo: Vec<&StatInput> = entrada.iter().filter(|c| !c.is_token).collect();
     let n = mazo.len();
     if n < 50 {
         return DeckKind::Limited;
     }
-    if (90..=110).contains(&n) {
+    if n >= 90 {
         let mut copias: HashMap<&str, u32> = HashMap::new();
         for c in &mazo {
             if !es_basica(c) && !funciones::sin_limite_de_copias(&c.oracle_text) {
                 *copias.entry(c.name.as_str()).or_default() += 1;
             }
         }
-        // Alguna repetida se perdona (una propia duplicada sin querer).
-        if copias.values().filter(|n| **n > 1).count() <= 2 {
+        // Alguna repetida se perdona (una propia duplicada sin querer), y algo
+        // más cuanto más grande es el deck.
+        let perdonadas = 2.max(n / 50);
+        if copias.values().filter(|n| **n > 1).count() <= perdonadas {
             return DeckKind::Commander;
         }
     }
@@ -1120,6 +1128,23 @@ mod tests {
         let s = stats(&cien, Some(DeckKind::Commander));
         assert_eq!(s.problems[0].code, "copies");
         assert_eq!(s.problems[0].cards[0].name, "C0");
+
+        // Con alternativas pasa de 110 y sigue siendo Commander (singleton).
+        let mut con_alternativas = cien.clone();
+        con_alternativas.extend(
+            (0..12).map(|i| carta(&format!("Alt{i}"), 3.0, "Creature — Elf", &["G"], None)),
+        );
+        assert_eq!(deducir(&con_alternativas), DeckKind::Commander);
+        // Un construido grande lleva copias de casi todo: no lo es.
+        let mut construido: Vec<StatInput> = (0..30)
+            .flat_map(|i| {
+                (0..4).map(move |_| carta(&format!("K{i}"), 2.0, "Creature — Elf", &["G"], None))
+            })
+            .collect();
+        assert_eq!(construido.len(), 120);
+        assert_eq!(deducir(&construido), DeckKind::Constructed);
+        construido.truncate(92);
+        assert_eq!(deducir(&construido), DeckKind::Constructed);
 
         // 61 cartas → construido; 40 → limitado; 99 en Commander → falta una.
         assert_eq!(deducir(&cien[..61]), DeckKind::Constructed);

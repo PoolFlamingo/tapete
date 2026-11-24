@@ -31,6 +31,7 @@ function deck(id: string, c: Partial<DeckSummary> = {}): DeckSummary {
 		pinned: false,
 		notes: "",
 		langOverride: null,
+		kindOverride: null,
 		tags: [],
 		...c,
 	};
