@@ -399,6 +399,19 @@ le falta una cadena le sale la inglesa.
   comandante; solo marcadores: 🛑 el sparring no los lee, no traen más reacciones. En el móvil, con
   varios, fichas pequeñas (taparían el campo). Las insignias de carta con símbolo y texto, arriba y
   apiladas (`insignias.tsx`); en una carta de ≤ 96 px, solo el símbolo (consulta de contenedor).
+  **Tapete a media partida y ajustes en la mesa** (Pablo, 24/11/2026): `Accion::CambiarTapete` (catálogo v8,
+  `PROTOCOLO` 9) cambia el tapete propio en la `Partida` y así llega a todos como un evento más (la imagen viaja por
+  `/img/1` como cualquier propia); solo una `RefImagen::Propia` bien formada (`aplicar::tapete_valido`). No es del juego
+  (`Accion::es_aspecto`, `fuera_del_juego`): no se deshace y `Restaurar` conserva los tapetes, como las notas; la sesión
+  lo apunta también en `mazos` para «Otra partida». Lo lanza `mesa_tapete_partida(deck)` desde el `TapeteDialog` con
+  `enPartida`; velo y desenfoque no viajan. «Ajustes de la mesa» en la barra (`dialogos/ajustes.tsx`) abre los mismos
+  ajustes de Ajustes > Mesa (`AjustesMesa` con `enPartida`, sin la identidad de red) y el tapete.
+  **Efecto 3D** (Pablo, 24/11/2026; `mesa.efecto3d`, apagado de fábrica y en el modo rendimiento): solo de pantalla
+  (`mesa/profundidad.ts`). La carta arrastrada se levanta e inclina con la velocidad (`useInclinacion` escribe `--rx`,
+  `--ry`, `--alto` en la capa del arrastre por fotograma, sin repintar React) y la mano del tablero va inclinada con
+  sombra (`MANO_3D` en `carta-mesa.tsx`, con las variables de `varsMano`); nada con «Reducir animaciones». Cuánto
+  se nota: `mesa.intensidad3d`, cuatro niveles en `PRESETS_3D` (suave, media —la de fábrica—, intensa, extrema) que
+  mueven a la vez perspectiva, inclinación, altura, sombra y mano. Con el efecto, la carta arrastrada va opaca.
   **Flechas una a una** (Pablo, 17/11/2026): `Accion::QuitarFlecha` (catálogo v7, `PROTOCOLO` 8) quita
   una flecha mía concreta; «Mis flechas…» (clic derecho en el campo vacío, `dialogos/mis-flechas.tsx`)
   las lista y resalta en la mesa la que se señala (`flechaResaltada`). Con varias elegidas, «Atacar /
@@ -545,6 +558,12 @@ le falta una cadena le sale la inglesa.
   Sideboard llega como banquillo y la Maybeboard (si se incluye) como opcional.
 - Idioma del deck a mano: `decks.lang_override` (migración 0004; no toca
   `updated_at`), `deck_lang_set`, submenú «Idioma» de la biblioteca.
+- **Formato del deck a mano** (Pablo, 24/11/2026): `decks.kind_override` (migración 0012; no toca `updated_at`),
+  `deck_kind_set`/`deck_kind_get`, submenú «Formato» de la biblioteca y el selector de las estadísticas (que ahora
+  guarda). Manda sobre `stats::deducir` (aplicado en `biblioteca::detalles` después de la caché) y, en «Jugar», sobre
+  todo (`formatoDeDeck`); sin él, una lista para jugar con comandante es Commander. Viaja en el `.pbdeck`
+  (`Biblioteca.clase`). `deducir`: Commander con 90 cartas o más casi singleton, sin tope por arriba (las
+  alternativas de un Commander lo pasan de 110).
 - **Temas de tweakcn** (Pablo, 19/10/2026): `temas.rs` baja un tema por id o
   enlace (`tweakcn.com/r/themes/<id>`; la comunidad no tiene API: su galería va en
   un iframe dentro del diálogo, su botón de compartir copia el enlace y Ctrl+V en
@@ -818,7 +837,9 @@ le falta una cadena le sale la inglesa.
   (`red_identidad_importar`) es otra persona para el servidor: `amigos::sincronizar::otra_clave`.
 - **Pasar decks entre equipos** (Pablo, 02/11/2026): `src-tauri/src/pasar/` (ALPN
   `proxy-builder/deck/1` en **el mismo nodo** que la mesa; código `PBD1-` frente al `PB1-` de
-  partida; «equipos cerca» por mDNS con `iroh-mdns-address-lookup`; QR en Rust; oferta ≤ 64 KiB; el
+  partida; «equipos cerca» por mDNS con `iroh-mdns-address-lookup` (🛑 la `Busqueda` se rehace cada `RENOVAR`, 5 s,
+  conservando la lista: una búsqueda vieja no siempre ve al que abre «Recibir» después en una Wi-Fi real; y
+  `pedido_busqueda` evita que un `buscar` lento se guarde tras un `parar`); QR en Rust; oferta ≤ 64 KiB; el
   `.pbdeck` por stream, sin tope fijo: manda el disco libre, `pasar::cabe_al_recibir`), `features/pasar/` y `lib/escaner.ts` (la única entrada al plugin
   de escanear). El código vale también a distancia por los relés (cifrado de punta a punta, sin
   cuenta). 🛑 Un bucle de `accept` por nodo: quien acepta conexiones en él llama a
